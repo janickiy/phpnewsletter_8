@@ -15,12 +15,13 @@ class Install
      */
     public function handle(Request $request, Closure $next)
     {
-        if (!file_exists(base_path('.env')) && !$request->is('install*')) {
-            \Auth::guard('web')->logout();
-            return redirect()->to('install');
+        $hasEnvironmentFile = file_exists(base_path('.env'));
+
+        if (!$hasEnvironmentFile && !$request->is('install*')) {
+            return redirect()->to('/install');
         }
 
-        if (file_exists(base_path('.env')) && $request->is('install*') && !$request->is('install/complete')) {
+        if ($hasEnvironmentFile && $request->is('install*') && !$request->is('install/complete')) {
             throw new NotFoundHttpException;
         }
 

@@ -146,7 +146,9 @@ return [
     |
     */
 
-    'key' => env('APP_KEY'),
+    // Allow the installer to boot before .env exists so requests can redirect
+    // to /install instead of failing while encrypted cookies are initialized.
+    'key' => env('APP_KEY') ?: (file_exists(base_path('.env')) ? null : 'base64:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA='),
 
     'cipher' => 'AES-256-CBC',
 
