@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 
-use App\Helpers\StringHelper;
 use App\Models\User;
 use App\Http\Requests\Frontend\InstallRequest;
 use App\Http\Requests\Frontend\InstallAdminRequest;
@@ -143,7 +142,7 @@ class InstallController extends Controller
             $env = str_replace('DB_PASSWORD=' . env('DB_PASSWORD'), 'DB_PASSWORD="' . $db['password'] . '"', $env);
             $env = $this->setEnvValue($env, 'APP_KEY', $this->generateAppKey());
             $env = str_replace('VERSION=', 'VERSION="7.2.1"', $env);
-            $env = str_replace('APP_URL=', 'APP_URL=' . StringHelper::getUrl(), $env);
+            $env = $this->setEnvValue($env, 'APP_URL', $this->detectAppUrl($request));
             $env = $this->setEnvValue($env, 'APP_LOCALE', $installLocale);
 
             file_put_contents($path, $env);
@@ -229,6 +228,35 @@ class InstallController extends Controller
     private function generateAppKey(): string
     {
         return 'base64:' . base64_encode(random_bytes(32));
+    }
+
+    /**
+     * Detect the public URL where this installation is being run.
+     *
+     * @param Request $request
+     * @return string
+     */
+    private function detectAppUrl(Request $request): string
+    {
+        $root = rtrim($request->root(), '/');
+        $host = $request->getSchemeAndHttpHost();
+
+        if ($root !== $host) {
+            return $root;
+        }
+
+        $path = '/' . ltrim($request->getPathInfo(), '/');
+        $installPosition = strpos($path, '/install');
+
+        if ($installPosition === false) {
+            return $root . '/';
+        }
+
+        $directory = trim(substr($path, 0, $installPosition), '/');
+
+        return $directory === ''
+            ? $root . '/'
+            : $root . '/' . $directory;
     }
 
     /**
