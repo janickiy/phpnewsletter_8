@@ -2,7 +2,6 @@
 
 namespace App\Http\Middleware;
 
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Illuminate\Http\Request;
 use Closure;
 
@@ -16,15 +15,13 @@ class Install
     public function handle(Request $request, Closure $next)
     {
         $hasEnvironmentFile = file_exists(base_path('.env'));
-        $hasApplicationKey = trim((string) env('APP_KEY')) !== '';
-        $isInstalled = $hasEnvironmentFile && $hasApplicationKey;
 
-        if (!$isInstalled && !$request->is('install*')) {
+        if (!$hasEnvironmentFile && !$request->is('install*')) {
             return redirect()->to('/install');
         }
 
-        if ($isInstalled && $request->is('install*') && !$request->is('install/complete')) {
-            throw new NotFoundHttpException;
+        if ($hasEnvironmentFile && $request->is('install*')) {
+            return redirect()->to('/');
         }
 
         return $next($request);
