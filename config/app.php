@@ -3,6 +3,11 @@
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\ServiceProvider;
 
+$appKey = env('APP_KEY');
+$requestPath = ltrim((string) parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH), '/');
+$isInstallerRequest = PHP_SAPI !== 'cli' && ($requestPath === 'install' || str_starts_with($requestPath, 'install/'));
+$temporaryInstallerKey = 'base64:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=';
+
 return [
 
     /*
@@ -146,9 +151,9 @@ return [
     |
     */
 
-    // Allow the installer to boot before .env exists so requests can redirect
-    // to /install instead of failing while encrypted cookies are initialized.
-    'key' => env('APP_KEY') ?: (file_exists(base_path('.env')) ? null : 'base64:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA='),
+    // Allow installer routes to boot before APP_KEY exists. Non-installer
+    // requests with a broken .env still fail instead of using this key.
+    'key' => $appKey ?: ((! file_exists(base_path('.env')) || $isInstallerRequest) ? $temporaryInstallerKey : null),
 
     'cipher' => 'AES-256-CBC',
 

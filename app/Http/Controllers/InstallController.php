@@ -141,14 +141,17 @@ class InstallController extends Controller
             $env = str_replace('DB_DATABASE=' . env('DB_DATABASE'), 'DB_DATABASE=' . $db['database'], $env);
             $env = str_replace('DB_USERNAME=' . env('DB_USERNAME'), 'DB_USERNAME=' . $db['username'], $env);
             $env = str_replace('DB_PASSWORD=' . env('DB_PASSWORD'), 'DB_PASSWORD="' . $db['password'] . '"', $env);
+            $env = $this->setEnvValue($env, 'APP_KEY', $this->generateAppKey());
             $env = str_replace('VERSION=', 'VERSION="7.2.1"', $env);
             $env = str_replace('APP_URL=', 'APP_URL=' . StringHelper::getUrl(), $env);
             $env = $this->setEnvValue($env, 'APP_LOCALE', $installLocale);
 
             file_put_contents($path, $env);
+            $this->reloadEnv();
 
             $this->setDatabaseCredentials($db);
             config([
+                'app.key' => env('APP_KEY'),
                 'app.locale' => $installLocale,
                 'app.installed_locale' => $installLocale,
             ]);
@@ -157,7 +160,6 @@ class InstallController extends Controller
 
             Artisan::call('migrate', ['--force' => true]);
             Artisan::call('db:seed', ['--force' => true]);
-            Artisan::call('key:generate', ['--force' => true]);
 
             User::create(['name' => 'admin', 'login' => $request->input('login'), 'role' => 'admin', 'password' => Hash::make($request->input('password'))]);
 
@@ -216,6 +218,17 @@ class InstallController extends Controller
         }
 
         return rtrim($contents) . PHP_EOL . $line . PHP_EOL;
+    }
+
+    /**
+     * Generate a Laravel-compatible application encryption key.
+     *
+     * @return string
+     * @throws \Exception
+     */
+    private function generateAppKey(): string
+    {
+        return 'base64:' . base64_encode(random_bytes(32));
     }
 
     /**

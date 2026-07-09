@@ -16,12 +16,14 @@ class Install
     public function handle(Request $request, Closure $next)
     {
         $hasEnvironmentFile = file_exists(base_path('.env'));
+        $hasApplicationKey = trim((string) env('APP_KEY')) !== '';
+        $isInstalled = $hasEnvironmentFile && $hasApplicationKey;
 
-        if (!$hasEnvironmentFile && !$request->is('install*')) {
+        if (!$isInstalled && !$request->is('install*')) {
             return redirect()->to('/install');
         }
 
-        if ($hasEnvironmentFile && $request->is('install*') && !$request->is('install/complete')) {
+        if ($isInstalled && $request->is('install*') && !$request->is('install/complete')) {
             throw new NotFoundHttpException;
         }
 
