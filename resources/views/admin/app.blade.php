@@ -25,7 +25,7 @@
     <link rel="stylesheet" href="{{ asset('plugins/flag-icon-css/css/flag-icon.min.css') }}">
 
     <!-- Custom style -->
-    <link rel="stylesheet" href="{{ asset('dist/css/admin.css?v=10') }}">
+    <link rel="stylesheet" href="{{ asset('dist/css/admin.css?v=11') }}">
 
     @yield('css')
 
@@ -128,6 +128,16 @@
                             <p>{{ __('frontend.menu.dashboard') }}</p>
                         </a>
                     </li>
+
+                    @if(PermissionsHelper::has_permission('admin'))
+                        <li class="nav-item">
+                            <a href="{{ route('admin.organizations.index') }}" class="nav-link{{ Request::is('organizations*') ? ' active' : '' }}"
+                               title="{{ __('frontend.menu.organizations') }}">
+                                <i class="nav-icon fas fa-building"></i>
+                                <p>{{ __('frontend.menu.organizations') }}</p>
+                            </a>
+                        </li>
+                    @endif
 
                     <li class="nav-item">
                         <a href="{{ route('admin.templates.index') }}" class="nav-link{{ Request::is('templates*') || Request::is('template*') ? ' active' : '' }}"

@@ -15,6 +15,8 @@ use App\Http\Controllers\Admin\{
     LogController,
     RedirectController,
     MacrosController,
+    OrganizationController,
+    ProjectController,
     UsersController,
     UpdateController,
 };
@@ -135,6 +137,22 @@ Route::group(['middleware' => ['install']], function () {
         Route::group(['prefix' => 'settings'], function () {
             Route::get('', [SettingsController::class, 'index'])->name('admin.settings.index');
             Route::put('update', [SettingsController::class, 'update'])->name('admin.settings.update');
+        });
+
+        Route::group(['prefix' => 'organizations'], function () {
+            Route::get('', [OrganizationController::class, 'index'])->name('admin.organizations.index');
+            Route::get('create', [OrganizationController::class, 'create'])->name('admin.organizations.create');
+            Route::post('store', [OrganizationController::class, 'store'])->name('admin.organizations.store');
+            Route::get('{organization}', [OrganizationController::class, 'show'])->name('admin.organizations.show')->where('organization', '[0-9]+');
+            Route::get('{organization}/edit', [OrganizationController::class, 'edit'])->name('admin.organizations.edit')->where('organization', '[0-9]+');
+            Route::put('{organization}', [OrganizationController::class, 'update'])->name('admin.organizations.update')->where('organization', '[0-9]+');
+            Route::delete('{organization}', [OrganizationController::class, 'destroy'])->name('admin.organizations.destroy')->where('organization', '[0-9]+');
+
+            Route::get('{organization}/projects/create', [ProjectController::class, 'create'])->name('admin.projects.create')->where('organization', '[0-9]+');
+            Route::post('{organization}/projects', [ProjectController::class, 'store'])->name('admin.projects.store')->where('organization', '[0-9]+');
+            Route::get('{organization}/projects/{project}/edit', [ProjectController::class, 'edit'])->name('admin.projects.edit')->where(['organization' => '[0-9]+', 'project' => '[0-9]+']);
+            Route::put('{organization}/projects/{project}', [ProjectController::class, 'update'])->name('admin.projects.update')->where(['organization' => '[0-9]+', 'project' => '[0-9]+']);
+            Route::delete('{organization}/projects/{project}', [ProjectController::class, 'destroy'])->name('admin.projects.destroy')->where(['organization' => '[0-9]+', 'project' => '[0-9]+']);
         });
 
         Route::group(['prefix' => 'users'], function () {
