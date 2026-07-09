@@ -16,16 +16,16 @@
                 <li class="list-group-item">
                     {{ $path }}
                     @if ($isWritable)
-                        <span class="badge badge-secondary float-right ml-2">775</span>
-                        <span class="badge badge-success float-right"><i class="fa fa-check"></i></span>
+                        <span class="badge text-bg-secondary float-end ms-2">775</span>
+                        <span class="badge text-bg-success float-end"><i class="fa fa-check"></i></span>
                     @else
-                        <span class="badge badge-secondary float-right ml-2">775</span>
-                        <span class="badge badge-danger float-right"><i class="fa fa-times"></i></span>
+                        <span class="badge text-bg-secondary float-end ms-2">775</span>
+                        <span class="badge text-bg-danger float-end"><i class="fa fa-times"></i></span>
                     @endif
                 </li>
             @endforeach
         </ul>
-        <a class="btn btn-primary float-right" href="{{ route('install.database') }}">
+        <a class="btn btn-primary float-end" href="{{ route('install.database') }}">
             {{ __('install.button.next') }}
             <i class="fa fa-arrow-right"></i>
         </a>

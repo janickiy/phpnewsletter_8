@@ -5,10 +5,10 @@
 @section('css')
 
     <!-- summernote -->
-    {!! Html::style('/plugins/summernote/summernote-bs4.min.css') !!}
+    <link rel="stylesheet" href="{{ asset('plugins/summernote/summernote-bs5.min.css') }}">
     <!-- CodeMirror -->
-    {!! Html::style('/plugins/codemirror/codemirror.css') !!}
-    {!! Html::style('/plugins/codemirror/theme/monokai.css') !!}
+    <link rel="stylesheet" href="{{ asset('plugins/codemirror/codemirror.css') }}">
+    <link rel="stylesheet" href="{{ asset('plugins/codemirror/theme/monokai.css') }}">
 
 @endsection
 
@@ -25,9 +25,9 @@
                     <header class="card card-primary">
 
                         <!-- form start -->
-                        {!! Form::open(['url' => isset($template) ? route('admin.templates.update') : route('admin.templates.store'), 'files' => true, 'method' => isset($template) ? 'put' : 'post', 'id' => 'tmplForm']) !!}
+                        {!! form_open(['url' => isset($template) ? route('admin.templates.update') : route('admin.templates.store'), 'files' => true, 'method' => isset($template) ? 'put' : 'post', 'id' => 'tmplForm']) !!}
 
-                        {!! isset($template) ? Form::hidden('id', $template->id) : '' !!}
+                        {!! isset($template) ? form_hidden('id', $template->id) : '' !!}
 
                         <div class="card-body">
 
@@ -35,9 +35,9 @@
 
                             <div class="form-group">
 
-                                {!! Form::label('name', __('frontend.form.name') . '*') !!}
+                                {!! form_label('name', __('frontend.form.name') . '*') !!}
 
-                                {!! Form::text('name', old('name', $template->name ?? null), ['class' => 'form-control']) !!}
+                                {!! form_text('name', old('name', $template->name ?? null), ['class' => 'form-control']) !!}
 
                                 @if ($errors->has('name'))
                                     <p class="text-danger">{{ $errors->first('name') }}</p>
@@ -46,9 +46,9 @@
 
                             <div class="form-group">
 
-                                {!! Form::label('body', __('frontend.form.template') . '*') !!}
+                                {!! form_label('body', __('frontend.form.template') . '*') !!}
 
-                                {!! Form::textarea('body', old('name', $template->body ?? null), ['rows' => "3", 'placeholder' => __('frontend.form.template'), 'class' => 'form-control']) !!}
+                                {!! form_textarea('body', old('name', $template->body ?? null), ['rows' => "3", 'placeholder' => __('frontend.form.template'), 'class' => 'form-control']) !!}
 
                                 @if ($errors->has('body'))
                                     <p class="text-danger">{{ $errors->first('body') }}</p>
@@ -68,17 +68,9 @@
 
                             <div class="form-group">
 
-                                {!! Form::label('attachfile[]', __('frontend.form.attach_files')) !!}
+                                {!! form_label('attachfile[]', __('frontend.form.attach_files')) !!}
 
-                                <div class="input-group">
-                                    <div class="custom-file">
-
-                                        {!! Form::file('attachfile[]',  ['id' => 'import', 'multiple' => "true", 'class' => "custom-file-input"]) !!}
-
-                                        {!! Form::label('attachfile[]', __('frontend.form.browse'), ['class' => 'custom-file-label']) !!}
-
-                                    </div>
-                                </div>
+                                {!! form_file('attachfile[]',  ['id' => 'attachfile', 'multiple' => true, 'class' => 'form-control']) !!}
 
                                 @if ($errors->has('attachfile'))
                                     <p class="text-danger">{{ $errors->first('attachfile') }}</p>
@@ -88,7 +80,7 @@
 
                             <div class="form-group">
 
-                                {!! Form::label('attachments', __('frontend.str.attachments')) !!}
+                                {!! form_label('attachments', __('frontend.str.attachments')) !!}
 
                                 <div class="inline-group">
                                     @if(isset($attachment))
@@ -104,24 +96,24 @@
 
                             <div class="form-group">
 
-                                {!! Form::label('prior', __('frontend.form.prior')) !!}
+                                {!! form_label('prior', __('frontend.form.prior')) !!}
 
                                 <div class="inline-group">
                                     <label class="radio">
 
-                                        {!! Form::radio('prior', 3, (isset($template) && $template->prior == 3) or !isset($template)) !!}
+                                        {!! form_radio('prior', 3, (isset($template) && $template->prior == 3) || !isset($template)) !!}
 
                                         <i></i>{{ __('frontend.form.normal') }}
                                     </label>
                                     <label class="radio">
 
-                                        {!! Form::radio('prior', 2, isset($template) && $template->prior == 2) !!}
+                                        {!! form_radio('prior', 2, isset($template) && $template->prior == 2) !!}
 
                                         <i></i>{{ __('frontend.form.low') }}
                                     </label>
                                     <label class="radio">
 
-                                        {!! Form::radio('prior', 1, isset($template) && $template->prior == 1) !!}
+                                        {!! form_radio('prior', 1, isset($template) && $template->prior == 1) !!}
 
                                         <i></i>{{ __('frontend.form.high') }}
                                     </label>
@@ -141,7 +133,7 @@
                             <button type="submit" class="btn btn-primary">
                                 {{ isset($template) ? __('frontend.form.edit') : __('frontend.form.add') }}
                             </button>
-                            <a class="btn btn-default float-sm-right" href="{{ route('admin.templates.index') }}">
+                            <a class="btn btn-secondary float-sm-end" href="{{ route('admin.templates.index') }}">
                                 {{ __('frontend.form.back') }}
                             </a>
 
@@ -157,21 +149,15 @@
                             <div id="resultSend"></div>
 
                             <div class="input-group mb-3">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                                </div>
-
-                                {!! Form::text('email', null, ['class' => 'form-control', 'placeholder' => 'Email', 'id' => 'email']) !!}
-
-                                <span class="input-group-append">
-                                    <button type="button" id="send_test" class="btn btn-info btn-flat">{{ __('frontend.str.send') }}</button>
-                                </span>
+                                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                {!! form_text('email', null, ['class' => 'form-control', 'placeholder' => 'Email', 'id' => 'email']) !!}
+                                <button type="button" id="send_test" class="btn btn-info rounded-0">{{ __('frontend.str.send') }}</button>
 
                             </div>
                         </div>
                     </header>
 
-                    {!! Form::close() !!}
+                    {!! form_close() !!}
 
                 </div>
                 <!-- /.card -->
@@ -186,22 +172,18 @@
 @section('js')
 
     <!-- Summernote -->
-    {!! Html::script('/plugins/summernote/summernote-bs4.min.js') !!}
+    <script src="{{ asset('plugins/summernote/summernote-bs5.min.js') }}"></script>
 
     <!-- CodeMirror -->
-    {!! Html::script('/plugins/codemirror/codemirror.js') !!}
-    {!! Html::script('/plugins/codemirror/mode/css/css.js') !!}
-    {!! Html::script('/plugins/codemirror/mode/xml/xml.js') !!}
-    {!! Html::script('/plugins/codemirror/mode/htmlmixed/htmlmixed.js') !!}
-    {!! Html::script('/plugins/bs-custom-file-input/bs-custom-file-input.min.js') !!}
-    {!! Html::script('/plugins/bs-custom-file-input/bs-custom-file-input.min.js') !!}
-
+    <script src="{{ asset('plugins/codemirror/codemirror.js') }}"></script>
+    <script src="{{ asset('plugins/codemirror/mode/css/css.js') }}"></script>
+    <script src="{{ asset('plugins/codemirror/mode/xml/xml.js') }}"></script>
+    <script src="{{ asset('plugins/codemirror/mode/htmlmixed/htmlmixed.js') }}"></script>
     <!-- Page specific script -->
     <script>
         $(function () {
             // Summernote
             $('#body').summernote();
-            bsCustomFileInput.init();
 
             $(document).on("click", ".remove_attach", function () {
                 let idAttach = $(this).attr('data-num');
@@ -266,13 +248,13 @@
                         let alert_msg = '';
 
                         if (data.result === true) {
-                            alert_msg += '<div class="alert alert-success alert-dismissible">';
-                            alert_msg += '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
+                            alert_msg += '<div class="alert alert-success alert-dismissible fade show">';
+                            alert_msg += '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
                             alert_msg += data.msg;
                             alert_msg += '</div>';
                         } else {
-                            alert_msg += '<div class="alert alert-danger alert-dismissible">';
-                            alert_msg += '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
+                            alert_msg += '<div class="alert alert-danger alert-dismissible fade show">';
+                            alert_msg += '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
                             alert_msg += data.msg;
                             alert_msg += '</div>';
                         }
@@ -290,4 +272,3 @@
     </script>
 
 @endsection
-

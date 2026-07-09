@@ -5,9 +5,9 @@
 @section('css')
 
     <!-- DataTables -->
-    {!! Html::style('/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') !!}
-    {!! Html::style('/plugins/datatables-responsive/css/responsive.bootstrap4.min.css') !!}
-    {!! Html::style('/plugins/datatables-buttons/css/buttons.bootstrap4.min.css') !!}
+    <link rel="stylesheet" href="{{ asset('vendor/datatables-bs5/css/dataTables.bootstrap5.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('vendor/datatables-responsive-bs5/css/responsive.bootstrap5.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('vendor/datatables-buttons-bs5/css/buttons.bootstrap5.min.css') }}">
 
 @endsection
 
@@ -60,17 +60,17 @@
 @section('js')
 
     <!-- DataTables  & Plugins -->
-    {!! Html::script('/plugins/datatables/jquery.dataTables.min.js') !!}
-    {!! Html::script('/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js') !!}
-    {!! Html::script('/plugins/datatables-responsive/js/dataTables.responsive.min.js') !!}
-    {!! Html::script('/plugins/datatables-responsive/js/responsive.bootstrap4.min.js') !!}
-    {!! Html::script('/plugins/datatables-buttons/js/dataTables.buttons.min.js') !!}
-    {!! Html::script('/plugins/datatables-buttons/js/buttons.bootstrap4.min.js') !!}
-    {!! Html::script('/plugins/pdfmake/pdfmake.min.js') !!}
-    {!! Html::script('/plugins/pdfmake/vfs_fonts.js') !!}
-    {!! Html::script('/plugins/datatables-buttons/js/buttons.html5.min.js') !!}
-    {!! Html::script('/plugins/datatables-buttons/js/buttons.print.min.js') !!}
-    {!! Html::script('/plugins/datatables-buttons/js/buttons.colVis.min.js') !!}
+    <script src="{{ asset('vendor/datatables/js/dataTables.min.js') }}"></script>
+    <script src="{{ asset('vendor/datatables-bs5/js/dataTables.bootstrap5.min.js') }}"></script>
+    <script src="{{ asset('vendor/datatables-responsive/js/dataTables.responsive.min.js') }}"></script>
+    <script src="{{ asset('vendor/datatables-responsive-bs5/js/responsive.bootstrap5.min.js') }}"></script>
+    <script src="{{ asset('vendor/datatables-buttons/js/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ asset('vendor/datatables-buttons-bs5/js/buttons.bootstrap5.min.js') }}"></script>
+    <script src="{{ asset('plugins/pdfmake/pdfmake.min.js') }}"></script>
+    <script src="{{ asset('plugins/pdfmake/vfs_fonts.js') }}"></script>
+    <script src="{{ asset('vendor/datatables-buttons/js/buttons.html5.min.js') }}"></script>
+    <script src="{{ asset('vendor/datatables-buttons/js/buttons.print.min.js') }}"></script>
+    <script src="{{ asset('vendor/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
 
     <script>
 

@@ -4,7 +4,7 @@
 
 @section('css')
 
-    {!! Html::style('/plugins/jquery-treeview/jquery.treeview.css') !!}
+    <link rel="stylesheet" href="{{ asset('plugins/jquery-treeview/jquery.treeview.css') }}">
 
 @endsection
 
@@ -45,7 +45,7 @@
 
 @section('js')
 
-    {!! Html::script('/plugins/jquery-treeview/jquery.treeview.js') !!}
+    <script src="{{ asset('plugins/jquery-treeview/jquery.treeview.js') }}"></script>
 
     <script>
         $(function () {

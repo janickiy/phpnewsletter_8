@@ -14,7 +14,7 @@
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
 
-    {!! Html::style('/css/bootstrap.min.css') !!}
+    <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
 
     @yield('css')
 
@@ -32,7 +32,7 @@
 
 <!-- BOOTSTRAP JS -->
 
-{!! Html::script('/admin/js/bootstrap/bootstrap.min.js') !!}
+<script src="{{ asset('admin/js/bootstrap/bootstrap.min.js') }}"></script>
 
 @yield('js')
 

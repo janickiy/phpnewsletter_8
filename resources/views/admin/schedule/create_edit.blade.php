@@ -4,7 +4,7 @@
 
 @section('css')
 
-    {!! Html::style('/plugins/daterangepicker/daterangepicker.css') !!}
+    <link rel="stylesheet" href="{{ asset('plugins/daterangepicker/daterangepicker.css') }}">
 
 @endsection
 
@@ -21,18 +21,18 @@
 
                         <!-- form start -->
 
-                        {!! Form::open(['url' => isset($row) ? route('admin.schedule.update') : route('admin.schedule.store'), 'method' => isset($row) ? 'put' : 'post']) !!}
+                        {!! form_open(['url' => isset($row) ? route('admin.schedule.update') : route('admin.schedule.store'), 'method' => isset($row) ? 'put' : 'post']) !!}
 
-                        {!! isset($row) ? Form::hidden('id', $row->id) : '' !!}
+                        {!! isset($row) ? form_hidden('id', $row->id) : '' !!}
 
                         <div class="card-body">
 
                             <p>*-{{ __('frontend.form.required_fields') }}</p>
 
                             <div class="form-group">
-                                {!! Form::label('event_name', __('frontend.form.name') . '*') !!}
+                                {!! form_label('event_name', __('frontend.form.name') . '*') !!}
 
-                                {!! Form::text('event_name', old('event_name', $row->event_name ?? null), ['class' => 'form-control', 'placeholder' => __('frontend.form.name')]) !!}
+                                {!! form_text('event_name', old('event_name', $row->event_name ?? null), ['class' => 'form-control', 'placeholder' => __('frontend.form.name')]) !!}
 
                                 @if ($errors->has('event_name'))
                                     <p class="text-danger">{{ $errors->first('event_name') }}</p>
@@ -41,9 +41,9 @@
 
                             <div class="form-group">
 
-                                {!! Form::label('template_id',  __('frontend.form.template')) !!}
+                                {!! form_label('template_id',  __('frontend.form.template')) !!}
 
-                                {!! Form::select('template_id', $options, old('template_id', $row->template_id ?? null), ['placeholder' => __('frontend.form.select'), 'class' => 'custom-select']) !!}
+                                {!! form_select('template_id', $options, old('template_id', $row->template_id ?? null), ['placeholder' => __('frontend.form.select'), 'class' => 'form-select']) !!}
 
                                 @if ($errors->has('template_id'))
                                     <p class="text-danger">{{ $errors->first('template_id') }}</p>
@@ -55,13 +55,10 @@
                                 <div class="row">
                                     <div class="col-3">
                                         <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text">
-                                                    <i class="far fa-calendar-alt"></i>
-                                                </span>
-                                            </div>
-
-                                            {!! Form::text('date_interval', old('date_interval', $date_interval ?? null), ['placeholder' => 'DD.MM.YYYY HH:MM - DD.MM.YYYY HH:MM', 'class' => 'form-control', 'id' => 'date_interval']) !!}
+                                            <span class="input-group-text">
+                                                <i class="far fa-calendar-alt"></i>
+                                            </span>
+                                            {!! form_text('date_interval', old('date_interval', $date_interval ?? null), ['placeholder' => 'DD.MM.YYYY HH:MM - DD.MM.YYYY HH:MM', 'class' => 'form-control', 'id' => 'date_interval']) !!}
                                         </div>
                                         @if ($errors->has('date_interval'))
                                             <p class="text-danger">{{ $errors->first('date_interval') }}</p>
@@ -73,7 +70,7 @@
 
                             <div class="form-group">
 
-                                {!! Form::label('categoryId',  __('frontend.form.subscribers_category')) !!}
+                                {!! form_label('categoryId',  __('frontend.form.subscribers_category')) !!}
 
                                 @php
                                     $selectedCategoryIds = collect(old('categoryId', $categoryId ?? []))
@@ -101,12 +98,12 @@
                             <button type="submit" class="btn btn-primary">
                                 {{ isset($row) ? __('frontend.form.edit') : __('frontend.form.add') }}
                             </button>
-                            <a class="btn btn-default float-sm-right" href="{{ route('admin.schedule.index') }}">
+                            <a class="btn btn-secondary float-sm-end" href="{{ route('admin.schedule.index') }}">
                                 {{ __('frontend.form.back') }}
                             </a>
                         </div>
 
-                        {!! Form::close() !!}
+                        {!! form_close() !!}
 
                     </header>
 
@@ -123,7 +120,7 @@
 @section('js')
 
     <!-- moment -->
-    {!! Html::script('/plugins/moment/moment.min.js') !!}
+    <script src="{{ asset('plugins/moment/moment.min.js') }}"></script>
 
     {{-- Динамическое подключение locale --}}
     @php
@@ -145,10 +142,10 @@
         $momentLocale = $localeMap[app()->getLocale()] ?? 'en-gb';
     @endphp
 
-    {!! Html::script('/plugins/moment/locale/' . $momentLocale . '.js') !!}
+    <script src="{{ asset('/plugins/moment/locale/' . $momentLocale . '.js') }}"></script>
 
     <!-- daterangepicker -->
-    {!! Html::script('/plugins/daterangepicker/daterangepicker.js') !!}
+    <script src="{{ asset('plugins/daterangepicker/daterangepicker.js') }}"></script>
 
     <script>
         $(function () {

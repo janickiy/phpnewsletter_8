@@ -222,10 +222,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
-        Collective\Html\HtmlServiceProvider::class,
-
         Yajra\DataTables\DataTablesServiceProvider::class,
-        Collective\Html\HtmlServiceProvider::class,
         Yajra\DataTables\ButtonsServiceProvider::class,
         Yajra\DataTables\HtmlServiceProvider::class,
 
@@ -281,11 +278,9 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         // 'Example' => App\Facades\Example::class,
-        'Html' => Collective\Html\HtmlFacade::class,
         'PermissionsHelper' => App\Helpers\PermissionsHelper::class,
         'StringHelper' => App\Helpers\StringHelper::class,
         'DataTables' => Yajra\DataTables\Facades\DataTables::class,
-        'Form' => Collective\Html\FormFacade::class,
         'SettingsHelper' => App\Helpers\SettingsHelper::class,
 
     ])->toArray(),

@@ -23,31 +23,31 @@
 
             <div id="resultSub"></div>
 
-            {!! Form::open(['id' => 'addsub', 'autocomplete' => "off"]) !!}
+            {!! form_open(['id' => 'addsub', 'autocomplete' => "off"]) !!}
 
             @foreach($category as $row)
                 <div class="form-check">
                     <label class="form-check-label">
-                        {!! Form::checkbox('categoryId[]', $row['id'], ['class' => "form-check-input"]) !!} {!! $row['name'] !!}
+                        {!! form_checkbox('categoryId[]', $row['id'], ['class' => "form-check-input"]) !!} {!! $row['name'] !!}
                     </label>
                 </div>
             @endforeach
 
             <div class="form-group">
-                {!! Form::label('name', trans('frontend.str.name')) !!}
-                {!! Form::text('name',old('name'),['class'=>"form-control", 'autocomplete'=>"off"]) !!}
+                {!! form_label('name', trans('frontend.str.name')) !!}
+                {!! form_text('name',old('name'),['class'=>"form-control", 'autocomplete'=>"off"]) !!}
             </div>
 
             <div class="form-group">
-                {!! Form::label('email', 'E-mail') !!}
-                {!! Form::text('email',old('email'),['class'=>"form-control",'autocomplete'=>"off"]) !!}
+                {!! form_label('email', 'E-mail') !!}
+                {!! form_text('email',old('email'),['class'=>"form-control",'autocomplete'=>"off"]) !!}
 
                 <div id="error-email" class="text-danger"></div>
             </div>
 
-            {{ Form::button(trans('frontend.str.subscribe'), ['id' => "sub",'class' => 'btn btn-primary']) }}
+            {!! form_button(trans('frontend.str.subscribe'), ['id' => "sub",'class' => 'btn btn-primary']) !!}
 
-            {!! Form::close() !!}
+            {!! form_close() !!}
 
         </div>
 

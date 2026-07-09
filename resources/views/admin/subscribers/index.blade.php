@@ -5,9 +5,9 @@
 @section('css')
 
     <!-- DataTables -->
-    {!! Html::style('/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') !!}
-    {!! Html::style('/plugins/datatables-responsive/css/responsive.bootstrap4.min.css') !!}
-    {!! Html::style('/plugins/datatables-buttons/css/buttons.bootstrap4.min.css') !!}
+    <link rel="stylesheet" href="{{ asset('vendor/datatables-bs5/css/dataTables.bootstrap5.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('vendor/datatables-responsive-bs5/css/responsive.bootstrap5.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('vendor/datatables-buttons-bs5/css/buttons.bootstrap5.min.css') }}">
 
 @endsection
 
@@ -21,22 +21,22 @@
             <div class="row">
 
                 <div class="col-lg-12"><p class="text-center">
-                        <a class="btn btn-outline btn-default btn-lg"
+                        <a class="btn btn-outline-secondary btn-lg"
                            title="{{ __('frontend.str.import_subscribers') }}"
                            href="{{ route('admin.subscribers.import') }}">
                             <span class="fa fa-download fa-x"></span> {{ __('frontend.str.import') }}
                         </a>
-                        <a class="btn btn-outline btn-default btn-lg"
+                        <a class="btn btn-outline-secondary btn-lg"
                            title="{{ __('frontend.str.export_subscribers') }}"
                            href="{{ route('admin.subscribers.export') }}">
                             <span class="fa fa-upload fa-x"></span> {{ __('frontend.str.export') }}
                         </a>
-                        <a id="removeAllSubscribersButton" class="btn btn-outline btn-danger btn-lg"
+                        <a id="removeAllSubscribersButton" class="btn btn-outline-danger btn-lg"
                            title="{{ __('frontend.str.delete_all_subscribers') }}"
                            onclick="confirmation(event)">
                             <span class="fa fa-trash fa-x"></span> {{ __('frontend.str.delete_all') }}
                         </a>
-                        <span id="removeAllSubscribersSpinner" class="ml-2 d-none">
+                        <span id="removeAllSubscribersSpinner" class="ms-2 d-none">
                             <span class="spinner-border spinner-border-sm text-danger" role="status" aria-hidden="true"></span>
                         </span>
                     </p>
@@ -56,7 +56,7 @@
                                 </a>
                             </div>
 
-                            {!! Form::open(['url' => route('admin.subscribers.status'), 'method' => 'post']) !!}
+                            {!! form_open(['url' => route('admin.subscribers.status'), 'method' => 'post']) !!}
 
                             <table id="itemList" class="table table-bordered table-striped">
                                 <thead>
@@ -93,14 +93,14 @@
                                     <div class="form-inline">
                                         <div class="control-group">
 
-                                            {!! Form::select('action',[
+                                            {!! form_select('action',[
                                             '1' => __('frontend.str.activate'),
                                             '0' => __('frontend.str.deactivate'),
                                             '2' => __('frontend.str.remove')
                                             ],null,['class' => 'span3 form-control', 'id' => 'select_action','placeholder' => '--' . __('frontend.str.action') . '--']) !!}
 
                                             <span class="help-inline">
-                                            {!! Form::submit(__('frontend.str.apply'), ['class' => 'btn btn-success', 'disabled' => "", 'id' => 'apply']) !!}
+                                            {!! form_submit(__('frontend.str.apply'), ['class' => 'btn btn-success', 'disabled' => "", 'id' => 'apply']) !!}
                                         </span>
 
                                         </div>
@@ -108,7 +108,7 @@
                                 </div>
                             </div>
 
-                            {!! Form::close() !!}
+                            {!! form_close() !!}
 
                         </div>
                         <!-- /.card-body -->
@@ -129,17 +129,17 @@
 @section('js')
 
     <!-- DataTables  & Plugins -->
-    {!! Html::script('/plugins/datatables/jquery.dataTables.min.js') !!}
-    {!! Html::script('/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js') !!}
-    {!! Html::script('/plugins/datatables-responsive/js/dataTables.responsive.min.js') !!}
-    {!! Html::script('/plugins/datatables-responsive/js/responsive.bootstrap4.min.js') !!}
-    {!! Html::script('/plugins/datatables-buttons/js/dataTables.buttons.min.js') !!}
-    {!! Html::script('/plugins/datatables-buttons/js/buttons.bootstrap4.min.js') !!}
-    {!! Html::script('/plugins/pdfmake/pdfmake.min.js') !!}
-    {!! Html::script('/plugins/pdfmake/vfs_fonts.js') !!}
-    {!! Html::script('/plugins/datatables-buttons/js/buttons.html5.min.js') !!}
-    {!! Html::script('/plugins/datatables-buttons/js/buttons.print.min.js') !!}
-    {!! Html::script('/plugins/datatables-buttons/js/buttons.colVis.min.js') !!}
+    <script src="{{ asset('vendor/datatables/js/dataTables.min.js') }}"></script>
+    <script src="{{ asset('vendor/datatables-bs5/js/dataTables.bootstrap5.min.js') }}"></script>
+    <script src="{{ asset('vendor/datatables-responsive/js/dataTables.responsive.min.js') }}"></script>
+    <script src="{{ asset('vendor/datatables-responsive-bs5/js/responsive.bootstrap5.min.js') }}"></script>
+    <script src="{{ asset('vendor/datatables-buttons/js/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ asset('vendor/datatables-buttons-bs5/js/buttons.bootstrap5.min.js') }}"></script>
+    <script src="{{ asset('plugins/pdfmake/pdfmake.min.js') }}"></script>
+    <script src="{{ asset('plugins/pdfmake/vfs_fonts.js') }}"></script>
+    <script src="{{ asset('vendor/datatables-buttons/js/buttons.html5.min.js') }}"></script>
+    <script src="{{ asset('vendor/datatables-buttons/js/buttons.print.min.js') }}"></script>
+    <script src="{{ asset('vendor/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
 
     <script>
 

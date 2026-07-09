@@ -4,6 +4,7 @@ namespace App\Http\Requests\Admin\Users;
 
 use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateRequest extends FormRequest
 {
@@ -31,7 +32,7 @@ class UpdateRequest extends FormRequest
                 'unique:' . User::getTableName() . ',login,' . $this->id
             ],
             'name' => ['required', 'string', 'max:255'],
-            'role' => ['required', 'string'],
+            'role' => ['required', 'string', Rule::in(User::roleValues())],
             'description' => ['nullable', 'string'],
             'password' => ['nullable', 'string', 'min:6'],
             'password_again' => [

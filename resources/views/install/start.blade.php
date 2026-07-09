@@ -10,7 +10,7 @@
         <fieldset>
             <div class="form-group">
 
-                {!! Form::textarea('readonly', __('license.agreement'), ['class' => "form-control", 'rows' => "13"]) !!}
+                {!! form_textarea('readonly', __('license.agreement'), ['class' => "form-control", 'rows' => "13"]) !!}
 
             </div>
 
@@ -26,9 +26,9 @@
 
                 <div class="chiller_cb">
 
-                    {!! Form::checkbox('accept_license', 1, false, ['id' => "accept_license"] ) !!}
+                    {!! form_checkbox('accept_license', 1, false, ['id' => "accept_license"] ) !!}
 
-                    {!! Form::label('accept_license', __('frontend.str.accept_license'), ['class' => 'form-check-label']) !!}
+                    {!! form_label('accept_license', __('frontend.str.accept_license'), ['class' => 'form-check-label']) !!}
 
                     <span></span>
                 </div>
@@ -36,7 +36,7 @@
             </div>
         </fieldset>
 
-        <a href="{{ route('install.requirements') }}" id="next_button" class="btn btn-primary float-right disabled" role="button">
+        <a href="{{ route('install.requirements') }}" id="next_button" class="btn btn-primary float-end disabled" role="button">
             {{ __('install.button.next') }}
             <i class="fa fa-arrow-right"></i>
         </a>

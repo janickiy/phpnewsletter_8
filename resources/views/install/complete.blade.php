@@ -21,7 +21,7 @@
             <p>{!! __('install.str.important') !!}</p>
         @endif
 
-        <a class="btn btn-primary float-right" href="{{ url('login') }}">
+        <a class="btn btn-primary float-end" href="{{ url('login') }}">
             <i class="fa fa-sign-in"></i>
             {{ __('install.str.log_in') }}
         </a>

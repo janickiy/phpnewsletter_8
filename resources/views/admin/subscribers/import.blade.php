@@ -20,7 +20,7 @@
                     <header class="card card-primary">
 
                         <!-- form start -->
-                        {!! Form::open(['url' => route('admin.subscribers.import_subscribers'), 'files' => true, 'method' => 'post']) !!}
+                        {!! form_open(['url' => route('admin.subscribers.import_subscribers'), 'files' => true, 'method' => 'post']) !!}
 
                         <div class="card-body">
 
@@ -28,17 +28,9 @@
 
                             <div class="form-group">
 
-                                {!! Form::label('import', __('frontend.form.attach_files') . '*') !!}
+                                {!! form_label('import', __('frontend.form.attach_files') . '*') !!}
 
-                                <div class="input-group">
-                                    <div class="custom-file">
-
-                                        {!! Form::file('import',  ['id' => 'import', 'class' => "custom-file-input", 'accept' => '.csv,.xlsx,.xls,.ods,.txt']) !!}
-
-                                        {!! Form::label('import', __('frontend.form.browse'),  ['class' => "custom-file-label"]) !!}
-
-                                    </div>
-                                </div>
+                                {!! form_file('import',  ['id' => 'import', 'class' => 'form-control', 'accept' => '.csv,.xlsx,.xls,.ods,.txt']) !!}
 
                                 @if ($errors->has('import'))
                                     <p class="text-danger">{{ $errors->first('import') }}</p>
@@ -53,9 +45,9 @@
 
                             <div class="form-group">
 
-                                {!! Form::label('categoryId[]', __('frontend.form.charset')) !!}
+                                {!! form_label('categoryId[]', __('frontend.form.charset')) !!}
 
-                                {!! Form::select('charset', $charsets, null, ['placeholder' => '--' . __('frontend.form.select') . '--', 'class' => 'form-control']) !!}
+                                {!! form_select('charset', $charsets, null, ['placeholder' => '--' . __('frontend.form.select') . '--', 'class' => 'form-control']) !!}
 
                                 @if ($errors->has('charset'))
                                     <p class="text-danger">{{ $errors->first('charset') }}</p>
@@ -65,9 +57,9 @@
 
                             <div class="form-group">
 
-                                {!! Form::label('categoryId[]', __('frontend.form.subscribers_category')) !!}
+                                {!! form_label('categoryId[]', __('frontend.form.subscribers_category')) !!}
 
-                                {!! Form::select('categoryId[]', $category_options, null, ['multiple' => 'multiple', 'placeholder' => __('frontend.form.select_category'), 'class' => 'form-control']) !!}
+                                {!! form_select('categoryId[]', $category_options, null, ['multiple' => 'multiple', 'placeholder' => __('frontend.form.select_category'), 'class' => 'form-control']) !!}
 
                                 @if ($errors->has('categoryId'))
                                     <p class="text-danger">{{ $errors->first('categoryId') }}</p>
@@ -82,12 +74,12 @@
                             <button type="submit" class="btn btn-primary">
                                 {{ __('frontend.form.send') }}
                             </button>
-                            <a class="btn btn-default float-sm-right" href="{{ route('admin.subscribers.index') }}">
+                            <a class="btn btn-secondary float-sm-end" href="{{ route('admin.subscribers.index') }}">
                                 {{ __('frontend.form.back') }}
                             </a>
                         </div>
 
-                        {!! Form::close() !!}
+                        {!! form_close() !!}
 
                     </header>
                 </div>
@@ -101,15 +93,5 @@
 @endsection
 
 @section('js')
-
-    {!! Html::script('/plugins/bs-custom-file-input/bs-custom-file-input.min.js') !!}
-
-    <script>
-
-        $(function () {
-            bsCustomFileInput.init();
-        });
-
-    </script>
 
 @endsection

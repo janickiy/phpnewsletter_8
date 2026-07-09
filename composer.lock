@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "31d08ee8d6a2cd86091b8a68bedda2cf",
+    "content-hash": "83e9617eed8c90f072feb8a762e1eba9",
     "packages": [
         {
             "name": "brick/math",
@@ -1132,73 +1132,6 @@
                 }
             ],
             "time": "2026-07-08T16:19:22+00:00"
-        },
-        {
-            "name": "janickiy/html",
-            "version": "v1.0.9",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/janickiy/html.git",
-                "reference": "ef915380ff7b5347fea4e6d4d68bb789c1bb3809"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/janickiy/html/zipball/ef915380ff7b5347fea4e6d4d68bb789c1bb3809",
-                "reference": "ef915380ff7b5347fea4e6d4d68bb789c1bb3809",
-                "shasum": ""
-            },
-            "require": {
-                "illuminate/http": "^13.0",
-                "illuminate/routing": "^13.0",
-                "illuminate/session": "^13.0",
-                "illuminate/support": "^13.0",
-                "illuminate/view": "^13.0",
-                "php": "^8.3"
-            },
-            "require-dev": {
-                "illuminate/database": "^13.0",
-                "mockery/mockery": "^1.6",
-                "phpunit/phpunit": "^11.5.3|^12.0"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "aliases": {
-                        "Form": "Collective\\Html\\FormFacade",
-                        "Html": "Collective\\Html\\HtmlFacade"
-                    },
-                    "providers": [
-                        "Collective\\Html\\HtmlServiceProvider"
-                    ]
-                },
-                "branch-alias": {
-                    "dev-master": "13.x-dev"
-                }
-            },
-            "autoload": {
-                "files": [
-                    "src/helpers.php"
-                ],
-                "psr-4": {
-                    "Collective\\Html\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Alexander Yanitskiy",
-                    "email": "janickiy@mail.ru"
-                }
-            ],
-            "description": "HTML and Form Builders for the Laravel Framework",
-            "support": {
-                "issues": "https://github.com/janickiy/html/issues",
-                "source": "https://github.com/janickiy/html"
-            },
-            "time": "2026-05-25T13:48:35+00:00"
         },
         {
             "name": "laravel/framework",

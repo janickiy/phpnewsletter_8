@@ -13,13 +13,13 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
 
     <!-- Font Awesome -->
-    {!! Html::style('plugins/fontawesome-free/css/all.min.css') !!}
+    <link rel="stylesheet" href="{{ asset('vendor/fontawesome7/css/all.min.css') }}">
 
     <!-- icheck bootstrap -->
-    {!! Html::style('plugins/icheck-bootstrap/icheck-bootstrap.min.css') !!}
+    <link rel="stylesheet" href="{{ asset('plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
 
     <!-- Theme style -->
-    {!! Html::style('dist/css/adminlte.min.css?v=2') !!}
+    <link rel="stylesheet" href="{{ asset('vendor/adminlte4/css/adminlte.min.css') }}">
 
     <style>
         .auth-logo {
@@ -33,7 +33,7 @@
     </style>
 
 </head>
-<body class="hold-transition login-page">
+<body class="login-page bg-body-secondary">
 <div class="login-box">
     <!-- /.login-logo -->
     <div class="card card-outline card-primary">
@@ -45,43 +45,34 @@
             <p class="login-box-msg">{{ __('auth.admin_area') }}</p>
 
 
-            {!! Form::open(['url' => route('login'), 'method' => 'post']) !!}
+            {!! form_open(['url' => route('login'), 'method' => 'post']) !!}
 
 
                 <div class="input-group mb-3">
-
-                    {!! Form::text('login', old('login'), [ 'placeholder' => __('frontend.form.login'), 'class' => 'form-control']) !!}
-
-                    <div class="input-group-append">
-                        <div class="input-group-text">
-                            <span class="fas fa-user"></span>
-                        </div>
-                    </div>
-
-                    @if ($errors->has('login'))
-                        <p class="text-danger">{{ $errors->first('login') }}</p>
-                    @endif
-
+                    {!! form_text('login', old('login'), [ 'placeholder' => __('frontend.form.login'), 'class' => 'form-control']) !!}
+                    <span class="input-group-text">
+                        <i class="fas fa-user"></i>
+                    </span>
                 </div>
+                @if ($errors->has('login'))
+                    <p class="text-danger">{{ $errors->first('login') }}</p>
+                @endif
+
                 <div class="input-group mb-3">
-
-                    {!! Form::password('password',['class' => 'form-control', 'placeholder' => __('frontend.form.password'), 'type' => 'password']) !!}
-
-                    <div class="input-group-append">
-                        <div class="input-group-text">
-                            <span class="fas fa-lock"></span>
-                        </div>
-                    </div>
-
-                    @if ($errors->has('password'))
-                        <p class="text-danger">{{ $errors->first('password') }}</p>
-                    @endif
+                    {!! form_password('password',['class' => 'form-control', 'placeholder' => __('frontend.form.password'), 'type' => 'password']) !!}
+                    <span class="input-group-text">
+                        <i class="fas fa-lock"></i>
+                    </span>
                 </div>
+                @if ($errors->has('password'))
+                    <p class="text-danger">{{ $errors->first('password') }}</p>
+                @endif
+
                 <div class="row">
                     <div class="col-8">
                         <div class="icheck-primary">
 
-                            {!! Form::checkbox('remember', 1, old('remember') ? true : false , ['id' => "remember"]) !!}
+                            {!! form_checkbox('remember', 1, old('remember') ? true : false , ['id' => "remember"]) !!}
 
                             <label for="remember">
                                 {{ __('frontend.str.remember_me') }}
@@ -90,12 +81,12 @@
                     </div>
                     <!-- /.col -->
                     <div class="col-4">
-                        {!! Form::submit(__('frontend.str.singin'), ['class' => 'btn btn-primary btn-block']) !!}
+                        {!! form_submit(__('frontend.str.singin'), ['class' => 'btn btn-primary w-100']) !!}
                     </div>
                     <!-- /.col -->
                 </div>
 
-            {!! Form::close() !!}
+            {!! form_close() !!}
 
 
 
@@ -108,10 +99,10 @@
 <!-- /.login-box -->
 
 <!-- jQuery -->
-{!! Html::script('plugins/jquery/jquery.min.js') !!}
-<!-- Bootstrap 4 -->
-{!! Html::script('plugins/bootstrap/js/bootstrap.bundle.min.js') !!}
+<script src="{{ asset('plugins/jquery/jquery.min.js') }}"></script>
+<!-- Bootstrap 5 -->
+<script src="{{ asset('vendor/bootstrap5/js/bootstrap.bundle.min.js') }}"></script>
 <!-- AdminLTE App -->
-{!! Html::script('dist/js/adminlte.min.js') !!}
+<script src="{{ asset('vendor/adminlte4/js/adminlte.min.js') }}"></script>
 </body>
 </html>

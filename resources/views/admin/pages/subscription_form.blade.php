@@ -4,7 +4,7 @@
 
 @section('css')
 
-    {!! Html::style('/plugins/highlightjs/styles/github-dark.css') !!}
+    <link rel="stylesheet" href="{{ asset('plugins/highlightjs/styles/github-dark.css') }}">
 
     <style>
 
@@ -104,11 +104,11 @@
 
 @section('js')
 
-    <!-- {!! Html::script('/plugins/highlightjs/highlight.js') !!} -->
-    <!-- {!! Html::script('/plugins/highlightjs/highlightjs-line-numbers.js') !!} -->
+    <!-- <script src="{{ asset('plugins/highlightjs/highlight.js') }}"></script> -->
+    <!-- <script src="{{ asset('plugins/highlightjs/highlightjs-line-numbers.js') }}"></script> -->
 
-    {!! Html::script('https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js') !!}
-    {!! Html::script('https://cdnjs.cloudflare.com/ajax/libs/highlightjs-line-numbers.js/2.6.0/highlightjs-line-numbers.min.js') !!}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlightjs-line-numbers.js/2.6.0/highlightjs-line-numbers.min.js"></script>
 
     <script>hljs.highlightAll();</script>
     <script>hljs.initLineNumbersOnLoad();</script>

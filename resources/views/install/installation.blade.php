@@ -10,7 +10,7 @@
         'installation' => 'selected'
     ]])
 
-    {!! Form::open(['route' => 'install.install']) !!}
+    {!! form_open(['route' => 'install.install']) !!}
 
     <div class="step-content">
         <h3>{{ __('install.str.install') }}</h3>
@@ -20,7 +20,7 @@
         <div class="form-group">
             <label for="login">{{ __('install.str.login') }}</label>
 
-            {!! Form::text('login', old('login'), ['class' => "form-control", 'id' => "login"]) !!}
+            {!! form_text('login', old('login'), ['class' => "form-control", 'id' => "login"]) !!}
 
             @if ($errors->has('login'))
                 <span class="text-danger">{{ $errors->first('login') }}</span>
@@ -29,9 +29,9 @@
         </div>
         <div class="form-group">
 
-            {!! Form::label('password', __('install.str.password')) !!}
+            {!! form_label('password', __('install.str.password')) !!}
 
-            {!! Form::password('password', ['class' => "form-control", 'id' => "password"]) !!}
+            {!! form_password('password', ['class' => "form-control", 'id' => "password"]) !!}
 
             @if ($errors->has('password'))
                 <span class="text-danger">{{ $errors->first('password') }}</span>
@@ -39,22 +39,22 @@
         </div>
         <div class="form-group">
 
-            {!! Form::label('confirm_password', __('install.str.confirm_password')) !!}
+            {!! form_label('confirm_password', __('install.str.confirm_password')) !!}
 
-            {!! Form::password('confirm_password', ['class' => "form-control", 'id' => "confirm_password"]) !!}
+            {!! form_password('confirm_password', ['class' => "form-control", 'id' => "confirm_password"]) !!}
 
             @if ($errors->has('confirm_password'))
                 <span class="text-danger">{{ $errors->first('confirm_password') }}</span>
             @endif
         </div>
-        <button class="btn btn-green pull-right" data-toggle="loader" data-loading-text="Installing" type="submit">
+        <button class="btn btn-green float-end" data-toggle="loader" data-loading-text="Installing" type="submit">
             <i class="fa fa-play"></i>
             {{ __('install.button.install') }}
         </button>
         <div class="clearfix"></div>
     </div>
 
-    {!! Form::close() !!}
+    {!! form_close() !!}
 
 @endsection
 

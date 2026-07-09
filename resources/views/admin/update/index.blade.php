@@ -18,14 +18,14 @@
 
                     @if (!empty($button_update))
                         <div id="btn_refresh">
-                            <a id="start_update" class="btn btn-outline btn-default">
+                            <a id="start_update" class="btn btn-outline-secondary">
                                 <i class="fa fa-sync-alt"></i> {!! $button_update !!}
                             </a>
                         </div>
                     @endif
 
                     @if (!empty($msg_no_update))
-                        <a class="btn btn-outline btn-default" disabled>
+                        <a class="btn btn-outline-secondary" disabled>
                             <i class="fa fa-sync-alt"></i> {!! $msg_no_update !!}
                         </a>
                     @endif
@@ -85,7 +85,7 @@
         }
 
         function renderRetryButton(message) {
-            const $button = $('<a>', {id: 'start_update', class: 'btn btn-outline btn-default'}).append(
+            const $button = $('<a>', {id: 'start_update', class: 'btn btn-outline-secondary'}).append(
                 $('<i>', {class: 'fa fa-sync-alt'})
             ).append(' ' + buttonUpdateLabel);
             const $status = $('<p>', {class: 'text-muted text-danger', id: 'status_process'}).text(message || failedToUpdateText);

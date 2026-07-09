@@ -5,9 +5,9 @@
 @section('css')
 
     <!-- DataTables -->
-    {!! Html::style('/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') !!}
-    {!! Html::style('/plugins/datatables-responsive/css/responsive.bootstrap4.min.css') !!}
-    {!! Html::style('/plugins/datatables-buttons/css/buttons.bootstrap4.min.css') !!}
+    <link rel="stylesheet" href="{{ asset('vendor/datatables-bs5/css/dataTables.bootstrap5.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('vendor/datatables-responsive-bs5/css/responsive.bootstrap5.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('vendor/datatables-buttons-bs5/css/buttons.bootstrap5.min.css') }}">
 
     <style>
         #divStatus {
@@ -45,7 +45,7 @@
                                 </a>
                             </div>
 
-                            {!! Form::open(['url' => route('admin.templates.status'), 'method' => 'post']) !!}
+                            {!! form_open(['url' => route('admin.templates.status'), 'method' => 'post']) !!}
 
                             <table id="itemList" class="table table-bordered table-striped">
                                 <thead>
@@ -80,14 +80,14 @@
                                     <div class="form-inline">
                                         <div class="control-group">
 
-                                            {!! Form::select('action',[
+                                            {!! form_select('action',[
                                             '0' => __('frontend.str.send'),
                                             '1' => __('frontend.str.remove')
                                             ],null,['class' => 'span3 form-control', 'id' => 'select_action','placeholder' => '--' . __('frontend.str.action') . '--'],[0 => ['data-id' => 'sendmail', 'class' => 'open_modal']]) !!}
 
                                             <span class="help-inline">
 
-                                            {!! Form::submit(__('frontend.str.apply'), ['class' => 'btn btn-success', 'disabled' => "", 'id' => 'apply']) !!}
+                                            {!! form_submit(__('frontend.str.apply'), ['class' => 'btn btn-success', 'disabled' => "", 'id' => 'apply']) !!}
 
                                             </span>
 
@@ -96,7 +96,7 @@
                                 </div>
                             </div>
 
-                            {!! Form::close() !!}
+                            {!! form_close() !!}
 
                             <!-- /.card-body -->
                         </div>
@@ -119,9 +119,7 @@
                 <div class="modal-header">
                     <h4 class="modal-title">{{ __('frontend.str.online_newsletter_log') }}<span id="process"></span>
                     </h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div id="onlinelog"></div>
@@ -130,7 +128,7 @@
                             <div class="form-inline">
                                 <div class="control-group">
 
-                                    {!! Form::select('categoryId[]', $categoryOptions, null, ['id' => 'categoryId','multiple'=>'multiple', 'placeholder' => __('frontend.form.select_category'), 'class' => 'form-control custom-scroll', 'style' => 'width: 100%']) !!}
+                                    {!! form_select('categoryId[]', $categoryOptions, null, ['id' => 'categoryId','multiple'=>'multiple', 'placeholder' => __('frontend.form.select_category'), 'class' => 'form-control custom-scroll', 'style' => 'width: 100%']) !!}
 
                                 </div>
                             </div>
@@ -138,8 +136,8 @@
                     </div>
                     <p><span id="leftsend">0</span>% {{ __('frontend.str.left') }}: <span id="timer2">00:00:00</span>
                     </p>
-                    <div class="progress progress-sm progress-striped active">
-                        <div class="progress-bar bg-color-darken" role="progressbar" style="width: 1%"></div>
+                    <div class="progress progress-sm progress-bar-striped progress-bar-animated">
+                        <div class="progress-bar bg-dark" role="progressbar" style="width: 1%"></div>
                     </div>
                     <div class="online_statistics">{{ __('frontend.str.total') }}:
                         <span id="totalsendlog">0</span>
@@ -148,19 +146,19 @@
                         <span style="color: red">{{ __('frontend.str.bad') }}: </span>
                         <span style="color: red" id="unsuccessful">0</span><br><br>
                         <span id="divStatus"></span><br>
-                        <button id="sendout" class="btn btn-default btn-circle btn-modal btn-lg"
+                        <button id="sendout" class="btn btn-secondary rounded-circle btn-lg"
                                 style="margin-right: 15px;" title="{{ __('frontend.str.send_out_newsletter') }}"><i
                                 class="fa fa-play"></i></button>
                         <button id="stopsendout"
-                                class="btn btn-danger btn-circle btn-lg disabled" disabled="disabled"
+                                class="btn btn-danger rounded-circle btn-lg disabled" disabled="disabled"
                                 title="{{ __('frontend.str.stop_newsletter') }}">
                             <i class="fa fa-stop"></i>
                         </button>
                     </div>
                 </div>
                 <div class="modal-footer justify-content-between">
-                    <button type="button" class="btn btn-default"
-                            data-dismiss="modal">{{ __('frontend.str.close') }}</button>
+                    <button type="button" class="btn btn-secondary"
+                            data-bs-dismiss="modal">{{ __('frontend.str.close') }}</button>
                 </div>
             </div>
         </div>
@@ -171,17 +169,17 @@
 @section('js')
 
     <!-- DataTables  & Plugins -->
-    {!! Html::script('/plugins/datatables/jquery.dataTables.min.js') !!}
-    {!! Html::script('/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js') !!}
-    {!! Html::script('/plugins/datatables-responsive/js/dataTables.responsive.min.js') !!}
-    {!! Html::script('/plugins/datatables-responsive/js/responsive.bootstrap4.min.js') !!}
-    {!! Html::script('/plugins/datatables-buttons/js/dataTables.buttons.min.js') !!}
-    {!! Html::script('/plugins/datatables-buttons/js/buttons.bootstrap4.min.js') !!}
-    {!! Html::script('/plugins/pdfmake/pdfmake.min.js') !!}
-    {!! Html::script('/plugins/pdfmake/vfs_fonts.js') !!}
-    {!! Html::script('/plugins/datatables-buttons/js/buttons.html5.min.js') !!}
-    {!! Html::script('/plugins/datatables-buttons/js/buttons.print.min.js') !!}
-    {!! Html::script('/plugins/datatables-buttons/js/buttons.colVis.min.js') !!}
+    <script src="{{ asset('vendor/datatables/js/dataTables.min.js') }}"></script>
+    <script src="{{ asset('vendor/datatables-bs5/js/dataTables.bootstrap5.min.js') }}"></script>
+    <script src="{{ asset('vendor/datatables-responsive/js/dataTables.responsive.min.js') }}"></script>
+    <script src="{{ asset('vendor/datatables-responsive-bs5/js/responsive.bootstrap5.min.js') }}"></script>
+    <script src="{{ asset('vendor/datatables-buttons/js/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ asset('vendor/datatables-buttons-bs5/js/buttons.bootstrap5.min.js') }}"></script>
+    <script src="{{ asset('plugins/pdfmake/pdfmake.min.js') }}"></script>
+    <script src="{{ asset('plugins/pdfmake/vfs_fonts.js') }}"></script>
+    <script src="{{ asset('vendor/datatables-buttons/js/buttons.html5.min.js') }}"></script>
+    <script src="{{ asset('vendor/datatables-buttons/js/buttons.print.min.js') }}"></script>
+    <script src="{{ asset('vendor/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
 
     <script>
         const ajaxUrl = '{{ route('admin.ajax.action') }}';

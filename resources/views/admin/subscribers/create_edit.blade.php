@@ -20,18 +20,18 @@
                     <header class="card card-primary">
 
                         <!-- form start -->
-                        {!! Form::open(['url' => isset($row) ? route('admin.subscribers.update') : route('admin.subscribers.store'), 'method' => isset($row) ? 'put' : 'post']) !!}
+                        {!! form_open(['url' => isset($row) ? route('admin.subscribers.update') : route('admin.subscribers.store'), 'method' => isset($row) ? 'put' : 'post']) !!}
 
-                        {!! isset($row) ? Form::hidden('id', $row->id) : '' !!}
+                        {!! isset($row) ? form_hidden('id', $row->id) : '' !!}
 
                         <div class="card-body">
 
                             <p>*-{{ __('frontend.form.required_fields') }}</p>
 
                             <div class="form-group">
-                                {!! Form::label('name', __('frontend.form.name')) !!}
+                                {!! form_label('name', __('frontend.form.name')) !!}
 
-                                {!! Form::text('name', old('name', $row->name ?? null), ['class' => 'form-control']) !!}
+                                {!! form_text('name', old('name', $row->name ?? null), ['class' => 'form-control']) !!}
 
                                 @if ($errors->has('name'))
                                     <p class="text-danger">{{ $errors->first('name') }}</p>
@@ -39,9 +39,9 @@
                             </div>
 
                             <div class="form-group">
-                                {!! Form::label('email', 'Email*') !!}
+                                {!! form_label('email', 'Email*') !!}
 
-                                {!! Form::text('email', old('email', $row->email ?? null), ['class' => 'form-control']) !!}
+                                {!! form_text('email', old('email', $row->email ?? null), ['class' => 'form-control']) !!}
 
                                 @if ($errors->has('email'))
                                     <p class="text-danger">{{ $errors->first('email') }}</p>
@@ -50,7 +50,7 @@
 
                             <div class="form-group">
 
-                                {!! Form::label('categoryId',  __('frontend.form.subscribers_category')) !!}
+                                {!! form_label('categoryId',  __('frontend.form.subscribers_category')) !!}
 
                                 @php
                                     $selectedCategoryIds = collect((array) old('categoryId', $subscriberCategoryIds ?? []))
@@ -78,12 +78,12 @@
                             <button type="submit" class="btn btn-primary">
                                 {{ isset($row) ? __('frontend.form.edit') : __('frontend.form.add') }}
                             </button>
-                            <a class="btn btn-default float-sm-right" href="{{ route('admin.subscribers.index') }}">
+                            <a class="btn btn-secondary float-sm-end" href="{{ route('admin.subscribers.index') }}">
                                 {{ __('frontend.form.back') }}
                             </a>
                         </div>
 
-                        {!! Form::close() !!}
+                        {!! form_close() !!}
 
                     </header>
 

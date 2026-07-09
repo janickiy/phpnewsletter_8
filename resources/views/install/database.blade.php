@@ -11,16 +11,16 @@
 
     @include('layouts.notifications')
 
-    {!! Form::open(['route' => 'install.installation']) !!}
+    {!! form_open(['route' => 'install.installation']) !!}
 
     <div class="step-content">
         <h3>{{ __('install.str.database_information') }}</h3>
         <hr>
         <div class="form-group">
 
-            {!! Form::label('host', __('install.str.database_host')) !!}
+            {!! form_label('host', __('install.str.database_host')) !!}
 
-            {!! Form::text('host', old('host'), ['class' => "form-control", 'placeholder' => "",'id' => "host"]) !!}
+            {!! form_text('host', old('host'), ['class' => "form-control", 'placeholder' => "",'id' => "host"]) !!}
 
             <small>{{ __('install.hint.database_host') }}</small>
             @if ($errors->has('host'))
@@ -29,9 +29,9 @@
         </div>
         <div class="form-group">
 
-            {!! Form::label('username', __('install.str.database_username')) !!}
+            {!! form_label('username', __('install.str.database_username')) !!}
 
-            {!! Form::text('username', old('username'), ['class' => "form-control", 'placeholder' => "",'id' => "username"]) !!}
+            {!! form_text('username', old('username'), ['class' => "form-control", 'placeholder' => "",'id' => "username"]) !!}
 
             <small>{{ __('install.hint.database_username') }}</small>
             @if ($errors->has('username'))
@@ -40,9 +40,9 @@
         </div>
         <div class="form-group">
 
-            {!! Form::label('password', __('install.str.password')) !!}
+            {!! form_label('password', __('install.str.password')) !!}
 
-            {!! Form::password('password', ['class' => "form-control", 'id' => "password"]) !!}
+            {!! form_password('password', ['class' => "form-control", 'id' => "password"]) !!}
 
             <small>{{ __('install.hint.database_password') }}</small>
             @if ($errors->has('password'))
@@ -50,9 +50,9 @@
             @endif
         </div>
         <div class="form-group">
-            {!! Form::label('database', __('install.str.database_name')) !!}
+            {!! form_label('database', __('install.str.database_name')) !!}
 
-            {!! Form::text('database', old('database'), ['class' => "form-control", 'placeholder' => "",'id' => "database"]) !!}
+            {!! form_text('database', old('database'), ['class' => "form-control", 'placeholder' => "",'id' => "database"]) !!}
 
             <small>{{ __('install.hint.database_name') }}</small>
             @if ($errors->has('database'))
@@ -60,14 +60,14 @@
             @endif
         </div>
 
-        <button class="btn btn-primary float-right mt-3">
+        <button class="btn btn-primary float-end mt-3">
             {{ __('install.button.next') }}
             <i class="fa fa-arrow-right"></i>
         </button>
         <div class="clearfix"></div>
     </div>
 
-    {!! Form::close() !!}
+    {!! form_close() !!}
 
 @endsection
 

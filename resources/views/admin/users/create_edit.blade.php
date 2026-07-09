@@ -20,9 +20,9 @@
                     <header class="card card-primary">
 
                         <!-- form start -->
-                        {!! Form::open(['url' => isset($row) ? route('admin.users.update') : route('admin.users.store'), 'method' => isset($row) ? 'put' : 'post']) !!}
+                        {!! form_open(['url' => isset($row) ? route('admin.users.update') : route('admin.users.store'), 'method' => isset($row) ? 'put' : 'post']) !!}
 
-                        {!! isset($row) ? Form::hidden('id', $row->id) : '' !!}
+                        {!! isset($row) ? form_hidden('id', $row->id) : '' !!}
 
                         <div class="card-body">
 
@@ -30,9 +30,9 @@
 
                             <div class="form-group">
 
-                                {!! Form::label('name', __('frontend.form.name')) !!}
+                                {!! form_label('name', __('frontend.form.name')) !!}
 
-                                {!! Form::text('name', old('name', $row->name ?? null), ['class' => 'form-control', 'placeholder' => __('frontend.form.name')]) !!}
+                                {!! form_text('name', old('name', $row->name ?? null), ['class' => 'form-control', 'placeholder' => __('frontend.form.name')]) !!}
 
                                 @if ($errors->has('name'))
                                     <p class="text-danger">{{ $errors->first('name') }}</p>
@@ -41,9 +41,9 @@
 
                             <div class="form-group">
 
-                                {!! Form::label('login', __('frontend.form.login')) !!}
+                                {!! form_label('login', __('frontend.form.login')) !!}
 
-                                {!! Form::text('login', old('login', $row->login ?? null), [ 'placeholder' => __('frontend.form.login'), 'class' => 'form-control']) !!}
+                                {!! form_text('login', old('login', $row->login ?? null), [ 'placeholder' => __('frontend.form.login'), 'class' => 'form-control']) !!}
 
                                 @if ($errors->has('login'))
                                     <p class="text-danger">{{ $errors->first('login') }}</p>
@@ -53,9 +53,9 @@
 
                             <div class="form-group">
 
-                                {!! Form::label('description', __('frontend.form.description')) !!}
+                                {!! form_label('description', __('frontend.form.description')) !!}
 
-                                {!! Form::textarea('description', old('description', $row->description ?? null), [ 'placeholder' => __('frontend.form.description'), 'rows' => 3, 'class' => 'form-control']) !!}
+                                {!! form_textarea('description', old('description', $row->description ?? null), [ 'placeholder' => __('frontend.form.description'), 'rows' => 3, 'class' => 'form-control']) !!}
 
                                 @if ($errors->has('description'))
                                     <p class="text-danger">{{ $errors->first('description') }}</p>
@@ -67,9 +67,18 @@
 
                                 <div class="form-group">
 
-                                    {!! Form::label('role', __('frontend.form.role')) !!}
+                                    {!! form_label('role', __('frontend.form.role')) !!}
 
-                                    {!! Form::select('role', $options, $row->role ?? 'admin', ['placeholder' => __('frontend.form.select_role'), 'class' => 'custom-select']) !!}
+                                    {!! form_select('role', $options, $row->role ?? 'admin', ['placeholder' => __('frontend.form.select_role'), 'class' => 'form-select']) !!}
+
+                                    <div class="form-text text-muted mt-2">
+                                        <strong>{{ __('frontend.form.roles_note_title') }}</strong>
+                                        <ul class="mb-0 ps-3">
+                                            <li>{{ __('frontend.form.role_note_admin') }}</li>
+                                            <li>{{ __('frontend.form.role_note_project_admin') }}</li>
+                                            <li>{{ __('frontend.form.role_note_moderator') }}</li>
+                                        </ul>
+                                    </div>
 
                                     @if ($errors->has('role'))
                                         <p class="text-danger">{{ $errors->first('role') }}</p>
@@ -78,14 +87,14 @@
                                 </div>
 
                             @else
-                                {!! Form::hidden('role', $row->role) !!}
+                                {!! form_hidden('role', $row->role) !!}
                             @endif
 
                             <div class="form-group">
 
-                                {!! Form::label('password', __('frontend.form.password')) !!}
+                                {!! form_label('password', __('frontend.form.password')) !!}
 
-                                {!! Form::password('password', ['class' => 'form-control', 'autocomplete' => 'new-password']) !!}
+                                {!! form_password('password', ['class' => 'form-control', 'autocomplete' => 'new-password']) !!}
 
                                 @if (isset($row))
                                     <small class="form-text text-muted">
@@ -101,9 +110,9 @@
 
                             <div class="form-group">
 
-                                {!! Form::label('password_again', __('frontend.form.password_again')) !!}
+                                {!! form_label('password_again', __('frontend.form.password_again')) !!}
 
-                                {!! Form::password('password_again', ['class' => 'form-control', 'autocomplete' => 'new-password']) !!}
+                                {!! form_password('password_again', ['class' => 'form-control', 'autocomplete' => 'new-password']) !!}
 
                                 @if ($errors->has('password_again'))
                                     <p class="text-danger">{{ $errors->first('password_again') }}</p>
@@ -118,12 +127,12 @@
                             <button type="submit" class="btn btn-primary">
                                 {{ isset($row) ? __('frontend.form.edit') : __('frontend.form.add') }}
                             </button>
-                            <a class="btn btn-default float-sm-right" href="{{ route('admin.users.index') }}">
+                            <a class="btn btn-secondary float-sm-end" href="{{ route('admin.users.index') }}">
                                 {{ __('frontend.form.back') }}
                             </a>
                         </div>
 
-                        {!! Form::close() !!}
+                        {!! form_close() !!}
 
                     </header>
 

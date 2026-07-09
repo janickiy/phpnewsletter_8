@@ -17,7 +17,7 @@
         <p><strong>There was something wrong during the installation!</strong></p>
         <p>Please check your log located inside <code>storage/logs</code> directory to see what's going on.</p>
 
-        <a class="btn btn-primary float-right mt-3" href="{{ route('install.start') }}">
+        <a class="btn btn-primary float-end mt-3" href="{{ route('install.start') }}">
             <i class="fa fa-undo"></i>
             Try Again
         </a>

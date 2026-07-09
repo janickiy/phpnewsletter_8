@@ -4,8 +4,8 @@
 
 @section('css')
 
-{!! Html::style('/plugins/fullcalendar/main.css') !!}
-{!! Html::style('/plugins/sweetalert2/sweetalert2.min.css') !!}
+<link rel="stylesheet" href="{{ asset('plugins/fullcalendar/main.css') }}">
+<link rel="stylesheet" href="{{ asset('plugins/sweetalert2/sweetalert2.min.css') }}">
 
 <style>
 
@@ -164,11 +164,13 @@
 
 @section('js')
 
-{!! Html::script('/plugins/sweetalert2/sweetalert2.min.js') !!}
-{!! Html::script('/plugins/moment/moment.min.js') !!}
-{!! Html::script('/plugins/fullcalendar/main.js') !!}
+<script src="{{ asset('plugins/sweetalert2/sweetalert2.min.js') }}"></script>
+<script src="{{ asset('plugins/moment/moment.min.js') }}"></script>
+<script src="{{ asset('plugins/fullcalendar/main.js') }}"></script>
 
-{{ app()->getLocale() !== 'en' ? Html::script('/plugins/fullcalendar/locales/' . app()->getLocale() . '.js') : '' }}
+@if(app()->getLocale() !== 'en')
+    <script src="{{ asset('/plugins/fullcalendar/locales/' . app()->getLocale() . '.js') }}"></script>
+@endif
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {

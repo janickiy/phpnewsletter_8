@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ app()->getLocale() }}">
+<html lang="{{ app()->getLocale() }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -13,19 +13,19 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
 
     <!-- Font Awesome -->
-    {!! Html::style('/plugins/fontawesome-free/css/all.min.css') !!}
+    <link rel="stylesheet" href="{{ asset('vendor/fontawesome7/css/all.min.css') }}">
 
-    {!! Html::style('/plugins/sweetalert2/sweetalert2.min.css') !!}
+    <link rel="stylesheet" href="{{ asset('plugins/sweetalert2/sweetalert2.min.css') }}">
 
     <!-- Theme style -->
-    {!! Html::style('/dist/css/adminlte.min.css?v=2') !!}
+    <link rel="stylesheet" href="{{ asset('vendor/adminlte4/css/adminlte.min.css') }}">
 
-    {!! Html::style('/plugins/toastr/toastr.min.css') !!}
+    <link rel="stylesheet" href="{{ asset('plugins/toastr/toastr.min.css') }}">
 
-    {!! Html::style('/plugins/flag-icon-css/css/flag-icon.min.css') !!}
+    <link rel="stylesheet" href="{{ asset('plugins/flag-icon-css/css/flag-icon.min.css') }}">
 
     <!-- Custom style -->
-    {!! Html::style('/dist/css/admin.css?v=9') !!}
+    <link rel="stylesheet" href="{{ asset('dist/css/admin.css?v=10') }}">
 
     @yield('css')
 
@@ -33,19 +33,19 @@
         let SITE_URL = "{{ URL::to('/') }}";
     </script>
 </head>
-<body class="hold-transition sidebar-mini">
+<body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
 <!-- Site wrapper -->
-<div class="wrapper">
+<div class="app-wrapper">
     <!-- Navbar -->
-    <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+    <nav class="app-header navbar navbar-expand bg-body">
         <!-- Left navbar links -->
         <ul class="navbar-nav">
             <li class="nav-item">
-                <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+                <a class="nav-link" data-lte-toggle="sidebar" href="#" role="button"><i class="fas fa-bars"></i></a>
             </li>
 
             <li class="nav-item">
-                <a class="nav-link" data-widget="fullscreen" title="{{ __('frontend.str.expand_full_screen') }}"
+                <a class="nav-link" data-lte-toggle="fullscreen" title="{{ __('frontend.str.expand_full_screen') }}"
                    href="#" role="button">
                     <i class="fas fa-expand-arrows-alt"></i>
                 </a>
@@ -53,7 +53,7 @@
         </ul>
 
         <!-- Right navbar links -->
-        <ul class="navbar-nav ml-auto">
+        <ul class="navbar-nav ms-auto">
             <li class="nav-item dropdown">
 
                 @php
@@ -63,14 +63,14 @@
                     $currentFlag = $flags[$currentLocale] ?? 'us';
                 @endphp
 
-                <a class="nav-link" data-toggle="dropdown" href="javascript:void(0);">
+                <a class="nav-link" data-bs-toggle="dropdown" href="javascript:void(0);">
                     <i class="flag-icon flag-icon-{{ $currentFlag }}"></i>
                 </a>
 
-                <div class="dropdown-menu dropdown-menu-right p-0">
+                <div class="dropdown-menu dropdown-menu-end p-0">
                     @foreach($languages as $code => $languageName)
                         <a data-id="{{ $code }}" href="javascript:void(0);" class="dropdown-item select-lang">
-                            <i class="flag-icon flag-icon-{{ $flags[$code] ?? 'us' }} mr-2"></i> {{ $languageName }}
+                            <i class="flag-icon flag-icon-{{ $flags[$code] ?? 'us' }} me-2"></i> {{ $languageName }}
                         </a>
                     @endforeach
                 </div>
@@ -88,31 +88,35 @@
     <!-- /.navbar -->
 
     <!-- Main Sidebar Container -->
-    <aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
         <!-- Brand Logo -->
-        <a href="{{ route('admin.dashboard.index') }}" class="brand-link">
-            <img src="{{ url('/dist/img/logo-sidebar-icon.png') }}?v={{ filemtime(public_path('dist/img/logo-sidebar-icon.png')) }}" alt="PHP Newsletter" class="brand-icon">
-            <span class="brand-wordmark">
-                <span class="brand-wordmark-main"><span>PHP</span>Newsletter</span>
-                <span class="brand-wordmark-sub">Mailing System</span>
-            </span>
-        </a>
+        <div class="sidebar-brand">
+            <a href="{{ route('admin.dashboard.index') }}" class="brand-link">
+                <img src="{{ url('/dist/img/logo-sidebar-icon.png') }}?v={{ filemtime(public_path('dist/img/logo-sidebar-icon.png')) }}" alt="PHP Newsletter" class="brand-icon">
+                <span class="brand-wordmark">
+                    <span class="brand-wordmark-main"><span>PHP</span>Newsletter</span>
+                    <span class="brand-wordmark-sub">Mailing System</span>
+                </span>
+            </a>
+        </div>
 
         <!-- Sidebar -->
-        <div class="sidebar">
+        <div class="sidebar-wrapper">
             <!-- Sidebar user (optional) -->
-            <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-                <div class="info">
-                    <a href="{{ route('admin.users.edit', ['id' => Auth::user()->id ]) }}"
-                       class="d-block">{{ Auth::user()->login }} @if(!empty(Auth::user()->name))
+            <div class="sidebar-user">
+                <a href="{{ route('admin.users.edit', ['id' => Auth::user()->id ]) }}" class="sidebar-user-link">
+                    <i class="fas fa-user-circle"></i>
+                    <span>
+                        {{ Auth::user()->login }} @if(!empty(Auth::user()->name))
                             ({{ Auth::user()->name }})
-                        @endif</a>
-                </div>
+                        @endif
+                    </span>
+                </a>
             </div>
 
             <!-- Sidebar Menu -->
             <nav class="mt-2">
-                <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
+                <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="menu"
                     data-accordion="false">
                     <!-- Add icons to the links using the .nav-icon class
                          with font-awesome or any other icon font library -->
@@ -189,7 +193,7 @@
                             <i class="nav-icon fas fa-chart-area"></i>
                             <p>
                                 {{ __('frontend.menu.logs') }}
-                                <i class="right fas fa-angle-left"></i>
+                                <i class="nav-arrow fas fa-angle-right"></i>
                             </p>
                         </a>
 
@@ -261,7 +265,7 @@
                             <i class="nav-icon fas fa-bookmark"></i>
                             <p>
                                 {{ __('frontend.menu.miscellaneous') }}
-                                <i class="right fas fa-angle-left"></i>
+                                <i class="nav-arrow fas fa-angle-right"></i>
                             </p>
                         </a>
 
@@ -304,16 +308,16 @@
     </aside>
 
     <!-- Content Wrapper. Contains page content -->
-    <div class="content-wrapper">
+    <main class="app-main">
         <!-- Content Header (Page header) -->
-        <section class="content-header">
+        <section class="app-content-header">
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
                         <h1>{{ $title }}</h1>
                     </div>
                     <div class="col-sm-6">
-                        <ol class="breadcrumb float-sm-right">
+                        <ol class="breadcrumb float-sm-end">
                             <li class="breadcrumb-item"><a href="{{ url('/') }}">{{ __('frontend.str.admin_panel') }}</a></li>
                             <li class="breadcrumb-item active">{{ $title }}</li>
                         </ol>
@@ -325,39 +329,35 @@
             </div><!-- /.container-fluid -->
         </section>
 
-        @yield('content')
+        <div class="app-content">
+            @yield('content')
+        </div>
 
-    </div>
+    </main>
     <!-- /.content-wrapper -->
 
-    <footer class="main-footer">
-        <div class="float-right d-none d-sm-inline">
+    <footer class="app-footer">
+        <div class="float-end d-none d-sm-inline">
             {{ env('VERSION') }}
         </div>
         <strong>&copy; 2006-{{ date('Y') }} <a href="https://janickiy.com">PHP Newsletter</a>, {{ __('frontend.str.author') }}</strong>
     </footer>
-
-    <!-- Control Sidebar -->
-    <aside class="control-sidebar control-sidebar-dark">
-        <!-- Control sidebar content goes here -->
-    </aside>
-    <!-- /.control-sidebar -->
 </div>
 <!-- ./wrapper -->
 
 <!-- jQuery -->
-{!! Html::script('/plugins/jquery/jquery.min.js') !!}
-<!-- Bootstrap 4 -->
-{!! Html::script('/plugins/bootstrap/js/bootstrap.bundle.min.js') !!}
+<script src="{{ asset('plugins/jquery/jquery.min.js') }}"></script>
+<!-- Bootstrap 5 -->
+<script src="{{ asset('vendor/bootstrap5/js/bootstrap.bundle.min.js') }}"></script>
 
-{!! Html::script('/plugins/sweetalert2/sweetalert2.min.js') !!}
-{!! Html::script('/plugins/toastr/toastr.min.js') !!}
+<script src="{{ asset('plugins/sweetalert2/sweetalert2.min.js') }}"></script>
+<script src="{{ asset('plugins/toastr/toastr.min.js') }}"></script>
 
 <!-- Cookie -->
-{!! Html::script('/plugins/cookie/jquery.cookie.js') !!}
+<script src="{{ asset('plugins/cookie/jquery.cookie.js') }}"></script>
 
 <!-- AdminLTE App -->
-{!! Html::script('/dist/js/adminlte.min.js') !!}
+<script src="{{ asset('vendor/adminlte4/js/adminlte.min.js') }}"></script>
 
 <script>
 

@@ -13,8 +13,8 @@ class User extends Authenticatable
     use HasApiTokens, HasFactory, Notifiable, StaticTableName;
 
     public const ROLE_ADMIN = 'admin';
+    public const ROLE_PROJECT_ADMIN = 'project_admin';
     public const ROLE_MODERATOR = 'moderator';
-    public const ROLE_EDITOR = 'editor';
 
     /**
      * The attributes that are mass assignable.
@@ -33,8 +33,8 @@ class User extends Authenticatable
     {
         $roles = [
             self::ROLE_ADMIN => __('frontend.str.admin'),
+            self::ROLE_PROJECT_ADMIN => __('frontend.str.project_admin'),
             self::ROLE_MODERATOR => __('frontend.str.moderator'),
-            self::ROLE_EDITOR => __('frontend.str.editor'),
         ];
 
         return $roles[$this->role] ?? $this->role;
@@ -44,9 +44,14 @@ class User extends Authenticatable
     {
         return [
             self::ROLE_ADMIN => __('frontend.str.admin'),
+            self::ROLE_PROJECT_ADMIN => __('frontend.str.project_admin'),
             self::ROLE_MODERATOR => __('frontend.str.moderator'),
-            self::ROLE_EDITOR => __('frontend.str.editor'),
         ];
+    }
+
+    public static function roleValues(): array
+    {
+        return array_keys(self::getOptions());
     }
 
     /**
