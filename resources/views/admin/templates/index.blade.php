@@ -34,7 +34,7 @@
         }
 
         .templates-bulk-actions {
-            max-width: 520px;
+            max-width: 280px;
         }
 
         .template-online-log {

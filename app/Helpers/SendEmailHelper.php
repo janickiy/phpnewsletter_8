@@ -71,11 +71,7 @@ class SendEmailHelper
                     $m->SMTPSecure = 'tls';
                 }
 
-                if ($smtp->authentication === 'plain') {
-                    $m->AuthType = 'PLAIN';
-                } elseif ($smtp->authentication === 'cram-md5') {
-                    $m->AuthType = 'CRAM-MD5';
-                }
+                $m->AuthType = self::normalizeSmtpAuthType($smtp->authentication);
 
                 $m->Timeout = $smtp->timeout;
             }
@@ -277,8 +273,8 @@ class SendEmailHelper
         }
 
         $m->SMTPKeepAlive = true;
-        $m->SMTPSecure = $secure;
-        $m->AuthType = $authentication;
+        $m->SMTPSecure = $secure === 'no' ? '' : $secure;
+        $m->AuthType = self::normalizeSmtpAuthType($authentication);
         $m->Username = $username;
         $m->Password = $password;
         $m->Timeout = $timeout;
@@ -288,8 +284,20 @@ class SendEmailHelper
         if ($m->smtpConnect()) {
             $m->smtpClose();
             return true;
-        } else {
-            return false;
         }
+
+        return false;
+    }
+
+    /**
+     * Convert stored SMTP authentication values into PHPMailer AuthType values.
+     */
+    private static function normalizeSmtpAuthType(?string $authentication): string
+    {
+        return match ($authentication) {
+            'plain' => 'PLAIN',
+            'cram-md5', 'crammd5' => 'CRAM-MD5',
+            default => 'LOGIN',
+        };
     }
 }

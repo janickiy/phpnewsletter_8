@@ -350,7 +350,11 @@
         <div class="float-end d-none d-sm-inline">
             {{ env('VERSION') }}
         </div>
-        <strong>&copy; 2006-{{ date('Y') }} <a href="https://janickiy.com">PHP Newsletter</a>, {{ __('frontend.str.author') }}</strong>
+
+            Copyright &copy; 2006-{{ date('Y') }}
+            <a href="https://janickiy.com" class="text-decoration-none">PHP Newsletter</a>.
+
+        {{ __('frontend.str.author') }}.
     </footer>
 </div>
 <!-- ./wrapper -->

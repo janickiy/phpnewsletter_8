@@ -31,7 +31,7 @@
         }
 
         .subscribers-bulk-actions {
-            max-width: 560px;
+            max-width: 280px;
         }
     </style>
 

@@ -59,7 +59,7 @@ class StoreRequest extends FormRequest
             ],
             'authentication' => [
                 'required',
-                'in:no,plain,cram-md5',
+                'in:login,plain,cram-md5',
             ],
         ];
     }

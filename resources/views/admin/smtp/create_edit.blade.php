@@ -10,7 +10,8 @@
 
     @php
         $selectedSecure = old('secure', $row->secure ?? 'no');
-        $selectedAuthentication = old('authentication', $row->authentication ?? 'no');
+        $selectedAuthentication = old('authentication', $row->authentication ?? 'login');
+        $selectedAuthentication = $selectedAuthentication === 'no' ? 'login' : $selectedAuthentication;
         $selectedAuthentication = $selectedAuthentication === 'crammd5' ? 'cram-md5' : $selectedAuthentication;
     @endphp
 
@@ -100,44 +101,32 @@
                             </div>
 
                             <div class="col-md-6">
-                                <div class="border rounded p-3 bg-body-tertiary h-100">
-                                    <div class="fw-semibold mb-2">{{ __('frontend.form.secure_connection') }}</div>
+                                <div class="form-group mb-0">
+                                    {!! form_label('secure', __('frontend.form.secure_connection'), ['class' => 'form-label']) !!}
+                                    {!! form_select('secure', [
+                                        'no' => __('frontend.str.no'),
+                                        'ssl' => 'ssl',
+                                        'tls' => 'tls',
+                                    ], $selectedSecure, ['class' => 'form-select' . ($errors->has('secure') ? ' is-invalid' : '')]) !!}
 
-                                    <div class="form-check mb-2">
-                                        {!! form_radio('secure', 'no', $selectedSecure === 'no', ['class' => 'form-check-input', 'id' => 'secure_no']) !!}
-                                        {!! form_label('secure_no', __('frontend.str.no'), ['class' => 'form-check-label']) !!}
-                                    </div>
-
-                                    <div class="form-check mb-2">
-                                        {!! form_radio('secure', 'ssl', $selectedSecure === 'ssl', ['class' => 'form-check-input', 'id' => 'secure_ssl']) !!}
-                                        {!! form_label('secure_ssl', 'ssl', ['class' => 'form-check-label']) !!}
-                                    </div>
-
-                                    <div class="form-check">
-                                        {!! form_radio('secure', 'tls', $selectedSecure === 'tls', ['class' => 'form-check-input', 'id' => 'secure_tls']) !!}
-                                        {!! form_label('secure_tls', 'tls', ['class' => 'form-check-label']) !!}
-                                    </div>
+                                    @if ($errors->has('secure'))
+                                        <div class="invalid-feedback">{{ $errors->first('secure') }}</div>
+                                    @endif
                                 </div>
                             </div>
 
                             <div class="col-md-6">
-                                <div class="border rounded p-3 bg-body-tertiary h-100">
-                                    <div class="fw-semibold mb-2">{{ __('frontend.form.authentication_method') }}</div>
+                                <div class="form-group mb-0">
+                                    {!! form_label('authentication', __('frontend.form.authentication_method'), ['class' => 'form-label']) !!}
+                                    {!! form_select('authentication', [
+                                        'login' => 'LOGIN (' . __('frontend.form.low_secrecy') . ')',
+                                        'plain' => 'PLAIN (' . __('frontend.form.medium_secrecy') . ')',
+                                        'cram-md5' => 'CRAM-MD5 (' . __('frontend.form.high_secrecy') . ')',
+                                    ], $selectedAuthentication, ['class' => 'form-select' . ($errors->has('authentication') ? ' is-invalid' : '')]) !!}
 
-                                    <div class="form-check mb-2">
-                                        {!! form_radio('authentication', 'no', $selectedAuthentication === 'no', ['class' => 'form-check-input', 'id' => 'authentication_no']) !!}
-                                        {!! form_label('authentication_no', 'LOGIN (' . __('frontend.form.low_secrecy') . ')', ['class' => 'form-check-label']) !!}
-                                    </div>
-
-                                    <div class="form-check mb-2">
-                                        {!! form_radio('authentication', 'plain', $selectedAuthentication === 'plain', ['class' => 'form-check-input', 'id' => 'authentication_plain']) !!}
-                                        {!! form_label('authentication_plain', 'PLAIN (' . __('frontend.form.medium_secrecy') . ')', ['class' => 'form-check-label']) !!}
-                                    </div>
-
-                                    <div class="form-check">
-                                        {!! form_radio('authentication', 'cram-md5', $selectedAuthentication === 'cram-md5', ['class' => 'form-check-input', 'id' => 'authentication_cram_md5']) !!}
-                                        {!! form_label('authentication_cram_md5', 'CRAM-MD5 (' . __('frontend.form.high_secrecy') . ')', ['class' => 'form-check-label']) !!}
-                                    </div>
+                                    @if ($errors->has('authentication'))
+                                        <div class="invalid-feedback">{{ $errors->first('authentication') }}</div>
+                                    @endif
                                 </div>
                             </div>
 
@@ -149,7 +138,7 @@
                         </div>
                     </div>
 
-                    <div class="card-footer form-actions-footer d-flex flex-column flex-sm-row gap-2 justify-content-start">
+                    <div class="card-footer form-actions-footer d-flex flex-column flex-sm-row justify-content-start">
                         <button type="submit" class="btn btn-primary">
                             {{ isset($row) ? __('frontend.form.edit') : __('frontend.form.add') }}
                         </button>
