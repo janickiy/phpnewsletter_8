@@ -2,6 +2,18 @@
 
 @section('title', $title)
 
+@section('breadcrumbs')
+    <ol class="breadcrumb float-sm-end">
+        <li class="breadcrumb-item">
+            <a href="{{ route('admin.dashboard.index') }}">{{ __('frontend.str.admin_panel') }}</a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="{{ route('admin.users.index') }}">{{ __('frontend.menu.users') }}</a>
+        </li>
+        <li class="breadcrumb-item active">{{ $title }}</li>
+    </ol>
+@endsection
+
 @section('css')
 
 @endsection
