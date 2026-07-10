@@ -64,17 +64,19 @@
                                 {{ __('frontend.str.export') }}
                             </a>
 
-                            <a id="removeAllSubscribersButton"
-                               class="btn btn-outline-danger btn-sm"
-                               title="{{ __('frontend.str.delete_all_subscribers') }}"
-                               onclick="confirmation(event)">
-                                <i class="fas fa-trash me-1"></i>
-                                {{ __('frontend.str.delete_all') }}
-                            </a>
+                            @if($canRemoveAllSubscribers)
+                                <a id="removeAllSubscribersButton"
+                                   class="btn btn-outline-danger btn-sm"
+                                   title="{{ __('frontend.str.delete_all_subscribers') }}"
+                                   onclick="confirmation(event)">
+                                    <i class="fas fa-trash me-1"></i>
+                                    {{ __('frontend.str.delete_all') }}
+                                </a>
 
-                            <span id="removeAllSubscribersSpinner" class="align-self-center d-none">
-                                <span class="spinner-border spinner-border-sm text-danger" role="status" aria-hidden="true"></span>
-                            </span>
+                                <span id="removeAllSubscribersSpinner" class="align-self-center d-none">
+                                    <span class="spinner-border spinner-border-sm text-danger" role="status" aria-hidden="true"></span>
+                                </span>
+                            @endif
 
                             <a href="{{ route('admin.subscribers.create') }}" class="btn btn-primary btn-sm">
                                 <i class="fas fa-plus me-1"></i>
@@ -99,6 +101,7 @@
                                     <th>{{ __('frontend.str.name') }}</th>
                                     <th>E-mail</th>
                                     <th>{{ __('frontend.str.category') }}</th>
+                                    <th>{{ __('frontend.str.projects') }}</th>
                                     <th>{{ __('frontend.str.status') }}</th>
                                     <th>{{ __('frontend.str.added') }}</th>
                                     <th class="text-end" style="width: 10%">{{ __('frontend.str.action') }}</th>
@@ -215,7 +218,7 @@
                     $(row).attr('id', 'rowid_' + data['id']);
                     if (data['activeStatus'] === 0) $(row).addClass('table-secondary');
                 },
-                aaSorting: [[5, 'desc']],
+                aaSorting: [[6, 'desc']],
                 "processing": true,
                 "responsive": true,
                 "autoWidth": false,
@@ -227,14 +230,15 @@
                 },
                 columnDefs: [
                     {targets: 0, className: 'text-center', width: '48px'},
-                    {targets: [4, 5, 6], className: 'text-nowrap'},
-                    {targets: 6, className: 'text-end'}
+                    {targets: [5, 6, 7], className: 'text-nowrap'},
+                    {targets: 7, className: 'text-end'}
                 ],
                 'columns': [
                     {data: 'checkbox', name: 'checkbox', orderable: false, searchable: false},
                     {data: 'name', name: 'name'},
                     {data: 'email', name: 'email'},
                     {data: 'subscriptions', name: 'subscriptions', orderable: false, searchable: false},
+                    {data: 'projects', name: 'projects', orderable: false, searchable: false},
                     {data: 'active', name: 'active', searchable: false},
                     {data: 'created_at', name: 'created_at'},
                     {data: 'action', name: 'action', orderable: false, searchable: false}
@@ -295,41 +299,43 @@
             $('#checkAll').prop('checked', total > 0 && total === checked);
         }
 
-        function toggleRemoveAllSubscribersLoading(isLoading) {
-            const removeButton = $('#removeAllSubscribersButton');
+        @if($canRemoveAllSubscribers)
+            function toggleRemoveAllSubscribersLoading(isLoading) {
+                const removeButton = $('#removeAllSubscribersButton');
 
-            removeButton.toggleClass('disabled', isLoading);
-            removeButton.attr('aria-disabled', isLoading ? 'true' : 'false');
-            removeButton.css('pointer-events', isLoading ? 'none' : '');
-            $('#removeAllSubscribersSpinner').toggleClass('d-none', !isLoading);
-        }
-
-        $(window).on('pageshow', function () {
-            toggleRemoveAllSubscribersLoading(false);
-        });
-
-        function confirmation(event) {
-            if ($('#removeAllSubscribersButton').hasClass('disabled')) {
-                event.preventDefault();
-                return;
+                removeButton.toggleClass('disabled', isLoading);
+                removeButton.attr('aria-disabled', isLoading ? 'true' : 'false');
+                removeButton.css('pointer-events', isLoading ? 'none' : '');
+                $('#removeAllSubscribersSpinner').toggleClass('d-none', !isLoading);
             }
 
-            Swal.fire({
-                title: "{{ __('frontend.str.delete_all_subscribers') }}",
-                text: "{{ __('frontend.str.want_to_delete_all_subscribers')  }}",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#DD6B55",
-                confirmButtonText: "{{ __('frontend.str.yes') }}",
-                cancelButtonText: "{{ __('frontend.str.cancel') }}",
-                closeOnConfirm: false
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    toggleRemoveAllSubscribersLoading(true);
-                    window.location.href = "{{ route('admin.subscribers.remove_all') }}";
-                }
+            $(window).on('pageshow', function () {
+                toggleRemoveAllSubscribersLoading(false);
             });
-        }
+
+            function confirmation(event) {
+                if ($('#removeAllSubscribersButton').hasClass('disabled')) {
+                    event.preventDefault();
+                    return;
+                }
+
+                Swal.fire({
+                    title: "{{ __('frontend.str.delete_all_subscribers') }}",
+                    text: "{{ __('frontend.str.want_to_delete_all_subscribers')  }}",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "{{ __('frontend.str.yes') }}",
+                    cancelButtonText: "{{ __('frontend.str.cancel') }}",
+                    closeOnConfirm: false
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        toggleRemoveAllSubscribersLoading(true);
+                        window.location.href = "{{ route('admin.subscribers.remove_all') }}";
+                    }
+                });
+            }
+        @endif
 
     </script>
 

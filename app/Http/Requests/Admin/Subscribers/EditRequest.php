@@ -3,7 +3,9 @@
 namespace App\Http\Requests\Admin\Subscribers;
 
 use App\Models\Category;
+use App\Models\Project;
 use App\Models\Subscribers;
+use App\Support\ProjectAccess;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -49,6 +51,16 @@ class EditRequest extends FormRequest
                 'required',
                 'integer',
                 Rule::exists(Category::getTableName(), 'id'),
+            ],
+            'projectId' => [
+                'nullable',
+                'array',
+            ],
+            'projectId.*' => [
+                'required',
+                'integer',
+                Rule::exists(Project::getTableName(), 'id'),
+                Rule::in(ProjectAccess::availableProjectIds()),
             ],
         ];
     }

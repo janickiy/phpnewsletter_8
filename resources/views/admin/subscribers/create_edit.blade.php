@@ -24,6 +24,9 @@
         $selectedCategoryIds = collect((array) old('categoryId', $subscriberCategoryIds ?? []))
             ->map(fn ($value) => (string) $value)
             ->all();
+        $selectedProjectIds = collect((array) old('projectId', $subscriberProjectIds ?? []))
+            ->map(fn ($value) => (string) $value)
+            ->all();
     @endphp
 
     <div class="container-fluid">
@@ -81,6 +84,36 @@
 
                                     @if ($errors->has('categoryId'))
                                         <div class="invalid-feedback">{{ $errors->first('categoryId') }}</div>
+                                    @endif
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-md-6">
+                                <div class="form-group mb-0">
+                                    {!! form_label('projectId', __('frontend.str.project'), ['class' => 'form-label']) !!}
+
+                                    <select name="projectId[]" id="projectId" multiple class="form-select{{ ($errors->has('projectId') || $errors->has('projectId.*')) ? ' is-invalid' : '' }}">
+                                        @foreach($projectGroups as $projectGroup)
+                                            @if($projectGroup['label'])
+                                                <optgroup label="{{ $projectGroup['label'] }}">
+                                                    @foreach($projectGroup['projects'] as $projectOption)
+                                                        <option value="{{ $projectOption['id'] }}" @selected(in_array((string) $projectOption['id'], $selectedProjectIds, true))>
+                                                            {{ $projectOption['name'] }}
+                                                        </option>
+                                                    @endforeach
+                                                </optgroup>
+                                            @else
+                                                @foreach($projectGroup['projects'] as $projectOption)
+                                                    <option value="{{ $projectOption['id'] }}" @selected(in_array((string) $projectOption['id'], $selectedProjectIds, true))>
+                                                        {{ $projectOption['name'] }}
+                                                    </option>
+                                                @endforeach
+                                            @endif
+                                        @endforeach
+                                    </select>
+
+                                    @if ($errors->has('projectId') || $errors->has('projectId.*'))
+                                        <div class="invalid-feedback">{{ $errors->first('projectId') ?: $errors->first('projectId.*') }}</div>
                                     @endif
                                 </div>
                             </div>

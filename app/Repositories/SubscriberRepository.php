@@ -43,6 +43,7 @@ class SubscriberRepository extends BaseRepository
             }
 
             $this->syncSubscriptions($model->id, $data['categoryId'] ?? []);
+            $this->syncProjects($model->id, $data['projectId'] ?? []);
 
             return $model;
         });
@@ -250,6 +251,17 @@ class SubscriberRepository extends BaseRepository
         }
     }
 
+    public function syncProjects(int $subscriberId, array $projectIds): void
+    {
+        $subscriber = $this->model->find($subscriberId);
+
+        if (!$subscriber instanceof Subscribers) {
+            return;
+        }
+
+        $subscriber->projects()->sync($this->normalizeIds($projectIds));
+    }
+
     /**
      * @param int $subscriberId
      * @param array $categoryIds
@@ -257,14 +269,10 @@ class SubscriberRepository extends BaseRepository
      */
     private function syncSubscriptions(int $subscriberId, array $categoryIds): void
     {
-        foreach ($categoryIds as $categoryId) {
-            if (!is_numeric($categoryId)) {
-                continue;
-            }
-
+        foreach ($this->normalizeIds($categoryIds) as $categoryId) {
             Subscriptions::query()->create([
                 'subscriber_id' => $subscriberId,
-                'category_id' => (int)$categoryId,
+                'category_id' => $categoryId,
             ]);
         }
     }
@@ -277,6 +285,16 @@ class SubscriberRepository extends BaseRepository
     {
         return collect($data)
             ->only($this->model->getFillable())
+            ->all();
+    }
+
+    private function normalizeIds(array $ids): array
+    {
+        return collect($ids)
+            ->filter(static fn ($id): bool => is_numeric($id))
+            ->map(static fn ($id): int => (int) $id)
+            ->unique()
+            ->values()
             ->all();
     }
 }

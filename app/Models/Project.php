@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Http\Traits\StaticTableName;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Project extends Model
@@ -40,6 +41,18 @@ class Project extends Model
     public function templates(): HasMany
     {
         return $this->hasMany(Templates::class);
+    }
+
+    public function administrators(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'project_admins')
+            ->withTimestamps();
+    }
+
+    public function subscribers(): BelongsToMany
+    {
+        return $this->belongsToMany(Subscribers::class, 'project_subscriber', 'project_id', 'subscriber_id')
+            ->withTimestamps();
     }
 
     public function getStatusLabelAttribute(): string

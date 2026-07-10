@@ -146,7 +146,7 @@
                         </a>
                     </li>
 
-                    @if(PermissionsHelper::has_permission('admin|moderator'))
+                    @if(PermissionsHelper::has_permission('admin|organization_admin|project_admin|moderator'))
 
                         <li class="nav-item">
                             <a href="{{ route('admin.subscribers.index') }}" class="nav-link{{ Request::is('subscribers*') ? ' active' : '' }}"

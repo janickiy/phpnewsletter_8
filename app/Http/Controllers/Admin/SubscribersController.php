@@ -3,20 +3,24 @@
 namespace App\Http\Controllers\Admin;
 
 
+use App\Enums\UserRole;
 use App\Helpers\StringHelper;
 use App\Http\Requests\Admin\Subscribers\EditRequest;
 use App\Http\Requests\Admin\Subscribers\ImportRequest;
 use App\Http\Requests\Admin\Subscribers\StoreRequest;
 use App\Models\Charsets;
+use App\Models\Subscribers;
 use App\Repositories\CategoryRepository;
 use App\Repositories\SubscriberRepository;
 use App\Repositories\SubscriptionRepository;
 use App\Services\DownloadService;
 use App\Services\SubscriberService;
+use App\Support\ProjectAccess;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -44,6 +48,7 @@ class SubscribersController extends Controller
     public function index(): View
     {
         return view('admin.subscribers.index', [
+            'canRemoveAllSubscribers' => $this->currentUserIsAdmin(),
             'infoAlert' => __('frontend.hint.subscribers_index'),
             'title' => __('frontend.title.subscribers_index'),
         ]);
@@ -58,6 +63,7 @@ class SubscribersController extends Controller
     {
         return view('admin.subscribers.create_edit', [
             'options' => $this->categoryRepository->getOption(),
+            'projectGroups' => ProjectAccess::optionGroups(),
             'infoAlert' => __('frontend.hint.subscribers_create'),
             'title' => __('frontend.title.subscribers_create'),
         ]);
@@ -97,6 +103,8 @@ class SubscribersController extends Controller
      */
     public function edit(int $id): View
     {
+        $this->ensureSubscriberAvailable($id);
+
         $row = $this->subscribersRepository->find($id);
 
 
@@ -106,8 +114,10 @@ class SubscribersController extends Controller
 
         return view('admin.subscribers.create_edit', [
             'options' => $this->categoryRepository->getOption(),
+            'projectGroups' => ProjectAccess::optionGroups(),
             'row' => $row,
             'subscriberCategoryIds' => $this->subscribersRepository->getSubscriberCategoryIdList($id),
+            'subscriberProjectIds' => $row->projects()->pluck('projects.id')->toArray(),
             'infoAlert' => __('frontend.hint.subscribers_edit'),
             'title' => __('frontend.title.subscribers_edit'),
         ]);
@@ -121,19 +131,24 @@ class SubscribersController extends Controller
      */
     public function update(EditRequest $request): RedirectResponse
     {
+        $this->ensureSubscriberAvailable((int) $request->id);
+
         try {
             DB::transaction(function () use ($request) {
                 $this->subscribersRepository->update(
                     (int) $request->id,
-                    $request->safe()->except(['id', 'categoryId'])
+                    $request->safe()->except(['id', 'categoryId', 'projectId'])
                 );
 
-                if ($request->filled('categoryId')) {
-                    $this->subscriptionRepository->updateSubscriptions(
-                        $request->categoryId,
-                        (int) $request->id
-                    );
-                }
+                $this->subscriptionRepository->updateSubscriptions(
+                    (array) $request->input('categoryId', []),
+                    (int) $request->id
+                );
+
+                $this->subscribersRepository->syncProjects(
+                    (int) $request->id,
+                    (array) $request->input('projectId', [])
+                );
             });
         } catch (\Throwable $e) {
             report($e);
@@ -155,6 +170,8 @@ class SubscribersController extends Controller
      */
     public function destroy(int $id): void
     {
+        $this->ensureSubscriberAvailable($id);
+
         DB::transaction(function () use ($id) {
             $this->subscriptionRepository->removeBySubscriberId($id);
             $this->subscribersRepository->delete($id);
@@ -271,6 +288,8 @@ class SubscribersController extends Controller
      */
     public function removeAll(): RedirectResponse
     {
+        abort_unless($this->currentUserIsAdmin(), 403);
+
         try {
             DB::transaction(function () {
                 $this->subscriptionRepository->deleteAll();
@@ -294,9 +313,11 @@ class SubscribersController extends Controller
     public function status(Request $request): RedirectResponse
     {
         try {
+            $subscriberIds = $this->filterAvailableSubscriberIds((array) $request->activate);
+
             $this->subscribersRepository->updateStatus(
                 (int) $request->action,
-                (array) $request->activate
+                $subscriberIds
             );
         } catch (\Throwable $e) {
             report($e);
@@ -305,5 +326,49 @@ class SubscribersController extends Controller
         }
 
         return to_route('admin.subscribers.index')->with('success', __('message.actions_completed'));
+    }
+
+    private function ensureSubscriberAvailable(int $id): void
+    {
+        if ($this->currentUserIsAdmin()) {
+            return;
+        }
+
+        abort_unless(
+            in_array($id, $this->filterAvailableSubscriberIds([$id]), true),
+            403
+        );
+    }
+
+    private function filterAvailableSubscriberIds(array $ids): array
+    {
+        $ids = collect($ids)
+            ->filter(static fn ($id): bool => is_numeric($id))
+            ->map(static fn ($id): int => (int) $id)
+            ->unique()
+            ->values()
+            ->all();
+
+        if ($ids === [] || $this->currentUserIsAdmin()) {
+            return $ids;
+        }
+
+        $projectIds = ProjectAccess::availableProjectIds();
+
+        if ($projectIds === []) {
+            return [];
+        }
+
+        return Subscribers::query()
+            ->whereIn('id', $ids)
+            ->whereHas('projects', fn ($query) => $query->whereIn('projects.id', $projectIds))
+            ->pluck('id')
+            ->map(static fn ($id): int => (int) $id)
+            ->all();
+    }
+
+    private function currentUserIsAdmin(): bool
+    {
+        return Auth::user()?->role === UserRole::Admin->value;
     }
 }

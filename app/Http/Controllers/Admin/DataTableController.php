@@ -14,6 +14,7 @@ use App\Models\Smtp;
 use App\Models\Subscribers;
 use App\Models\Templates;
 use App\Models\User;
+use App\Support\ProjectAccess;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Yajra\DataTables\Facades\DataTables;
@@ -148,7 +149,11 @@ class DataTableController extends Controller
     public function getSubscribers(): JsonResponse
     {
         $rows = Subscribers::query()
-            ->with(['subscriptions:subscriber_id,category_id', 'subscriptions.category:id,name'])
+            ->with([
+                'projects:id,name',
+                'subscriptions:subscriber_id,category_id',
+                'subscriptions.category:id,name',
+            ])
             ->select([
                 'subscribers.id',
                 'subscribers.name',
@@ -156,6 +161,14 @@ class DataTableController extends Controller
                 'subscribers.active',
                 'subscribers.created_at',
             ]);
+
+        if (!ProjectAccess::userIsAdmin()) {
+            $projectIds = ProjectAccess::availableProjectIds();
+
+            $rows->whereHas('projects', function ($query) use ($projectIds): void {
+                $query->whereIn('projects.id', $projectIds);
+            });
+        }
 
         return DataTables::of($rows)
             ->addColumn('checkbox', fn ($row) => sprintf(
@@ -174,6 +187,15 @@ class DataTableController extends Controller
 
                 return $categories
                     ->map(fn ($name) => '<span class="badge text-bg-secondary me-1">' . e($name) . '</span>')
+                    ->implode('');
+            })
+            ->addColumn('projects', function ($row) {
+                if ($row->projects->isEmpty()) {
+                    return '<span class="text-muted">-</span>';
+                }
+
+                return $row->projects
+                    ->map(fn ($project) => '<span class="badge text-bg-info me-1">' . e($project->name) . '</span>')
                     ->implode('');
             })
             ->editColumn('active', fn ($row) => $row->active === 1
@@ -196,7 +218,7 @@ class DataTableController extends Controller
                 return '<div class="btn-group btn-group-sm" role="group">' . $editBtn . $deleteBtn . '</div>';
             })
             ->editColumn('created_at', fn ($row) => $this->formatDateTime($row->created_at))
-            ->rawColumns(['action', 'checkbox', 'subscriptions', 'active'])
+            ->rawColumns(['action', 'checkbox', 'subscriptions', 'projects', 'active'])
             ->make(true);
     }
 

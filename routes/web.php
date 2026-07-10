@@ -69,6 +69,9 @@ Route::group(['middleware' => ['install']], function () {
             Route::delete('destroy/{id}', [CategoryController::class, 'destroy'])->name('admin.category.destroy')->where('id', '[0-9]+');
         });
 
+    });
+
+    Route::middleware(['permission:admin|organization_admin|project_admin|moderator'])->group(function () {
         Route::group(['prefix' => 'subscribers'], function () {
             Route::get('', [SubscribersController::class, 'index'])->name('admin.subscribers.index');
             Route::get('create', [SubscribersController::class, 'create'])->name('admin.subscribers.create');
@@ -80,7 +83,7 @@ Route::group(['middleware' => ['install']], function () {
             Route::post('import-subscribers', [SubscribersController::class, 'importSubscribers'])->name('admin.subscribers.import_subscribers');
             Route::get('export', [SubscribersController::class, 'export'])->name('admin.subscribers.export');
             Route::post('export-subscribers', [SubscribersController::class, 'exportSubscribers'])->name('admin.subscribers.export_subscribers');
-            Route::get('remove-all', [SubscribersController::class, 'removeAll'])->name('admin.subscribers.remove_all');
+            Route::get('remove-all', [SubscribersController::class, 'removeAll'])->name('admin.subscribers.remove_all')->middleware(['permission:admin']);
             Route::post('status', [SubscribersController::class, 'status'])->name('admin.subscribers.status');
         });
 
@@ -185,7 +188,7 @@ Route::group(['middleware' => ['install']], function () {
         Route::any('templates', [DataTableController::class, 'getTemplates'])->name('admin.datatable.templates');
         Route::any('category', [DataTableController::class, 'getCategory'])->name('admin.datatable.category')->middleware(['permission:admin|moderator']);
         Route::any('smtp', [DataTableController::class, 'getSmtp'])->name('admin.datatable.smtp')->middleware(['permission:admin']);
-        Route::any('subscribers', [DataTableController::class, 'getSubscribers'])->name('admin.datatable.subscribers')->middleware(['permission:admin|moderator']);
+        Route::any('subscribers', [DataTableController::class, 'getSubscribers'])->name('admin.datatable.subscribers')->middleware(['permission:admin|organization_admin|project_admin|moderator']);
         Route::any('users', [DataTableController::class, 'getUsers'])->name('admin.datatable.users')->middleware(['permission:admin']);
         Route::any('logs', [DataTableController::class, 'getLogs'])->name('admin.datatable.logs');
         Route::any('info-log/{id?}', [DataTableController::class, 'getInfoLog'])->name('admin.datatable.info_log')->where('id', '[0-9]+');

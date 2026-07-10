@@ -38,6 +38,12 @@ class User extends Authenticatable
             ->withTimestamps();
     }
 
+    public function administeredProjects(): BelongsToMany
+    {
+        return $this->belongsToMany(Project::class, 'project_admins')
+            ->withTimestamps();
+    }
+
     /**
      * The attributes that should be hidden for serialization.
      *
