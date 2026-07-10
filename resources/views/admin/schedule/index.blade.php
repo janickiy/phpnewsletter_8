@@ -52,6 +52,18 @@
         color: #fff !important;
     }
 
+    #calendar .calendar-list-event-title,
+    #calendar .fc-list-event-time,
+    #calendar .fc-list-event-title,
+    #calendar .fc-list-event-title a,
+    #calendar .fc-list-event .fc-event-title {
+        color: var(--bs-body-color) !important;
+    }
+
+    #calendar .fc-list-event:hover td {
+        background-color: var(--bs-tertiary-bg);
+    }
+
     .fc-day-today a,
     .fc-day-today a:hover,
     .fc-day-today a:focus,
@@ -233,8 +245,13 @@
             return hours + ':' + minutes;
         }
 
-        function renderCalendarEvent(event) {
+        function renderCalendarEvent(event, isListView = false) {
             let eventTitle = escapeHtml(event.title);
+
+            if (isListView) {
+                return '<span class="calendar-list-event-title">' + eventTitle + '</span>';
+            }
+
             let eventTime = formatEventTime(event);
             let actions = '<span class="calendar-event-actions">' +
                 '<a href="{{ url("schedule/edit") }}/' + event.id + '" class="btn btn-light btn-sm" title="{{ __('frontend.str.edit') }}"><i class="fas fa-edit"></i></a>' +
@@ -252,7 +269,7 @@
         let calendar = new FullCalendar.Calendar(calendarEl, {
             eventClassNames: ['calendar-event'],
             eventContent: function(info) {
-                return { html: renderCalendarEvent(info.event) };
+                return { html: renderCalendarEvent(info.event, info.view.type.startsWith('list')) };
             },
             timeZone: initialTimeZone,
             headerToolbar: {
