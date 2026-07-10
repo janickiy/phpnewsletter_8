@@ -4,7 +4,6 @@
 
 @section('css')
 
-<link rel="stylesheet" href="{{ asset('plugins/fullcalendar/main.css') }}">
 <link rel="stylesheet" href="{{ asset('plugins/sweetalert2/sweetalert2.min.css') }}">
 
 <style>

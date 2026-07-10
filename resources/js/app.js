@@ -1,0 +1,1 @@
+// Vite entry for optional compiled frontend assets.

@@ -1,29 +1,6 @@
-FullCalendar.globalLocales.push(function () {
-  'use strict';
-
-  var bn = {
-    code: 'bn',
-    week: {
-      dow: 0, // Sunday is the first day of the week.
-      doy: 6, // The week that contains Jan 1st is the first week of the year.
-    },
-    buttonText: {
-      prev: 'পেছনে',
-      next: 'সামনে',
-      today: 'আজ',
-      month: 'মাস',
-      week: 'সপ্তাহ',
-      day: 'দিন',
-      list: 'তালিকা',
-    },
-    weekText: 'সপ্তাহ',
-    allDayText: 'সারাদিন',
-    moreLinkText: function(n) {
-      return '+অন্যান্য ' + n
-    },
-    noEventsText: 'কোনো ইভেন্ট নেই',
-  };
-
-  return bn;
-
-}());
+/*!
+FullCalendar Core v6.1.21
+Docs & License: https://fullcalendar.io
+(c) 2024 Adam Shaw
+*/
+!function(e){"use strict";var t={code:"bn",week:{dow:0,doy:6},buttonText:{prev:"পেছনে",next:"সামনে",today:"আজ",year:"বছর",month:"মাস",week:"সপ্তাহ",day:"দিন",list:"তালিকা"},weekText:"সপ্তাহ",allDayText:"সারাদিন",moreLinkText:e=>"+অন্যান্য "+e,noEventsText:"কোনো ইভেন্ট নেই"};FullCalendar.globalLocales.push(t)}();

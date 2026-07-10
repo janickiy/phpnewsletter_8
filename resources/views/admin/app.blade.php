@@ -22,7 +22,7 @@
 
     <link rel="stylesheet" href="{{ asset('plugins/toastr/toastr.min.css') }}">
 
-    <link rel="stylesheet" href="{{ asset('plugins/flag-icon-css/css/flag-icon.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('plugins/flag-icons/css/flag-icons.min.css') }}">
 
     <!-- Custom style -->
     <link rel="stylesheet" href="{{ asset('assets/css/admin.css') }}?v={{ filemtime(public_path('assets/css/admin.css')) }}">
@@ -64,13 +64,13 @@
                 @endphp
 
                 <a class="nav-link" data-bs-toggle="dropdown" href="javascript:void(0);">
-                    <i class="flag-icon flag-icon-{{ $currentFlag }}"></i>
+                    <i class="fi fi-{{ $currentFlag }}"></i>
                 </a>
 
                 <div class="dropdown-menu dropdown-menu-end p-0">
                     @foreach($languages as $code => $languageName)
                         <a data-id="{{ $code }}" href="javascript:void(0);" class="dropdown-item select-lang">
-                            <i class="flag-icon flag-icon-{{ $flags[$code] ?? 'us' }} me-2"></i> {{ $languageName }}
+                            <i class="fi fi-{{ $flags[$code] ?? 'us' }} me-2"></i> {{ $languageName }}
                         </a>
                     @endforeach
                 </div>

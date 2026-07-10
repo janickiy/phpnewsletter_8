@@ -1,29 +1,6 @@
-FullCalendar.globalLocales.push(function () {
-  'use strict';
-
-  var bs = {
-    code: 'bs',
-    week: {
-      dow: 1, // Monday is the first day of the week.
-      doy: 7, // The week that contains Jan 1st is the first week of the year.
-    },
-    buttonText: {
-      prev: 'Prošli',
-      next: 'Sljedeći',
-      today: 'Danas',
-      month: 'Mjesec',
-      week: 'Sedmica',
-      day: 'Dan',
-      list: 'Raspored',
-    },
-    weekText: 'Sed',
-    allDayText: 'Cijeli dan',
-    moreLinkText: function(n) {
-      return '+ još ' + n
-    },
-    noEventsText: 'Nema događaja za prikazivanje',
-  };
-
-  return bs;
-
-}());
+/*!
+FullCalendar Core v6.1.21
+Docs & License: https://fullcalendar.io
+(c) 2024 Adam Shaw
+*/
+!function(e){"use strict";var a={code:"bs",week:{dow:1,doy:7},buttonText:{prev:"Prošli",next:"Sljedeći",today:"Danas",year:"Godina",month:"Mjesec",week:"Sedmica",day:"Dan",list:"Raspored"},weekText:"Sed",allDayText:"Cijeli dan",moreLinkText:e=>"+ još "+e,noEventsText:"Nema događaja za prikazivanje"};FullCalendar.globalLocales.push(a)}();

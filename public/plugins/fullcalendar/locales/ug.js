@@ -1,17 +1,6 @@
-FullCalendar.globalLocales.push(function () {
-  'use strict';
-
-  var ug = {
-    code: 'ug',
-    buttonText: {
-      month: 'ئاي',
-      week: 'ھەپتە',
-      day: 'كۈن',
-      list: 'كۈنتەرتىپ',
-    },
-    allDayText: 'پۈتۈن كۈن',
-  };
-
-  return ug;
-
-}());
+/*!
+FullCalendar Core v6.1.21
+Docs & License: https://fullcalendar.io
+(c) 2024 Adam Shaw
+*/
+!function(e){"use strict";FullCalendar.globalLocales.push({code:"ug",buttonText:{prev:"ئالدىنقى",next:"كېيىنكى",today:"بۈگۈن",year:"يىل",month:"ئاي",week:"ھەپتە",day:"كۈن",list:"كۈنتەرتىپ"},allDayText:"پۈتۈن كۈن"})}();

@@ -1,29 +1,6 @@
-FullCalendar.globalLocales.push(function () {
-  'use strict';
-
-  var kk = {
-    code: 'kk',
-    week: {
-      dow: 1, // Monday is the first day of the week.
-      doy: 7, // The week that contains Jan 1st is the first week of the year.
-    },
-    buttonText: {
-      prev: 'Алдыңғы',
-      next: 'Келесі',
-      today: 'Бүгін',
-      month: 'Ай',
-      week: 'Апта',
-      day: 'Күн',
-      list: 'Күн тәртібі',
-    },
-    weekText: 'Не',
-    allDayText: 'Күні бойы',
-    moreLinkText: function(n) {
-      return '+ тағы ' + n
-    },
-    noEventsText: 'Көрсету үшін оқиғалар жоқ',
-  };
-
-  return kk;
-
-}());
+/*!
+FullCalendar Core v6.1.21
+Docs & License: https://fullcalendar.io
+(c) 2024 Adam Shaw
+*/
+!function(e){"use strict";var t={code:"kk",week:{dow:1,doy:7},buttonText:{prev:"Алдыңғы",next:"Келесі",today:"Бүгін",year:"Жыл",month:"Ай",week:"Апта",day:"Күн",list:"Күн тәртібі"},weekText:"Не",allDayText:"Күні бойы",moreLinkText:e=>"+ тағы "+e,noEventsText:"Көрсету үшін оқиғалар жоқ"};FullCalendar.globalLocales.push(t)}();

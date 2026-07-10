@@ -1,29 +1,6 @@
-FullCalendar.globalLocales.push(function () {
-  'use strict';
-
-  var sq = {
-    code: 'sq',
-    week: {
-      dow: 1, // Monday is the first day of the week.
-      doy: 4, // The week that contains Jan 4th is the first week of the year.
-    },
-    buttonText: {
-      prev: 'mbrapa',
-      next: 'Përpara',
-      today: 'sot',
-      month: 'Muaj',
-      week: 'Javë',
-      day: 'Ditë',
-      list: 'Listë',
-    },
-    weekText: 'Ja',
-    allDayText: 'Gjithë ditën',
-    moreLinkText: function(n) {
-      return '+më tepër ' + n
-    },
-    noEventsText: 'Nuk ka evente për të shfaqur',
-  };
-
-  return sq;
-
-}());
+/*!
+FullCalendar Core v6.1.21
+Docs & License: https://fullcalendar.io
+(c) 2024 Adam Shaw
+*/
+!function(e){"use strict";var t={code:"sq",week:{dow:1,doy:4},buttonText:{prev:"mbrapa",next:"Përpara",today:"Sot",year:"Viti",month:"Muaj",week:"Javë",day:"Ditë",list:"Listë"},weekText:"Ja",allDayText:"Gjithë ditën",moreLinkText:e=>"+më tepër "+e,noEventsText:"Nuk ka evente për të shfaqur"};FullCalendar.globalLocales.push(t)}();
