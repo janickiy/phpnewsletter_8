@@ -180,9 +180,9 @@
 
                         <li class="nav-item">
                             <a href="{{ route('admin.category.index') }}" class="nav-link{{ Request::is('category*') ? ' active' : '' }}"
-                               title="{{ __('frontend.menu.subscribers') }}">
+                               title="{{ __('frontend.menu.category') }}">
                                 <i class="nav-icon fas fa-list"></i>
-                                <p>{{ __('frontend.menu.subscribers_category') }}</p>
+                                <p>{{ __('frontend.menu.category') }}</p>
                             </a>
                         </li>
 
@@ -328,10 +328,14 @@
                         <h1>{{ $title }}</h1>
                     </div>
                     <div class="col-sm-6">
-                        <ol class="breadcrumb float-sm-end">
-                            <li class="breadcrumb-item"><a href="{{ url('/') }}">{{ __('frontend.str.admin_panel') }}</a></li>
-                            <li class="breadcrumb-item active">{{ $title }}</li>
-                        </ol>
+                        @hasSection('breadcrumbs')
+                            @yield('breadcrumbs')
+                        @else
+                            <ol class="breadcrumb float-sm-end">
+                                <li class="breadcrumb-item"><a href="{{ url('/') }}">{{ __('frontend.str.admin_panel') }}</a></li>
+                                <li class="breadcrumb-item active">{{ $title }}</li>
+                            </ol>
+                        @endif
                     </div>
                 </div>
 

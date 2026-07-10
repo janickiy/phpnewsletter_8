@@ -151,7 +151,7 @@
                 'url' => route('admin.category.index'),
                 'icon' => 'fas fa-list',
                 'value' => number_format($stats['categories']),
-                'label' => __('frontend.menu.subscribers_category'),
+                'label' => __('frontend.menu.category'),
                 'note' => __('frontend.str.category'),
             ],
             [

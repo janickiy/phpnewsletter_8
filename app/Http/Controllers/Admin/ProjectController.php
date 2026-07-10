@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Enums\UserRole;
 use App\Http\Requests\Admin\Projects\StoreRequest;
+use App\Models\Category;
 use App\Models\Organization;
 use App\Models\Project;
 use App\Models\Templates;
@@ -65,6 +66,7 @@ class ProjectController extends Controller
                 ->withCount('attach')
                 ->orderBy('name')
                 ->get(),
+            'categoryOptions' => Category::query()->orderBy('name')->pluck('name', 'id')->toArray(),
             'title' => $project->name,
         ]);
     }

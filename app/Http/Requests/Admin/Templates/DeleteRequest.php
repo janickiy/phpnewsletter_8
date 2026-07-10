@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Admin\Templates;
 
+use App\Models\Project;
 use App\Models\Templates;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -24,6 +25,11 @@ class DeleteRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'project_id' => [
+                'nullable',
+                'integer',
+                Rule::exists(Project::getTableName(), 'id'),
+            ],
             'templateId' => [
                 'required',
                 'array',

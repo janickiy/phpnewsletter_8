@@ -206,6 +206,21 @@ class TemplatesController extends Controller
      */
     public function delete(DeleteRequest $request): RedirectResponse
     {
+        $project = $request->filled('project_id')
+            ? Project::query()->findOrFail($request->integer('project_id'))
+            : null;
+
+        if ($project) {
+            $this->ensureProjectAvailable($project);
+
+            $invalidTemplateExists = Templates::query()
+                ->whereIn('id', $request->templateId)
+                ->where('project_id', '!=', $project->id)
+                ->exists();
+
+            abort_if($invalidTemplateExists, 404);
+        }
+
         try {
             $this->templateRepository->updateStatus(
                 $request->templateId,
@@ -215,6 +230,13 @@ class TemplatesController extends Controller
             report($e);
 
             return back()->with('error', $e->getMessage());
+        }
+
+        if ($project) {
+            return to_route('admin.projects.show', [
+                'organization' => $project->organization_id,
+                'project' => $project->id,
+            ])->with('success', __('message.actions_completed'));
         }
 
         return to_route('admin.templates.index')->with('success', __('message.actions_completed'));

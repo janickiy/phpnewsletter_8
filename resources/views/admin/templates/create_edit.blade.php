@@ -2,6 +2,23 @@
 
 @section('title', $title)
 
+@section('breadcrumbs')
+    <ol class="breadcrumb float-sm-end">
+        <li class="breadcrumb-item">
+            <a href="{{ route('admin.dashboard.index') }}">{{ __('frontend.str.admin_panel') }}</a>
+        </li>
+        @if(isset($project) && $project)
+            <li class="breadcrumb-item">
+                <a href="{{ route('admin.organizations.show', ['organization' => $project->organization_id]) }}">{{ optional($project->organization)->name ?: optional($organization ?? null)->name }}</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{{ route('admin.projects.show', ['organization' => $project->organization_id, 'project' => $project->id]) }}">{{ $project->name }}</a>
+            </li>
+        @endif
+        <li class="breadcrumb-item active">{{ $title }}</li>
+    </ol>
+@endsection
+
 @section('css')
 
     <!-- summernote -->
@@ -98,16 +115,7 @@
 
                         <div class="row">
                             <div class="col-12">
-                                @if(isset($project) && $project)
-                                    <div class="form-group mb-3">
-                                        {!! form_label('project_id', __('frontend.str.project'), ['class' => 'form-label']) !!}
-                                        <div class="form-control-plaintext">
-                                            <a href="{{ route('admin.projects.show', ['organization' => $project->organization_id, 'project' => $project->id]) }}">
-                                                {{ $project->name }}
-                                            </a>
-                                        </div>
-                                    </div>
-                                @else
+                                @unless(isset($project) && $project)
                                     <div class="form-group mb-3">
                                         {!! form_label('project_id', __('frontend.str.project') . '*', ['class' => 'form-label']) !!}
                                         {!! form_select('project_id', $projectOptions ?? [], $selectedProject, ['placeholder' => __('frontend.form.select'), 'class' => 'form-select' . ($errors->has('project_id') ? ' is-invalid' : '')]) !!}
@@ -116,7 +124,7 @@
                                             <p class="text-danger mb-0">{{ $errors->first('project_id') }}</p>
                                         @endif
                                     </div>
-                                @endif
+                                @endunless
 
                                 <div class="form-group mb-3">
                                     {!! form_label('name', __('frontend.form.name') . '*', ['class' => 'form-label']) !!}
