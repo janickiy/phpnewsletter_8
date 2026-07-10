@@ -347,6 +347,7 @@ return [
         'subscribers' => 'Abonnés',
         'subscribers_category' => 'Catégorie d’abonnés',
         'logs' => 'Journaux',
+        'log' => 'Journal',
         'mailing_log' => 'Journaux d’envoi',
         'referrens_log' => 'Journaux de référencement',
         'settings' => 'Paramètres',

@@ -319,6 +319,7 @@ return [
         'subscribers' => 'Assinantes',
         'subscribers_category' => 'Categorias de assinantes',
         'logs' => 'Logs',
+        'log' => 'Log',
         'mailing_log' => 'Logs de envio',
         'referrens_log' => 'Logs de referência',
         'settings' => 'Configurações',

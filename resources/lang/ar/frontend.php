@@ -347,6 +347,7 @@ return [
         'subscribers' => 'المشتركون',
         'subscribers_category' => 'فئة المشتركين',
         'logs' => 'السجلات',
+        'log' => 'السجل',
         'mailing_log' => 'سجلات الإرسال',
         'referrens_log' => 'سجلات الإحالة',
         'settings' => 'الإعدادات',

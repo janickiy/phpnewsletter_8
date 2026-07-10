@@ -347,6 +347,7 @@ return [
         'subscribers' => 'Suscriptores',
         'subscribers_category' => 'Categoría de suscriptores',
         'logs' => 'Registros',
+        'log' => 'Registro',
         'mailing_log' => 'Registros de envíos',
         'referrens_log' => 'Registros de referencias',
         'settings' => 'Configuración',

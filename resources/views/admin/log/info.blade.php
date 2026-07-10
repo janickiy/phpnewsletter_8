@@ -34,6 +34,83 @@
             white-space: nowrap;
             width: 72px !important;
         }
+
+        .log-info-page .card-body.p-0 .table-responsive {
+            padding: 1rem;
+        }
+
+        .log-info-page .card-body.p-0 .table-responsive > .dt-container {
+            width: 100%;
+        }
+
+        .log-info-page .card-body.p-0 .table-responsive > .dt-container > .row {
+            margin-left: 0;
+            margin-right: 0;
+        }
+
+        .log-info-page .card-body.p-0 .table-responsive > .dt-container > .row:first-child {
+            align-items: center;
+            border-bottom: 1px solid var(--bs-border-color);
+            padding-bottom: .75rem;
+            padding-top: 0;
+        }
+
+        .log-info-page .card-body.p-0 .table-responsive > .dt-container > .row:last-child {
+            align-items: center;
+            border-top: 1px solid var(--bs-border-color);
+            justify-content: center;
+            margin-bottom: 0;
+            margin-top: 0 !important;
+            padding-bottom: 0;
+            padding-top: 1rem;
+            row-gap: .75rem;
+        }
+
+        .log-info-page .card-body.p-0 table.dataTable {
+            margin-bottom: .75rem !important;
+            margin-top: .75rem !important;
+        }
+
+        .log-info-page .card-body.p-0 .table-responsive > .dt-container > .row:last-child > .dt-layout-start {
+            flex: 0 0 100%;
+            max-width: 100%;
+            text-align: left;
+        }
+
+        .log-info-page .card-body.p-0 .table-responsive > .dt-container > .row:last-child > .dt-layout-end {
+            display: flex;
+            flex: 0 0 100%;
+            justify-content: center;
+            margin-left: 0 !important;
+            max-width: 100%;
+        }
+
+        .log-info-page .dt-length,
+        .log-info-page .dt-search,
+        .log-info-page .dt-info,
+        .log-info-page .dt-paging {
+            padding: 0;
+        }
+
+        .log-info-page .dt-search {
+            align-items: center;
+            display: flex;
+            gap: .5rem;
+            justify-content: flex-end;
+        }
+
+        .log-info-page .dt-search label {
+            margin-bottom: 0;
+        }
+
+        .log-info-page .dt-search input {
+            margin-left: 0;
+        }
+
+        .log-info-page .dt-paging .pagination {
+            justify-content: center;
+            margin-bottom: 0;
+        }
     </style>
 
 @endsection

@@ -350,6 +350,7 @@ return [
         'subscribers' => 'Подписчики',
         'subscribers_category' => 'Категория подписчиков',
         'logs' => 'Логи',
+        'log' => 'Лог',
         'mailing_log'   => 'Журнал рассылки',
         'referrens_log' => 'Статистика переходов',
         'settings' => 'Настройки',
