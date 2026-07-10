@@ -18,6 +18,22 @@
         .log-info-page #itemList td {
             vertical-align: middle;
         }
+
+        .log-info-page #itemList thead th {
+            white-space: nowrap;
+        }
+
+        .log-info-page .log-error-cell {
+            max-width: 360px;
+            white-space: normal;
+        }
+
+        .log-info-page .log-id-cell {
+            max-width: 72px;
+            min-width: 64px;
+            white-space: nowrap;
+            width: 72px !important;
+        }
     </style>
 
 @endsection
@@ -35,7 +51,8 @@
                         </h3>
 
                         <div class="card-tools">
-                            <a class="btn btn-secondary btn-sm" href="{{ route('admin.log.index') }}">
+                            <a class="btn btn-outline-secondary btn-sm" href="{{ route('admin.log.index') }}">
+                                <i class="fas fa-arrow-left me-1"></i>
                                 {{ __('frontend.str.back') }}
                             </a>
                         </div>
@@ -43,14 +60,15 @@
 
                     <div class="card-body p-0">
                         <div class="table-responsive">
-                            <table id="itemList" class="table table-striped table-hover mb-0 align-middle">
+                            <table id="itemList" class="table table-striped table-hover mb-0 align-middle nowrap">
                                 <thead>
                                 <tr>
+                                    <th class="log-id-cell text-center">ID</th>
                                     <th>{{ __('frontend.str.newsletter') }}</th>
                                     <th>E-mail</th>
                                     <th>{{ __('frontend.str.time') }}</th>
-                                    <th>{{ __('frontend.str.status') }}</th>
-                                    <th>{{ __('frontend.str.read') }}</th>
+                                    <th class="text-center">{{ __('frontend.str.status') }}</th>
+                                    <th class="text-center">{{ __('frontend.str.read') }}</th>
                                     <th>{{ __('frontend.str.error') }}</th>
                                 </tr>
                                 </thead>
@@ -87,6 +105,7 @@
             $('#itemList').dataTable({
                 "sDom": "flrtip",
                 "autoWidth": false,
+                "responsive": true,
                 "oLanguage": {
                     "sLengthMenu": "{{ __('pagination.s_length_menu') }}",
                     "sZeroRecords": "{{ __('pagination.s_zero_records') }}",
@@ -105,19 +124,25 @@
                     $(row).attr('id', 'rowid_' + data['id']);
                     if (data['status'] === 0) $(row).attr('class', 'table-danger');
                 },
-                aaSorting: [[2, 'desc']],
+                aaSorting: [[3, 'desc']],
                 processing: true,
                 serverSide: true,
                 ajax: {
                     url: '{{ route('admin.datatable.info_log', ['id' => $id]) }}'
                 },
                 columns: [
+                    {data: 'id', name: 'id'},
                     {data: 'template', name: 'template'},
                     {data: 'email', name: 'email'},
                     {data: 'created_at', name: 'created_at'},
                     {data: 'success', name: 'success', searchable: false},
                     {data: 'readMail', name: 'readMail', searchable: false},
                     {data: 'errorMsg', name: 'errorMsg', orderable: false, searchable: false},
+                ],
+                columnDefs: [
+                    {targets: 0, className: 'log-id-cell text-center', width: '72px'},
+                    {targets: [4, 5], className: 'text-center'},
+                    {targets: 6, className: 'log-error-cell'}
                 ],
             });
         })

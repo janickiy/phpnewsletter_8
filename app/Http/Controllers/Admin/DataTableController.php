@@ -249,22 +249,34 @@ class DataTableController extends Controller
 
         return DataTables::of($rows)
             ->editColumn('count', fn ($row) => sprintf(
-                '<a href="%s">%s</a>',
+                '<a href="%s" class="btn btn-outline-primary btn-sm"><i class="fas fa-list me-1"></i>%d</a>',
                 route('admin.log.info', ['id' => $row->id]),
-                $row->count
+                (int) $row->count
             ))
-            ->addColumn('unsent', fn ($row) => $row->count - $row->sent)
-            ->editColumn('read_mail', fn ($row) => $row->read_mail ?? 0)
+            ->editColumn('sent', fn ($row) => sprintf(
+                '<span class="badge text-bg-success">%d</span>',
+                (int) $row->sent
+            ))
+            ->addColumn('unsent', function ($row) {
+                $unsent = (int) $row->count - (int) $row->sent;
+                $class = $unsent > 0 ? 'text-bg-danger' : 'text-bg-secondary';
+
+                return '<span class="badge ' . $class . '">' . $unsent . '</span>';
+            })
+            ->editColumn('read_mail', fn ($row) => sprintf(
+                '<span class="badge text-bg-info">%d</span>',
+                (int) ($row->read_mail ?? 0)
+            ))
             ->addColumn('report', fn ($row) => PermissionsHelper::has_permission('admin')
                 ? sprintf(
-                    '<a href="%s">%s</a>',
+                    '<a href="%s" class="btn btn-outline-success btn-sm"><i class="fas fa-file-excel me-1"></i>%s</a>',
                     route('admin.log.report', ['id' => $row->id]),
-                    __('frontend.str.download')
+                    e(__('frontend.str.download'))
                 )
                 : '')
             ->editColumn('event_start', fn ($row) => $this->formatDateTime($row->event_start))
             ->editColumn('event_end', fn ($row) => $this->formatDateTime($row->event_end))
-            ->rawColumns(['count', 'report'])
+            ->rawColumns(['count', 'sent', 'unsent', 'read_mail', 'report'])
             ->make(true);
     }
 
@@ -282,15 +294,19 @@ class DataTableController extends Controller
             : ReadySent::query();
 
         return DataTables::of($rows)
-            ->editColumn('success', fn ($row) => $row->success === 1
-                ? __('frontend.str.send_status_yes')
-                : __('frontend.str.send_status_no'))
-            ->editColumn('readMail', fn ($row) => $row->readMail === 1
-                ? __('frontend.str.yes')
-                : __('frontend.str.no'))
-            ->addColumn('status', fn ($row) => $row->success)
-            ->addColumn('read', fn ($row) => $row->readMail)
+            ->editColumn('success', fn ($row) => (int) $row->success === 1
+                ? '<span class="badge text-bg-success">' . e(__('frontend.str.send_status_yes')) . '</span>'
+                : '<span class="badge text-bg-danger">' . e(__('frontend.str.send_status_no')) . '</span>')
+            ->editColumn('readMail', fn ($row) => (int) $row->readMail === 1
+                ? '<span class="badge text-bg-info">' . e(__('frontend.str.yes')) . '</span>'
+                : '<span class="badge text-bg-secondary">' . e(__('frontend.str.no')) . '</span>')
+            ->editColumn('errorMsg', fn ($row) => $row->errorMsg
+                ? '<span class="text-danger">' . e($row->errorMsg) . '</span>'
+                : '<span class="text-muted">-</span>')
+            ->addColumn('status', fn ($row) => (int) $row->success)
+            ->addColumn('read', fn ($row) => (int) $row->readMail)
             ->editColumn('created_at', fn ($row) => $this->formatDateTime($row->created_at))
+            ->rawColumns(['success', 'readMail', 'errorMsg'])
             ->make(true);
     }
 

@@ -26,6 +26,106 @@
         .log-page #logList thead th {
             white-space: nowrap;
         }
+
+        .log-page .log-clear-action {
+            min-width: 0;
+        }
+
+        .log-page .log-error-cell {
+            max-width: 360px;
+            white-space: normal;
+        }
+
+        .log-page .log-id-cell {
+            max-width: 72px;
+            min-width: 64px;
+            white-space: nowrap;
+            width: 72px !important;
+        }
+
+        .log-page .log-time-cell {
+            max-width: 170px;
+            min-width: 150px;
+            white-space: nowrap;
+            width: 170px !important;
+        }
+
+        .log-page .card-body.p-0 .table-responsive {
+            padding: 1rem;
+        }
+
+        .log-page .card-body.p-0 .table-responsive > .dt-container {
+            width: 100%;
+        }
+
+        .log-page .card-body.p-0 .table-responsive > .dt-container > .row {
+            margin-left: 0;
+            margin-right: 0;
+        }
+
+        .log-page .card-body.p-0 .table-responsive > .dt-container > .row:first-child {
+            align-items: center;
+            border-bottom: 1px solid var(--bs-border-color);
+            padding-bottom: .75rem;
+            padding-top: 0;
+        }
+
+        .log-page .card-body.p-0 .table-responsive > .dt-container > .row:last-child {
+            align-items: center;
+            border-top: 1px solid var(--bs-border-color);
+            justify-content: center;
+            margin-bottom: 0;
+            margin-top: 0 !important;
+            padding-bottom: 0;
+            padding-top: 1rem;
+            row-gap: .75rem;
+        }
+
+        .log-page .card-body.p-0 table.dataTable {
+            margin-bottom: .75rem !important;
+            margin-top: .75rem !important;
+        }
+
+        .log-page .card-body.p-0 .table-responsive > .dt-container > .row:last-child > .dt-layout-start {
+            flex: 0 0 100%;
+            max-width: 100%;
+            text-align: left;
+        }
+
+        .log-page .card-body.p-0 .table-responsive > .dt-container > .row:last-child > .dt-layout-end {
+            display: flex;
+            flex: 0 0 100%;
+            justify-content: center;
+            margin-left: 0 !important;
+            max-width: 100%;
+        }
+
+        .log-page .dt-length,
+        .log-page .dt-search,
+        .log-page .dt-info,
+        .log-page .dt-paging {
+            padding: 0;
+        }
+
+        .log-page .dt-search {
+            align-items: center;
+            display: flex;
+            gap: .5rem;
+            justify-content: flex-end;
+        }
+
+        .log-page .dt-search label {
+            margin-bottom: 0;
+        }
+
+        .log-page .dt-search input {
+            margin-left: 0;
+        }
+
+        .log-page .dt-paging .pagination {
+            justify-content: center;
+            margin-bottom: 0;
+        }
     </style>
 
 @endsection
@@ -44,13 +144,14 @@
 
                         @if(PermissionsHelper::has_permission('admin'))
                             <div class="card-tools d-flex align-items-center gap-2">
-                                <a id="clearLogButton"
-                                   class="btn btn-outline-danger btn-sm"
+                                <button id="clearLogButton"
+                                   type="button"
+                                   class="btn btn-outline-danger btn-sm log-clear-action"
                                    onclick="confirmation(event)"
                                    title="{{ __('frontend.str.log_clear') }}">
                                     <i class="fas fa-trash me-1"></i>
                                     {{ __('frontend.str.log_clear') }}
-                                </a>
+                                </button>
 
                                 <span id="clearLogSpinner" class="d-none">
                                     <span class="spinner-border spinner-border-sm text-danger" role="status" aria-hidden="true"></span>
@@ -61,15 +162,16 @@
 
                     <div class="card-body p-0">
                         <div class="table-responsive">
-                            <table id="itemList" class="table table-striped table-hover mb-0 align-middle">
+                            <table id="itemList" class="table table-striped table-hover mb-0 align-middle nowrap">
                                 <thead>
                                 <tr>
-                                    <th>{{ __('frontend.str.time') }}</th>
-                                    <th>{{ __('frontend.str.total') }}</th>
-                                    <th>{{ __('frontend.str.sent') }}</th>
-                                    <th>{{ __('frontend.str.unsent') }}</th>
-                                    <th>{{ __('frontend.str.read') }}</th>
-                                    <th>{{ __('frontend.str.excel_report') }}</th>
+                                    <th class="log-id-cell text-center">ID</th>
+                                    <th class="log-time-cell">{{ __('frontend.str.time') }}</th>
+                                    <th class="text-center">{{ __('frontend.str.total') }}</th>
+                                    <th class="text-center">{{ __('frontend.str.sent') }}</th>
+                                    <th class="text-center">{{ __('frontend.str.unsent') }}</th>
+                                    <th class="text-center">{{ __('frontend.str.read') }}</th>
+                                    <th class="text-end">{{ __('frontend.str.excel_report') }}</th>
                                 </tr>
                                 </thead>
                             </table>
@@ -89,14 +191,15 @@
 
                     <div class="card-body p-0">
                         <div class="table-responsive">
-                            <table id="logList" class="table table-striped table-hover mb-0 align-middle">
+                            <table id="logList" class="table table-striped table-hover mb-0 align-middle nowrap">
                                 <thead>
                                 <tr>
+                                    <th class="log-id-cell text-center">ID</th>
                                     <th>{{ __('frontend.str.newsletter') }}</th>
                                     <th>E-mail</th>
-                                    <th>{{ __('frontend.str.time') }}</th>
-                                    <th>{{ __('frontend.str.status') }}</th>
-                                    <th>{{ __('frontend.str.read') }}</th>
+                                    <th class="log-time-cell">{{ __('frontend.str.time') }}</th>
+                                    <th class="text-center">{{ __('frontend.str.status') }}</th>
+                                    <th class="text-center">{{ __('frontend.str.read') }}</th>
                                     <th>{{ __('frontend.str.error') }}</th>
                                 </tr>
                                 </thead>
@@ -157,22 +260,30 @@
                 },
                 "sDom": "lrtip",
                 "autoWidth": false,
+                "responsive": true,
                 'createdRow': function (row, data, dataIndex) {
                     $(row).attr('id', 'rowid_' + data['id']);
                 },
-                aaSorting: [[0, 'asc']],
+                aaSorting: [[1, 'asc']],
                 processing: true,
                 serverSide: true,
                 ajax: {
                     url: '{{ route('admin.datatable.logs') }}'
                 },
                 columns: [
+                    {data: 'id', name: 'schedule.id'},
                     {data: 'event_start', name: 'event_start'},
                     {data: 'count', name: 'count', searchable: false},
                     {data: 'sent', name: 'sent', searchable: false},
                     {data: 'unsent', name: 'unsent', searchable: false},
                     {data: 'read_mail', name: 'read_mail', searchable: false},
                     {data: 'report', name: 'report', orderable: false, searchable: false},
+                ],
+                columnDefs: [
+                    {targets: 0, className: 'log-id-cell text-center', width: '72px'},
+                    {targets: 1, className: 'log-time-cell', width: '170px'},
+                    {targets: [2, 3, 4, 5], className: 'text-center'},
+                    {targets: 6, className: 'text-end'}
                 ],
             });
 
@@ -193,23 +304,31 @@
                 },
                 "sDom": "flrtip",
                 "autoWidth": false,
+                "responsive": true,
                 'createdRow': function (row, data, dataIndex) {
                     $(row).attr('id', 'rowid_' + data['id']);
                     if (data['status'] === 0) $(row).attr('class', 'table-danger');
                 },
-                aaSorting: [[2, 'desc']],
+                aaSorting: [[3, 'desc']],
                 processing: true,
                 serverSide: true,
                 ajax: {
                     url: '{{ route('admin.datatable.info_log') }}'
                 },
                 columns: [
+                    {data: 'id', name: 'id'},
                     {data: 'template', name: 'template'},
                     {data: 'email', name: 'email'},
                     {data: 'created_at', name: 'created_at'},
                     {data: 'success', name: 'success', searchable: false},
                     {data: 'readMail', name: 'readMail', searchable: false},
                     {data: 'errorMsg', name: 'errorMsg', orderable: false, searchable: false},
+                ],
+                columnDefs: [
+                    {targets: 0, className: 'log-id-cell text-center', width: '72px'},
+                    {targets: 3, className: 'log-time-cell', width: '170px'},
+                    {targets: [4, 5], className: 'text-center'},
+                    {targets: 6, className: 'log-error-cell'}
                 ],
             });
         })
