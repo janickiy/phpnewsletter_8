@@ -18,7 +18,6 @@ use App\Http\Controllers\Admin\{
     OrganizationController,
     ProjectController,
     UsersController,
-    UpdateController,
 };
 use App\Http\Controllers\FrontendController;
 use App\Http\Controllers\InstallController;
@@ -132,10 +131,6 @@ Route::group(['middleware' => ['install']], function () {
             Route::put('update', [SmtpController::class, 'update'])->name('admin.smtp.update');
             Route::delete('destroy/{id}', [SmtpController::class, 'destroy'])->name('admin.smtp.destroy')->where('id', '[0-9]+');
             Route::post('status', [SmtpController::class, 'status'])->name('admin.smtp.status');
-        });
-
-        Route::group(['prefix' => 'update'], function () {
-            Route::get('', [UpdateController::class, 'index'])->name('admin.update.index');
         });
 
         Route::group(['prefix' => 'settings'], function () {

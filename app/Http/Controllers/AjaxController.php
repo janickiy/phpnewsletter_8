@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\UserRole;
-use App\Helpers\UpdateHelper;
 use App\Models\Category;
 use App\Models\Logs;
 use App\Repositories\AttachRepository;
@@ -11,7 +9,6 @@ use App\Repositories\ProcessRepository;
 use App\Repositories\ReadySentRepository;
 use App\Repositories\ScheduleRepository;
 use App\Services\SendMailService;
-use App\Services\UpdateService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -20,15 +17,10 @@ use Illuminate\Support\Facades\Cookie;
 
 class AjaxController extends Controller
 {
-    private const ADMIN_ONLY_ACTIONS = [
-        'start_update',
-    ];
-
     /**
      * Inject services and repositories used by shared admin AJAX actions.
      */
     public function __construct(
-        private readonly UpdateService       $updateService,
         private readonly ScheduleRepository  $scheduleRepository,
         private readonly AttachRepository    $attachRepository,
         private readonly SendMailService     $sendMailService,
@@ -76,20 +68,7 @@ class AjaxController extends Controller
             return [];
         }
 
-        if ($this->isAdminOnlyAction($action) && !$this->currentUserIsAdmin()) {
-            return [
-                'result' => false,
-                'status' => __('frontend.msg.failed_to_update'),
-            ];
-        }
-
-        $update = new UpdateHelper(app()->getLocale(), env('VERSION'));
-
         return match ($action) {
-            'start_update' => $this->updateService->startUpdate($update, $request),
-
-            'alert_update' => $this->updateService->alertUpdate($update),
-
             'remove_schedule' => [
                 'result' => $this->scheduleRepository->removeSchedule((int)$request->input('id')),
                 'id' => (int)$request->input('id'),
@@ -117,27 +96,6 @@ class AjaxController extends Controller
 
             default => [],
         };
-    }
-
-    /**
-     * Determine whether the AJAX action can only be executed by administrators.
-     *
-     * @param string $action
-     * @return bool
-     */
-    private function isAdminOnlyAction(string $action): bool
-    {
-        return in_array($action, self::ADMIN_ONLY_ACTIONS, true);
-    }
-
-    /**
-     * Check whether the current session belongs to an administrator.
-     *
-     * @return bool
-     */
-    private function currentUserIsAdmin(): bool
-    {
-        return Auth::check() && Auth::user()?->role === UserRole::Admin->value;
     }
 
     /**

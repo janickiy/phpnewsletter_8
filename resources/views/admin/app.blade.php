@@ -253,17 +253,6 @@
 
                     @endif
 
-                    @if(PermissionsHelper::has_permission(Auth::user()->role,'admin'))
-
-                        <li class="nav-item">
-                            <a href="{{ route('admin.update.index') }}" class="nav-link{{ Request::is('update*') ? ' active' : '' }}" title="{{ __('frontend.menu.update') }}">
-                                <i class="nav-icon fas fa-sync-alt"></i>
-                                <p>{{ __('frontend.menu.update') }}</p>
-                            </a>
-                        </li>
-
-                    @endif
-
                     <li class="nav-item">
                         <a href="{{ route('admin.faq') }}" class="nav-link{{ Request::is('faq*') ? ' active' : '' }}" title="FAQ">
                             <i class="nav-icon fas fa-question-circle"></i>
@@ -378,28 +367,6 @@
 <script>
 
     $(function () {
-        $.ajax({
-            cache: false,
-            url: '{{ route('admin.ajax.action') }}',
-            method: "POST",
-            data: {
-                action: "alert_update",
-            },
-            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-            dataType: "json",
-            success: function (data) {
-                if (data.msg !== null && $.cookie('alertshow') !== 'no') {
-                    $('#alert_msg_block').fadeIn('700');
-                    $("#alert_warning_msg").append(data.msg);
-                }
-                console.log(data);
-            },
-            error: function(xhr, textStatus, error) {
-                console.log(textStatus);
-                console.log(error);
-            }
-        });
-
         $('a.select-lang').on('click', function () {
           //  $(this).parent().find('li.active').removeClass('active');
           //  $(this).addClass('active');
