@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests\Admin\Users;
 
-use App\Models\User;
+use App\Enums\UserRole;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -39,7 +39,7 @@ class StoreRequest extends FormRequest
             'role' => [
                 'required',
                 'string',
-                Rule::in(User::roleValues()),
+                Rule::in(UserRole::values()),
             ],
             'description' => [
                 'nullable',

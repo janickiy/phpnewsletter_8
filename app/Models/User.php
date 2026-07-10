@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use App\Enums\UserRole;
 use App\Http\Traits\StaticTableName;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -11,10 +13,6 @@ use Laravel\Sanctum\HasApiTokens;
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, StaticTableName;
-
-    public const ROLE_ADMIN = 'admin';
-    public const ROLE_PROJECT_ADMIN = 'project_admin';
-    public const ROLE_MODERATOR = 'moderator';
 
     /**
      * The attributes that are mass assignable.
@@ -31,27 +29,13 @@ class User extends Authenticatable
 
     public function getRoleLabelAttribute(): string
     {
-        $roles = [
-            self::ROLE_ADMIN => __('frontend.str.admin'),
-            self::ROLE_PROJECT_ADMIN => __('frontend.str.project_admin'),
-            self::ROLE_MODERATOR => __('frontend.str.moderator'),
-        ];
-
-        return $roles[$this->role] ?? $this->role;
+        return UserRole::labelFor($this->role);
     }
 
-    public static function getOptions(): array
+    public function administeredOrganizations(): BelongsToMany
     {
-        return [
-            self::ROLE_ADMIN => __('frontend.str.admin'),
-            self::ROLE_PROJECT_ADMIN => __('frontend.str.project_admin'),
-            self::ROLE_MODERATOR => __('frontend.str.moderator'),
-        ];
-    }
-
-    public static function roleValues(): array
-    {
-        return array_keys(self::getOptions());
+        return $this->belongsToMany(Organization::class, 'organization_admins')
+            ->withTimestamps();
     }
 
     /**

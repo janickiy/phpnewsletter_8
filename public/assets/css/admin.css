@@ -143,6 +143,69 @@ a.opislink {
     margin-left: auto;
 }
 
+.live-search-select {
+    position: relative;
+}
+
+.live-search-select-toggle {
+    overflow: hidden;
+    text-align: left;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.live-search-select-menu {
+    background-color: var(--bs-body-bg);
+    border: 1px solid var(--bs-border-color);
+    border-radius: var(--bs-border-radius);
+    box-shadow: var(--bs-box-shadow);
+    display: none;
+    left: 0;
+    margin-top: .25rem;
+    padding: .5rem;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    z-index: 1056;
+}
+
+.live-search-select.is-open .live-search-select-menu {
+    display: block;
+}
+
+.live-search-select-input {
+    margin-bottom: .5rem;
+}
+
+.live-search-select-options {
+    max-height: 14rem;
+    overflow-y: auto;
+}
+
+.live-search-select-option {
+    background: transparent;
+    border: 0;
+    border-radius: var(--bs-border-radius-sm);
+    color: var(--bs-body-color);
+    display: block;
+    padding: .375rem .5rem;
+    text-align: left;
+    width: 100%;
+}
+
+.live-search-select-option:hover,
+.live-search-select-option:focus,
+.live-search-select-option[aria-selected="true"] {
+    background-color: var(--bs-primary);
+    color: var(--bs-white);
+    outline: 0;
+}
+
+.live-search-select-empty {
+    color: var(--bs-secondary-color);
+    padding: .375rem .5rem;
+}
+
 @media (max-width: 575.98px) {
     .form-actions-footer .btn-back {
         margin-left: 0;

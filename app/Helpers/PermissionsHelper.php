@@ -2,6 +2,8 @@
 
 namespace App\Helpers;
 
+use App\Enums\UserRole;
+
 class PermissionsHelper
 {
     /**
@@ -10,7 +12,7 @@ class PermissionsHelper
      */
     public static function has_permission(string $permissions = ''): bool
     {
-        if (\Auth::user()->role === 'admin') return true;
+        if (\Auth::user()->role === UserRole::Admin->value) return true;
 
         $permissions = explode('|', $permissions);
 

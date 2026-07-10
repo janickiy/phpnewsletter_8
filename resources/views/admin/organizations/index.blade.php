@@ -28,6 +28,7 @@
                                 <thead>
                                 <tr>
                                     <th>{{ __('frontend.str.name') }}</th>
+                                    <th>{{ __('frontend.str.owner') }}</th>
                                     <th>{{ __('frontend.str.description') }}</th>
                                     <th class="text-center">{{ __('frontend.str.projects_number') }}</th>
                                     <th>{{ __('frontend.str.added') }}</th>
@@ -42,6 +43,7 @@
                                                 {{ $organization->name }}
                                             </a>
                                         </td>
+                                        <td>{{ optional($organization->owner)->name ?: optional($organization->owner)->login ?: '-' }}</td>
                                         <td>{{ $organization->description ?: '-' }}</td>
                                         <td class="text-center">
                                             <span class="badge text-bg-primary">{{ $organization->projects_count }}</span>
@@ -71,7 +73,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="5" class="text-center text-muted py-4">
+                                        <td colspan="6" class="text-center text-muted py-4">
                                             {{ __('frontend.str.no_data') }}
                                         </td>
                                     </tr>

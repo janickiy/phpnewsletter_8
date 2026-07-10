@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\UserRole;
 use App\Http\Requests\Admin\Projects\StoreRequest;
 use App\Models\Organization;
 use App\Models\Project;
 use App\Models\Templates;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 class ProjectController extends Controller
@@ -16,12 +18,12 @@ class ProjectController extends Controller
      */
     public function create(Organization $organization): View
     {
+        $this->ensureOrganizationAvailable($organization);
+
         return view('admin.projects.create_edit', [
             'organization' => $organization,
             'statusOptions' => Project::statusOptions(),
-            'templateOptions' => Templates::getOption(),
             'timezoneOptions' => $this->timezoneOptions(),
-            'localeOptions' => config('app.languages', []),
             'infoAlert' => __('frontend.hint.projects_create'),
             'title' => __('frontend.title.projects_create'),
         ]);
@@ -32,6 +34,8 @@ class ProjectController extends Controller
      */
     public function store(StoreRequest $request, Organization $organization): RedirectResponse
     {
+        $this->ensureOrganizationAvailable($organization);
+
         try {
             $organization->projects()->create($request->validated());
         } catch (\Throwable $e) {
@@ -47,6 +51,25 @@ class ProjectController extends Controller
     }
 
     /**
+     * Show project details.
+     */
+    public function show(Organization $organization, Project $project): View
+    {
+        $this->ensureProjectBelongsToOrganization($organization, $project);
+
+        return view('admin.projects.show', [
+            'organization' => $organization,
+            'project' => $project,
+            'templates' => Templates::query()
+                ->where('project_id', $project->id)
+                ->withCount('attach')
+                ->orderBy('name')
+                ->get(),
+            'title' => $project->name,
+        ]);
+    }
+
+    /**
      * Show project edit form.
      */
     public function edit(Organization $organization, Project $project): View
@@ -57,9 +80,7 @@ class ProjectController extends Controller
             'organization' => $organization,
             'row' => $project,
             'statusOptions' => Project::statusOptions(),
-            'templateOptions' => Templates::getOption(),
             'timezoneOptions' => $this->timezoneOptions(),
-            'localeOptions' => config('app.languages', []),
             'infoAlert' => __('frontend.hint.projects_edit'),
             'title' => __('frontend.title.projects_edit'),
         ]);
@@ -107,7 +128,19 @@ class ProjectController extends Controller
 
     private function ensureProjectBelongsToOrganization(Organization $organization, Project $project): void
     {
+        $this->ensureOrganizationAvailable($organization);
+
         abort_if((int) $project->organization_id !== (int) $organization->id, 404);
+    }
+
+    private function ensureOrganizationAvailable(Organization $organization): void
+    {
+        abort_unless(
+            Auth::user()?->role === UserRole::Admin->value
+                || (int) $organization->owner_id === (int) Auth::id()
+                || $organization->administrators()->whereKey(Auth::id())->exists(),
+            404
+        );
     }
 
     private function timezoneOptions(): array

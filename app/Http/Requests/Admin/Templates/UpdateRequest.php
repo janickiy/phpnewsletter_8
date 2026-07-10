@@ -2,8 +2,10 @@
 
 namespace App\Http\Requests\Admin\Templates;
 
+use App\Models\Project;
 use App\Models\Templates;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 
 class UpdateRequest extends FormRequest
@@ -28,6 +30,11 @@ class UpdateRequest extends FormRequest
                 'required',
                 'integer',
                 'exists:' . Templates::getTableName() .',id',
+            ],
+            'project_id' => [
+                'required',
+                'integer',
+                Rule::exists(Project::getTableName(), 'id'),
             ],
             'name' => [
                 'required',

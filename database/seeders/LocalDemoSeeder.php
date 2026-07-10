@@ -4,10 +4,13 @@ namespace Database\Seeders;
 
 use App\Models\Category;
 use App\Models\Macros;
+use App\Models\Organization;
+use App\Models\Project;
 use App\Models\Schedule;
 use App\Models\Smtp;
 use App\Models\Subscribers;
 use App\Models\Templates;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -22,7 +25,8 @@ class LocalDemoSeeder extends Seeder
     {
         DB::transaction(function () {
             $categories = $this->seedCategories();
-            $templates = $this->seedTemplates();
+            $project = $this->seedDefaultProject();
+            $templates = $this->seedTemplates($project);
             $subscribers = $this->seedSubscribers($categories);
 
             $this->seedMacros();
@@ -102,7 +106,7 @@ class LocalDemoSeeder extends Seeder
     /**
      * @return \Illuminate\Support\Collection<int, Templates>
      */
-    private function seedTemplates()
+    private function seedTemplates(Project $project)
     {
         $templates = [
             [
@@ -144,21 +148,23 @@ class LocalDemoSeeder extends Seeder
         ];
 
         foreach ($templates as $template) {
-            $this->syncDemoTemplate($template);
+            $this->syncDemoTemplate($template, $project);
         }
 
         return Templates::query()
+            ->where('project_id', $project->id)
             ->whereIn('name', array_column($templates, 'name'))
             ->orderBy('id')
             ->get();
     }
 
-    private function syncDemoTemplate(array $template): Templates
+    private function syncDemoTemplate(array $template, Project $project): Templates
     {
         $names = array_values(array_unique(array_merge([$template['name']], $template['legacy_names'] ?? [])));
         $existing = Templates::query()->whereIn('name', $names)->orderBy('id')->get();
         $target = $existing->firstWhere('name', $template['name']) ?? $existing->first();
         $data = [
+            'project_id' => $project->id,
             'name' => $template['name'],
             'body' => $template['body'],
             'prior' => $template['prior'],
@@ -189,6 +195,38 @@ class LocalDemoSeeder extends Seeder
         }
 
         return $target->refresh();
+    }
+
+    private function seedDefaultProject(): Project
+    {
+        $ownerId = User::query()->orderBy('id')->value('id');
+
+        $organization = Organization::query()->firstOrCreate(
+            ['name' => 'ООО Рога и Копыта'],
+            [
+                'owner_id' => $ownerId,
+                'description' => 'Демо-организация для проверки проектов и шаблонов.',
+            ]
+        );
+
+        if (!$organization->owner_id && $ownerId) {
+            $organization->forceFill(['owner_id' => $ownerId])->save();
+        }
+
+        return Project::query()->firstOrCreate(
+            [
+                'organization_id' => $organization->id,
+                'name' => 'PHPNewsletter Demo',
+            ],
+            [
+                'description' => 'Демо-проект для тестовых рассылок.',
+                'status' => Project::STATUS_ACTIVE,
+                'default_sender_name' => 'PHP Newsletter',
+                'default_from_email' => 'newsletter@example.test',
+                'default_reply_to' => 'reply@example.test',
+                'timezone' => config('app.timezone'),
+            ]
+        );
     }
 
     /**

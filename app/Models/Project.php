@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Http\Traits\StaticTableName;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Project extends Model
 {
@@ -23,7 +24,6 @@ class Project extends Model
         'default_from_email',
         'default_reply_to',
         'timezone',
-        'locale',
         'unsubscribe_template_id',
     ];
 
@@ -35,6 +35,11 @@ class Project extends Model
     public function unsubscribeTemplate(): BelongsTo
     {
         return $this->belongsTo(Templates::class, 'unsubscribe_template_id');
+    }
+
+    public function templates(): HasMany
+    {
+        return $this->hasMany(Templates::class);
     }
 
     public function getStatusLabelAttribute(): string

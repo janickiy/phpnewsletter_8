@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 
+use App\Enums\UserRole;
 use App\Http\Requests\Admin\Users\StoreRequest;
 use App\Http\Requests\Admin\Users\UpdateRequest;
 use App\Models\User;
@@ -43,7 +44,9 @@ class UsersController extends Controller
     public function create(): View
     {
         return view('admin.users.create_edit', [
-            'options' => User::getOptions(),
+            'options' => UserRole::options(),
+            'roleDescriptions' => UserRole::descriptions(),
+            'defaultRole' => UserRole::Admin->value,
             'infoAlert' => __('frontend.hint.users_create'),
             'title' => __('frontend.title.users_create'),
         ]);
@@ -84,7 +87,9 @@ class UsersController extends Controller
 
         return view('admin.users.create_edit', [
             'row' => $row,
-            'options' => User::getOptions(),
+            'options' => UserRole::options(),
+            'roleDescriptions' => UserRole::descriptions(),
+            'defaultRole' => UserRole::Admin->value,
             'infoAlert' => __('frontend.hint.users_edit'),
             'title' => __('frontend.title.users_edit'),
         ]);

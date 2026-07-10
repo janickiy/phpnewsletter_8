@@ -49,15 +49,6 @@
                             </div>
                         </div>
 
-                        <div class="form-group mb-3">
-                            {!! form_label('description', __('frontend.form.description')) !!}
-                            {!! form_textarea('description', old('description', $row->description ?? null), ['class' => 'form-control', 'rows' => 3, 'placeholder' => __('frontend.form.description')]) !!}
-
-                            @if ($errors->has('description'))
-                                <p class="text-danger">{{ $errors->first('description') }}</p>
-                            @endif
-                        </div>
-
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group mb-3">
@@ -105,27 +96,15 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-4">
-                                <div class="form-group mb-3">
-                                    {!! form_label('locale', __('frontend.str.language')) !!}
-                                    {!! form_select('locale', $localeOptions, old('locale', $row->locale ?? null), ['placeholder' => __('frontend.form.select'), 'class' => 'form-select']) !!}
+                        </div>
 
-                                    @if ($errors->has('locale'))
-                                        <p class="text-danger">{{ $errors->first('locale') }}</p>
-                                    @endif
-                                </div>
-                            </div>
+                        <div class="form-group mb-3">
+                            {!! form_label('description', __('frontend.form.description')) !!}
+                            {!! form_textarea('description', old('description', $row->description ?? null), ['class' => 'form-control', 'rows' => 3, 'placeholder' => __('frontend.form.description')]) !!}
 
-                            <div class="col-md-4">
-                                <div class="form-group mb-3">
-                                    {!! form_label('unsubscribe_template_id', __('frontend.str.unsubscribe_template')) !!}
-                                    {!! form_select('unsubscribe_template_id', $templateOptions, old('unsubscribe_template_id', $row->unsubscribe_template_id ?? null), ['placeholder' => __('frontend.form.select'), 'class' => 'form-select']) !!}
-
-                                    @if ($errors->has('unsubscribe_template_id'))
-                                        <p class="text-danger">{{ $errors->first('unsubscribe_template_id') }}</p>
-                                    @endif
-                                </div>
-                            </div>
+                            @if ($errors->has('description'))
+                                <p class="text-danger">{{ $errors->first('description') }}</p>
+                            @endif
                         </div>
                     </div>
 

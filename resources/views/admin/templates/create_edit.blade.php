@@ -71,11 +71,16 @@
 
     @php
         $selectedPrior = old('prior', $template->prior ?? 3);
+        $selectedProject = old('project_id', $project->id ?? $template->project_id ?? null);
+        $backUrl = isset($project) && $project
+            ? route('admin.projects.show', ['organization' => $project->organization_id, 'project' => $project->id])
+            : route('admin.templates.index');
     @endphp
 
     {!! form_open(['url' => isset($template) ? route('admin.templates.update') : route('admin.templates.store'), 'files' => true, 'method' => isset($template) ? 'put' : 'post', 'id' => 'tmplForm']) !!}
 
     {!! isset($template) ? form_hidden('id', $template->id) : '' !!}
+    {!! isset($project) && $project ? form_hidden('project_id', $project->id) : '' !!}
 
     <div class="container-fluid template-editor-page">
         <div class="row">
@@ -93,6 +98,26 @@
 
                         <div class="row">
                             <div class="col-12">
+                                @if(isset($project) && $project)
+                                    <div class="form-group mb-3">
+                                        {!! form_label('project_id', __('frontend.str.project'), ['class' => 'form-label']) !!}
+                                        <div class="form-control-plaintext">
+                                            <a href="{{ route('admin.projects.show', ['organization' => $project->organization_id, 'project' => $project->id]) }}">
+                                                {{ $project->name }}
+                                            </a>
+                                        </div>
+                                    </div>
+                                @else
+                                    <div class="form-group mb-3">
+                                        {!! form_label('project_id', __('frontend.str.project') . '*', ['class' => 'form-label']) !!}
+                                        {!! form_select('project_id', $projectOptions ?? [], $selectedProject, ['placeholder' => __('frontend.form.select'), 'class' => 'form-select' . ($errors->has('project_id') ? ' is-invalid' : '')]) !!}
+
+                                        @if ($errors->has('project_id'))
+                                            <p class="text-danger mb-0">{{ $errors->first('project_id') }}</p>
+                                        @endif
+                                    </div>
+                                @endif
+
                                 <div class="form-group mb-3">
                                     {!! form_label('name', __('frontend.form.name') . '*', ['class' => 'form-label']) !!}
                                     {!! form_text('name', old('name', $template->name ?? null), ['class' => 'form-control', 'placeholder' => __('frontend.form.name')]) !!}
@@ -204,7 +229,7 @@
                             {{ isset($template) ? __('frontend.form.edit') : __('frontend.form.add') }}
                         </button>
 
-                        <a class="btn btn-secondary btn-back" href="{{ route('admin.templates.index') }}">
+                        <a class="btn btn-secondary btn-back" href="{{ $backUrl }}">
                             {{ __('frontend.form.back') }}
                         </a>
                     </div>

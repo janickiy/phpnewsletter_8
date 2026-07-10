@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Http\Traits\StaticTableName;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Helpers\StringHelper;
 
@@ -14,10 +15,16 @@ class Templates extends Model
     protected $table = 'templates';
 
     protected $fillable = [
+        'project_id',
         'name',
         'body',
         'prior'
     ];
+
+    public function project(): BelongsTo
+    {
+        return $this->belongsTo(Project::class);
+    }
 
     /**
      * @return HasMany

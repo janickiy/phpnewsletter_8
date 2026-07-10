@@ -21,7 +21,6 @@ return new class extends Migration
             $table->string('default_from_email')->nullable();
             $table->string('default_reply_to')->nullable();
             $table->string('timezone')->nullable();
-            $table->string('locale')->nullable();
             $table->unsignedInteger('unsubscribe_template_id')->nullable();
             $table->timestamps();
 

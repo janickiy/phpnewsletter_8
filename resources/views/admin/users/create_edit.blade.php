@@ -70,7 +70,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group mb-0">
                                         {!! form_label('role', __('frontend.form.role') . '*', ['class' => 'form-label']) !!}
-                                        {!! form_select('role', $options, old('role', $row->role ?? 'admin'), ['placeholder' => __('frontend.form.select_role'), 'class' => 'form-select' . ($errors->has('role') ? ' is-invalid' : '')]) !!}
+                                        {!! form_select('role', $options, old('role', $row->role ?? $defaultRole), ['placeholder' => __('frontend.form.select_role'), 'class' => 'form-select' . ($errors->has('role') ? ' is-invalid' : '')]) !!}
 
                                         @if ($errors->has('role'))
                                             <div class="invalid-feedback">{{ $errors->first('role') }}</div>
@@ -79,9 +79,9 @@
                                         <div class="form-text text-muted mt-2">
                                             <strong>{{ __('frontend.form.roles_note_title') }}</strong>
                                             <ul class="mb-0 ps-3">
-                                                <li>{{ __('frontend.form.role_note_admin') }}</li>
-                                                <li>{{ __('frontend.form.role_note_project_admin') }}</li>
-                                                <li>{{ __('frontend.form.role_note_moderator') }}</li>
+                                                @foreach($roleDescriptions as $roleDescription)
+                                                    <li>{{ $roleDescription }}</li>
+                                                @endforeach
                                             </ul>
                                         </div>
                                     </div>

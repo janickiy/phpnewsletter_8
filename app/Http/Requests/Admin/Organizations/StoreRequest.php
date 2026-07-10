@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests\Admin\Organizations;
 
+use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreRequest extends FormRequest
 {
@@ -23,6 +25,11 @@ class StoreRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
+            'owner_id' => [
+                'nullable',
+                'integer',
+                Rule::exists(User::getTableName(), 'id'),
+            ],
             'description' => ['nullable', 'string'],
         ];
     }

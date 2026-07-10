@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests\Admin\Templates;
 
+use App\Models\Project;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreRequest extends FormRequest
 {
@@ -22,6 +24,11 @@ class StoreRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'project_id' => [
+                'required',
+                'integer',
+                Rule::exists(Project::getTableName(), 'id'),
+            ],
             'name' => [
                 'required',
                 'string',

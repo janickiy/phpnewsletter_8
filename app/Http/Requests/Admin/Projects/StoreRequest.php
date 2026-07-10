@@ -32,7 +32,6 @@ class StoreRequest extends FormRequest
             'default_from_email' => ['nullable', 'email', 'max:255'],
             'default_reply_to' => ['nullable', 'email', 'max:255'],
             'timezone' => ['nullable', 'timezone'],
-            'locale' => ['nullable', 'string', Rule::in(array_keys(config('app.languages', [])))],
             'unsubscribe_template_id' => [
                 'nullable',
                 'integer',

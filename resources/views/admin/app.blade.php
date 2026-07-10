@@ -128,7 +128,7 @@
                         </a>
                     </li>
 
-                    @if(PermissionsHelper::has_permission('admin'))
+                    @if(PermissionsHelper::has_permission('admin|organization_admin|project_admin|moderator'))
                         <li class="nav-item">
                             <a href="{{ route('admin.organizations.index') }}" class="nav-link{{ Request::is('organizations*') ? ' active' : '' }}"
                                title="{{ __('frontend.menu.organizations') }}">
@@ -440,6 +440,135 @@
         });
     });
 
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.js-live-search-select').forEach((select) => {
+            if (select.dataset.liveSearchReady === '1') {
+                return;
+            }
+
+            select.dataset.liveSearchReady = '1';
+            select.classList.add('d-none');
+
+            const wrapper = document.createElement('div');
+            wrapper.className = 'live-search-select';
+
+            const toggle = document.createElement('button');
+            toggle.type = 'button';
+            toggle.className = 'form-select live-search-select-toggle';
+            toggle.setAttribute('aria-haspopup', 'listbox');
+            toggle.setAttribute('aria-expanded', 'false');
+
+            const menu = document.createElement('div');
+            menu.className = 'live-search-select-menu';
+
+            const search = document.createElement('input');
+            search.type = 'search';
+            search.className = 'form-control form-control-sm live-search-select-input';
+            search.placeholder = select.dataset.searchPlaceholder || '';
+            search.autocomplete = 'off';
+
+            const list = document.createElement('div');
+            list.className = 'live-search-select-options';
+            list.setAttribute('role', 'listbox');
+
+            menu.append(search, list);
+            wrapper.append(toggle, menu);
+            select.after(wrapper);
+
+            const options = Array.from(select.options).map((option) => ({
+                value: option.value,
+                label: option.textContent.trim(),
+                disabled: option.disabled,
+            }));
+
+            const normalize = (value) => value.toLocaleLowerCase().trim();
+
+            const closeMenu = () => {
+                wrapper.classList.remove('is-open');
+                toggle.setAttribute('aria-expanded', 'false');
+            };
+
+            const updateToggle = () => {
+                const selected = select.options[select.selectedIndex];
+                toggle.textContent = selected ? selected.textContent.trim() : '';
+            };
+
+            const selectOption = (option) => {
+                if (option.disabled) {
+                    return;
+                }
+
+                select.value = option.value;
+                select.dispatchEvent(new Event('change', { bubbles: true }));
+                updateToggle();
+                closeMenu();
+                toggle.focus();
+            };
+
+            const renderOptions = (query = '') => {
+                const needle = normalize(query);
+                const matchedOptions = options.filter((option) => normalize(option.label).includes(needle));
+
+                list.innerHTML = '';
+
+                if (matchedOptions.length === 0) {
+                    const empty = document.createElement('div');
+                    empty.className = 'live-search-select-empty';
+                    empty.textContent = select.dataset.noResults || '';
+                    list.append(empty);
+                    return;
+                }
+
+                matchedOptions.forEach((option) => {
+                    const item = document.createElement('button');
+                    item.type = 'button';
+                    item.className = 'live-search-select-option';
+                    item.textContent = option.label;
+                    item.setAttribute('role', 'option');
+                    item.setAttribute('aria-selected', option.value === select.value ? 'true' : 'false');
+                    item.disabled = option.disabled;
+
+                    item.addEventListener('click', () => selectOption(option));
+                    list.append(item);
+                });
+            };
+
+            const openMenu = () => {
+                wrapper.classList.add('is-open');
+                toggle.setAttribute('aria-expanded', 'true');
+                search.value = '';
+                renderOptions();
+                search.focus();
+            };
+
+            toggle.addEventListener('click', () => {
+                if (wrapper.classList.contains('is-open')) {
+                    closeMenu();
+                } else {
+                    openMenu();
+                }
+            });
+
+            search.addEventListener('input', () => renderOptions(search.value));
+            search.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape') {
+                    closeMenu();
+                    toggle.focus();
+                }
+            });
+
+            document.addEventListener('click', (event) => {
+                if (!wrapper.contains(event.target)) {
+                    closeMenu();
+                }
+            });
+
+            updateToggle();
+        });
+    });
 </script>
 
 @yield('js')

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 
+use App\Enums\UserRole;
 use App\Models\User;
 use App\Http\Requests\Frontend\InstallRequest;
 use App\Http\Requests\Frontend\InstallAdminRequest;
@@ -160,7 +161,12 @@ class InstallController extends Controller
             Artisan::call('migrate', ['--force' => true]);
             Artisan::call('db:seed', ['--force' => true]);
 
-            User::create(['name' => 'admin', 'login' => $request->input('login'), 'role' => 'admin', 'password' => Hash::make($request->input('password'))]);
+            User::create([
+                'name' => 'admin',
+                'login' => $request->input('login'),
+                'role' => UserRole::Admin->value,
+                'password' => Hash::make($request->input('password')),
+            ]);
 
             return redirect()
                 ->route('install.complete')

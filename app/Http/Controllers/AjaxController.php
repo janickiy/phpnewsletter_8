@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\UserRole;
 use App\Helpers\UpdateHelper;
 use App\Models\Category;
 use App\Models\Logs;
-use App\Models\User;
 use App\Repositories\AttachRepository;
 use App\Repositories\ProcessRepository;
 use App\Repositories\ReadySentRepository;
@@ -137,7 +137,7 @@ class AjaxController extends Controller
      */
     private function currentUserIsAdmin(): bool
     {
-        return Auth::check() && Auth::user()?->role === User::ROLE_ADMIN;
+        return Auth::check() && Auth::user()?->role === UserRole::Admin->value;
     }
 
     /**
