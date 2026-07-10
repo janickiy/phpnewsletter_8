@@ -21,7 +21,7 @@
                 <div class="card card-outline card-primary">
                     <div class="card-header">
                         <h3 class="card-title">
-                            <i class="fas {{ isset($row) ? 'fa-pen' : 'fa-plus' }} me-1"></i>
+                            <i class="fas {{ isset($row) ? 'fa-pen' : 'fa-calendar-alt' }} me-1"></i>
                             {{ $title }}
                         </h3>
                     </div>
@@ -92,7 +92,7 @@
                         </div>
                     </div>
 
-                    <div class="card-footer form-actions-footer d-flex flex-column flex-sm-row gap-2 justify-content-start">
+                    <div class="card-footer form-actions-footer d-flex flex-column flex-sm-row justify-content-start">
                         <button type="submit" class="btn btn-primary">
                             {{ isset($row) ? __('frontend.form.edit') : __('frontend.form.add') }}
                         </button>

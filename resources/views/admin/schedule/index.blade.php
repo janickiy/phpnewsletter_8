@@ -43,22 +43,19 @@
     #calendar .fc-timegrid-event:hover,
     #calendar .fc-timegrid-event:focus,
     #calendar .fc-timegrid-event:active {
-        color: #00008B !important;
+        color: #fff !important;
     }
 
     #calendar .calendar-event-content,
-    #calendar .calendar-event-actions,
+    #calendar .calendar-event-time,
     #calendar .calendar-event-title {
-        color: #00008B !important;
+        color: #fff !important;
     }
 
     .fc-day-today a,
     .fc-day-today a:hover,
     .fc-day-today a:focus,
-    .fc-day-today a:active,
-    .fc-day-today .calendar-event-content,
-    .fc-day-today .calendar-event-actions,
-    .fc-day-today .calendar-event-title {
+    .fc-day-today a:active {
         color: #00008B !important;
     }
 
@@ -66,7 +63,7 @@
     #calendar .fc-timegrid-event {
         max-width: 100%;
         overflow: hidden;
-        white-space: normal;
+        white-space: nowrap;
     }
 
     #calendar .fc-daygrid-event .fc-event-main,
@@ -78,48 +75,69 @@
     }
 
     #calendar .calendar-event-content {
-        align-items: flex-start;
+        align-items: center;
         display: flex;
-        gap: 3px;
+        font-size: 0.875rem;
+        gap: 4px;
+        line-height: 1.2;
         max-width: 100%;
         min-width: 0;
         overflow: hidden;
-        white-space: normal;
+        padding: 1px 3px;
+        white-space: nowrap;
     }
 
     #calendar .calendar-event-dot {
-        background: #00008B;
+        background: #fff;
         border-radius: 50%;
         flex: 0 0 0.55rem;
         height: 0.55rem;
-        margin-top: 0.45rem;
         width: 0.55rem;
     }
 
     #calendar .calendar-event-time {
         flex: 0 0 auto;
         font-weight: 600;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
         white-space: nowrap;
     }
 
     #calendar .calendar-event-title {
         flex: 1 1 auto;
         min-width: 0;
-        overflow-wrap: anywhere;
-        white-space: normal;
-        word-break: break-word;
+        overflow: hidden;
+        overflow-wrap: normal;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        word-break: normal;
     }
 
     #calendar .calendar-event-actions {
         display: flex;
-        flex-wrap: wrap;
-        gap: 4px;
-        margin-top: 4px;
+        flex: 0 0 auto;
+        gap: 2px;
+        margin-left: auto;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.15s ease;
+    }
+
+    #calendar .calendar-event:hover .calendar-event-actions {
+        opacity: 1;
+        pointer-events: auto;
     }
 
     #calendar .calendar-event-actions .btn {
+        align-items: center;
+        display: inline-flex;
+        font-size: 0.7rem;
+        height: 1rem;
+        justify-content: center;
         line-height: 1;
-        padding: 0.16rem 0.35rem;
+        padding: 0;
+        width: 1rem;
     }
 </style>
 
@@ -215,22 +233,19 @@
             return hours + ':' + minutes;
         }
 
-        function renderCalendarEvent(event, showActions = false) {
+        function renderCalendarEvent(event) {
             let eventTitle = escapeHtml(event.title);
             let eventTime = formatEventTime(event);
-            let content = '<div class="calendar-event-content">' +
+            let actions = '<span class="calendar-event-actions">' +
+                '<a href="{{ url("schedule/edit") }}/' + event.id + '" class="btn btn-light btn-sm" title="{{ __('frontend.str.edit') }}"><i class="fas fa-edit"></i></a>' +
+                '<button type="button" class="btn btn-danger btn-sm delete-event" data-id="' + event.id + '" title="{{ __('frontend.str.remove') }}"><i class="fas fa-trash"></i></button>' +
+                '</span>';
+
+            return '<div class="calendar-event-content">' +
                 '<span class="calendar-event-dot"></span>' +
                 '<span class="calendar-event-time">' + eventTime + '</span>' +
                 '<span class="calendar-event-title">' + eventTitle + '</span>' +
-                '</div>';
-
-            if (!showActions) {
-                return content;
-            }
-
-            return content + '<div class="calendar-event-actions">' +
-                '<a href="{{ url("schedule/edit") }}/' + event.id + '" class="btn btn-outline-primary btn-sm" title="{{ __('frontend.str.edit') }}"><i class="fas fa-edit"></i></a>' +
-                '<button type="button" class="btn btn-outline-danger btn-sm delete-event" data-id="' + event.id + '" title="{{ __('frontend.str.remove') }}"><i class="fas fa-trash"></i></button>' +
+                actions +
                 '</div>';
         }
 
@@ -238,12 +253,6 @@
             eventClassNames: ['calendar-event'],
             eventContent: function(info) {
                 return { html: renderCalendarEvent(info.event) };
-            },
-            eventMouseEnter: function(info) {
-                info.el.innerHTML = renderCalendarEvent(info.event, true);
-            },
-            eventMouseLeave: function(info) {
-                info.el.innerHTML = renderCalendarEvent(info.event);
             },
             timeZone: initialTimeZone,
             headerToolbar: {

@@ -18,15 +18,28 @@
         }
 
         .settings-page .settings-tabs-header {
-            border-bottom: 0;
+            border: 0 !important;
+            box-shadow: none !important;
+        }
+
+        .settings-page .settings-tabs-header .nav,
+        .settings-page .settings-tabs-header .nav-item {
+            border: 0 !important;
+            box-shadow: none !important;
         }
 
         .settings-page .settings-tabs-header .nav-link,
         .settings-page .settings-tabs-header .nav-link:hover,
         .settings-page .settings-tabs-header .nav-link:focus {
-            border-bottom: 0;
-            box-shadow: none;
-            text-decoration: none;
+            background-image: none !important;
+            border: 0 !important;
+            box-shadow: none !important;
+            text-decoration: none !important;
+        }
+
+        .settings-page .settings-tabs-header .nav-link::before,
+        .settings-page .settings-tabs-header .nav-link::after {
+            display: none !important;
         }
     </style>
 

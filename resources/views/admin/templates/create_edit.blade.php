@@ -30,6 +30,10 @@
             padding: 1rem;
         }
 
+        .template-editor-page .template-test-section {
+            background-color: var(--bs-tertiary-bg);
+        }
+
         .template-editor-page .template-side-section + .template-side-section {
             margin-top: 1rem;
         }
@@ -174,7 +178,7 @@
                                     </div>
                                 </div>
 
-                                <div class="template-side-section">
+                                <div class="template-side-section template-test-section">
                                     <div class="template-section-title">
                                         <i class="fas fa-paper-plane"></i>
                                         {{ __('frontend.str.send_test_letter') }}
@@ -195,7 +199,7 @@
                         </div>
                     </div>
 
-                    <div class="card-footer form-actions-footer d-flex flex-column flex-sm-row gap-2 justify-content-start">
+                    <div class="card-footer form-actions-footer d-flex flex-column flex-sm-row justify-content-start">
                         <button type="submit" class="btn btn-primary">
                             {{ isset($template) ? __('frontend.form.edit') : __('frontend.form.add') }}
                         </button>
@@ -204,6 +208,7 @@
                             {{ __('frontend.form.back') }}
                         </a>
                     </div>
+
                 </div>
             </div>
         </div>

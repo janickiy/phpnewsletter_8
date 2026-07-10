@@ -76,6 +76,14 @@
                 </div>
             </li>
 
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('admin.users.edit', ['id' => Auth::user()->id]) }}"
+                   title="{{ Auth::user()->login }}">
+                    <i class="fas fa-user-circle me-1"></i>
+                    <span>{{ Auth::user()->login }}</span>
+                </a>
+            </li>
+
             <!-- Notifications Dropdown Menu -->
             <li class="nav-item">
                 <a class="nav-link" title="{{ __('frontend.str.signout') }}" href="{{ route('logout') }}"
@@ -103,16 +111,7 @@
         <!-- Sidebar -->
         <div class="sidebar-wrapper">
             <!-- Sidebar user (optional) -->
-            <div class="sidebar-user">
-                <a href="{{ route('admin.users.edit', ['id' => Auth::user()->id ]) }}" class="sidebar-user-link">
-                    <i class="fas fa-user-circle"></i>
-                    <span>
-                        {{ Auth::user()->login }} @if(!empty(Auth::user()->name))
-                            ({{ Auth::user()->name }})
-                        @endif
-                    </span>
-                </a>
-            </div>
+
 
             <!-- Sidebar Menu -->
             <nav class="mt-2">
