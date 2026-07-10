@@ -213,20 +213,20 @@ class DataTableController extends Controller
         return DataTables::of($rows)
             ->addColumn('action', function ($row) {
                 $editBtn = sprintf(
-                    '<a title="%s" class="btn btn-xs btn-primary" href="%s"><span class="fa fa-edit"></span></a>&nbsp;',
+                    '<a title="%s" class="btn btn-outline-primary" href="%s"><i class="fas fa-edit"></i></a>',
                     __('frontend.str.edit'),
                     route('admin.users.edit', ['id' => $row->id])
                 );
 
                 $deleteBtn = (int) $row->id !== (int) Auth::id()
                     ? sprintf(
-                        '<a title="%s" class="btn btn-xs btn-danger deleteRow" id="%d"><span class="fa fa-trash"></span></a>',
+                        '<a title="%s" class="btn btn-outline-danger deleteRow" id="%d"><i class="fas fa-trash"></i></a>',
                         __('frontend.str.remove'),
                         $row->id
                     )
                     : '';
 
-                return '<div class="nobr">' . $editBtn . $deleteBtn . '</div>';
+                return '<div class="btn-group btn-group-sm" role="group">' . $editBtn . $deleteBtn . '</div>';
             })
             ->editColumn('role', fn ($row) => $row->role_label)
             ->editColumn('created_at', fn ($row) => $this->formatDateTime($row->created_at))

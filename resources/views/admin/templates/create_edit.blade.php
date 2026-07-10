@@ -88,7 +88,7 @@
                         <p class="text-muted small mb-3">*-{{ __('frontend.form.required_fields') }}</p>
 
                         <div class="row">
-                            <div class="col-xl-8">
+                            <div class="col-12">
                                 <div class="form-group mb-3">
                                     {!! form_label('name', __('frontend.form.name') . '*', ['class' => 'form-label']) !!}
                                     {!! form_text('name', old('name', $template->name ?? null), ['class' => 'form-control', 'placeholder' => __('frontend.form.name')]) !!}
@@ -118,7 +118,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-xl-4">
+                            <div class="col-12">
                                 <div class="template-side-section">
                                     <div class="template-section-title">
                                         <i class="fas fa-sliders-h"></i>
@@ -195,12 +195,12 @@
                         </div>
                     </div>
 
-                    <div class="card-footer d-flex flex-column flex-sm-row gap-2 justify-content-between">
+                    <div class="card-footer form-actions-footer d-flex flex-column flex-sm-row gap-2 justify-content-start">
                         <button type="submit" class="btn btn-primary">
                             {{ isset($template) ? __('frontend.form.edit') : __('frontend.form.add') }}
                         </button>
 
-                        <a class="btn btn-secondary" href="{{ route('admin.templates.index') }}">
+                        <a class="btn btn-secondary btn-back" href="{{ route('admin.templates.index') }}">
                             {{ __('frontend.form.back') }}
                         </a>
                     </div>

@@ -16,6 +16,18 @@
         .settings-page .header-row + .header-row {
             margin-top: .75rem;
         }
+
+        .settings-page .settings-tabs-header {
+            border-bottom: 0;
+        }
+
+        .settings-page .settings-tabs-header .nav-link,
+        .settings-page .settings-tabs-header .nav-link:hover,
+        .settings-page .settings-tabs-header .nav-link:focus {
+            border-bottom: 0;
+            box-shadow: none;
+            text-decoration: none;
+        }
     </style>
 
 @endsection
@@ -33,7 +45,7 @@
                         </h3>
                     </div>
 
-                    <div class="card-header bg-body-tertiary p-2">
+                    <div class="card-header bg-body-tertiary p-2 settings-tabs-header">
                         <ul class="nav nav-pills flex-column flex-sm-row gap-1">
                                 <li class="nav-item">
                                     <a class="nav-link active" href="#s1" data-bs-toggle="tab">{{ __('frontend.str.interface_settings') }}</a>

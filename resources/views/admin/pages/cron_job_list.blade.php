@@ -4,23 +4,24 @@
 
 @section('css')
 
-
 @endsection
 
 @section('content')
 
-    <!-- Main content -->
-    <section class="content">
+    <div class="container-fluid cron-job-page">
+        <div class="row">
+            <div class="col-12">
+                <div class="card card-outline card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-terminal me-1"></i>
+                            {{ $title }}
+                        </h3>
+                    </div>
 
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-12">
-
-                    <div class="card">
-                        <!-- /.card-header -->
-                        <div class="card-body">
-
-                            <table id="itemList" class="table table-bordered table-striped">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table id="itemList" class="table table-striped table-hover mb-0 align-middle">
                                 <thead>
                                 <tr>
                                     <th>Cronjob</th>
@@ -39,24 +40,15 @@
 
                                 </tbody>
                             </table>
-
                         </div>
-                        <!-- /.card-body -->
                     </div>
-                    <!-- /.card -->
                 </div>
-                <!-- /.col -->
             </div>
-            <!-- /.row -->
         </div>
-        <!-- /.container-fluid -->
-
-    </section>
-    <!-- /.content -->
+    </div>
 
 @endsection
 
 @section('js')
-
 
 @endsection

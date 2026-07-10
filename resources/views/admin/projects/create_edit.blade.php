@@ -129,12 +129,12 @@
                         </div>
                     </div>
 
-                    <div class="card-footer">
+                    <div class="card-footer form-actions-footer d-flex flex-column flex-sm-row gap-2 justify-content-start">
                         <button type="submit" class="btn btn-primary">
                             {{ isset($row) ? __('frontend.form.edit') : __('frontend.form.add') }}
                         </button>
 
-                        <a class="btn btn-secondary float-sm-end" href="{{ route('admin.organizations.show', ['organization' => $organization->id]) }}">
+                        <a class="btn btn-secondary btn-back" href="{{ route('admin.organizations.show', ['organization' => $organization->id]) }}">
                             {{ __('frontend.form.back') }}
                         </a>
                     </div>

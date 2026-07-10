@@ -77,7 +77,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-3">
+                            <div class="col-md-6">
                                 <div class="form-group mb-0">
                                     {!! form_label('port', __('frontend.form.port') . '*', ['class' => 'form-label']) !!}
                                     {!! form_text('port', old('port', $row->port ?? 25), ['placeholder' => __('frontend.form.port'), 'class' => 'form-control' . ($errors->has('port') ? ' is-invalid' : '')]) !!}
@@ -88,7 +88,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-3">
+                            <div class="col-md-6">
                                 <div class="form-group mb-0">
                                     {!! form_label('timeout', __('frontend.form.timeout') . '*', ['class' => 'form-label']) !!}
                                     {!! form_text('timeout', old('timeout', $row->timeout ?? 5), ['placeholder' => __('frontend.form.timeout'), 'class' => 'form-control' . ($errors->has('timeout') ? ' is-invalid' : '')]) !!}
@@ -99,7 +99,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-3">
+                            <div class="col-md-6">
                                 <div class="border rounded p-3 bg-body-tertiary h-100">
                                     <div class="fw-semibold mb-2">{{ __('frontend.form.secure_connection') }}</div>
 
@@ -120,7 +120,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-3">
+                            <div class="col-md-6">
                                 <div class="border rounded p-3 bg-body-tertiary h-100">
                                     <div class="fw-semibold mb-2">{{ __('frontend.form.authentication_method') }}</div>
 
@@ -149,12 +149,12 @@
                         </div>
                     </div>
 
-                    <div class="card-footer d-flex flex-column flex-sm-row gap-2 justify-content-between">
+                    <div class="card-footer form-actions-footer d-flex flex-column flex-sm-row gap-2 justify-content-start">
                         <button type="submit" class="btn btn-primary">
                             {{ isset($row) ? __('frontend.form.edit') : __('frontend.form.add') }}
                         </button>
 
-                        <a class="btn btn-secondary" href="{{ route('admin.smtp.index') }}">
+                        <a class="btn btn-secondary btn-back" href="{{ route('admin.smtp.index') }}">
                             {{ __('frontend.form.back') }}
                         </a>
                     </div>

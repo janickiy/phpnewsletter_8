@@ -6,10 +6,11 @@
             dataType: "json",
             success: function (data) {
                 $.each(data.items, function (key, item) {
+                    let checkboxId = 'category-' + item.id;
                     let checkBox = ''
-                        + '<div class="form-check">'
-                        + '<label class="form-check-label">'
-                        + '<input checked="checked" name="categoryId[]" type="checkbox" value="' + item.id + '"> '
+                        + '<div class="form-check mb-2">'
+                        + '<input checked="checked" class="form-check-input" id="' + checkboxId + '" name="categoryId[]" type="checkbox" value="' + item.id + '"> '
+                        + '<label class="form-check-label" for="' + checkboxId + '">'
                         + item.name
                         + '</label>'
                         + '</div>';
@@ -46,14 +47,14 @@
                         let alert_msg = '';
 
                         if (data.result == 'success') {
-                            alert_msg += '<div class="alert alert-success alert-dismissable">';
-                            alert_msg += '<button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>';
+                            alert_msg += '<div class="alert alert-success alert-dismissible fade show">';
+                            alert_msg += '<button class="btn-close" aria-label="Close" data-bs-dismiss="alert" type="button"></button>';
                             alert_msg += data.msg;
                             alert_msg += '</div>';
                         } else if (data.result == 'errors') {
                             $.each(data.msg, function (index, val) {
-                                alert_msg += '<div class="alert alert-danger alert-dismissable">';
-                                alert_msg += '<button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>';
+                                alert_msg += '<div class="alert alert-danger alert-dismissible fade show">';
+                                alert_msg += '<button class="btn-close" aria-label="Close" data-bs-dismiss="alert" type="button"></button>';
 
                                 let arr = data.msg[index];
                                 alert_msg += '<ul>';

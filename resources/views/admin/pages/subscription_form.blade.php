@@ -8,36 +8,36 @@
 
     <style>
 
-        pre {
+        .subscription-form-page pre {
             position: relative;
             border: 1px solid #30363d !important;
             border-radius: 8px;
             background: #0d1117 !important;
             padding: 0 !important;
-            margin-bottom: 15px !important;
+            margin-bottom: 0 !important;
             font-size: 14px !important;
             overflow: auto;
         }
 
-        pre code {
+        .subscription-form-page pre code {
             background: #0d1117 !important;
             font-size: 13.5px !important;
             white-space: pre;
         }
 
-        .hljs {
+        .subscription-form-page .hljs {
             background: #0d1117 !important;
         }
 
-        .hljs-ln {
+        .subscription-form-page .hljs-ln {
             width: 100%;
         }
 
-        .hljs-ln td {
+        .subscription-form-page .hljs-ln td {
             padding: 0;
         }
 
-        .hljs-ln-numbers {
+        .subscription-form-page .hljs-ln-numbers {
             background: #010409;
             border-right: 1px solid #30363d;
             color: #6e7681;
@@ -48,12 +48,27 @@
             vertical-align: top;
         }
 
-        .hljs-ln-code {
+        .subscription-form-page .hljs-ln-code {
             padding-left: 14px !important;
         }
 
-        .copy-code-button {
-            margin-bottom: 10px;
+        .subscription-preview {
+            max-width: 720px;
+        }
+
+        .subscription-code-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .5rem;
+            justify-content: flex-end;
+        }
+
+        @media (max-width: 575.98px) {
+            .subscription-code-actions {
+                justify-content: flex-start;
+                margin-top: .75rem;
+                width: 100%;
+            }
         }
 
     </style>
@@ -66,25 +81,39 @@
     <div class="container-fluid subscription-form-page">
         <div class="row">
             <div class="col-12">
-                <div class="card card-outline card-primary">
+                <div class="card card-outline card-primary mb-3">
                     <div class="card-header">
                         <h3 class="card-title">
-                            <i class="fas fa-code me-1"></i>
+                            <i class="fas fa-envelope-open-text me-1"></i>
                             {{ $title }}
                         </h3>
                     </div>
 
                     <div class="card-body">
-                        @include('include.subform')
+                        <div class="subscription-preview">
+                            @include('include.subform')
+                        </div>
+                    </div>
+                </div>
 
-                        <div class="form-group mb-0">
-                            <button type="button" class="btn btn-primary copy-code-button"
+                <div class="card card-outline card-secondary">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-code me-1"></i>
+                            HTML
+                        </h3>
+
+                        <div class="card-tools subscription-code-actions">
+                            <button type="button" class="btn btn-outline-primary btn-sm copy-code-button"
                                     onclick="copyToClipboard('#codebox')">
+                                <i class="fas fa-copy me-1"></i>
                                 {{ __('frontend.str.copy_to_clipboard') }}
                             </button>
-
-                            <pre><code class="language-html" id="codebox">{{ $embedCode }}</code></pre>
                         </div>
+                    </div>
+
+                    <div class="card-body">
+                        <pre><code class="language-html" id="codebox">{{ $embedCode }}</code></pre>
                     </div>
                 </div>
             </div>
