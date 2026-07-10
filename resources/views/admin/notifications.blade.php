@@ -1,9 +1,3 @@
-<div class="alert alert-info alert-dismissible fade show" id="alert_msg_block" style="display:none;">
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ __('frontend.str.close') }}" onClick="$.cookie('alertshow', 'no');"></button>
-    <h5><i class="icon fas fa-info"></i> {{ __('frontend.str.warning_alert') }}</h5>
-    <span id="alert_warning_msg"></span>
-</div>
-
 @if (isset($infoAlert) && $infoAlert)
     <div class="callout callout-info">
         <p>{!! $infoAlert !!}</p>

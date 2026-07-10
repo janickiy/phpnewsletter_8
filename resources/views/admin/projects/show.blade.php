@@ -60,6 +60,22 @@
             margin-top: 1rem;
         }
 
+        .template-send-controls .btn {
+            align-items: center;
+            aspect-ratio: 1 / 1;
+            border-radius: 50% !important;
+            display: inline-flex;
+            flex: 0 0 3.75rem;
+            height: 3.75rem;
+            justify-content: center;
+            padding: 0;
+            width: 3.75rem;
+        }
+
+        .template-send-controls .btn i {
+            line-height: 1;
+        }
+
         #divStatus {
             display: inline-block;
             min-height: 20px;
@@ -463,7 +479,7 @@
                         </div>
 
                         <div class="template-send-controls">
-                            <button id="sendout" class="btn btn-secondary rounded-circle btn-lg"
+                            <button id="sendout" class="btn btn-success rounded-circle btn-lg"
                                     title="{{ __('frontend.str.send_out_newsletter') }}">
                                 <i class="fa fa-play"></i>
                             </button>
@@ -474,10 +490,6 @@
                             </button>
                         </div>
                     </div>
-                </div>
-                <div class="modal-footer justify-content-between">
-                    <button type="button" class="btn btn-secondary"
-                            data-bs-dismiss="modal">{{ __('frontend.str.close') }}</button>
                 </div>
             </div>
         </div>
