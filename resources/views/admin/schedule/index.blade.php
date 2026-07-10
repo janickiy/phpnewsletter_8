@@ -127,37 +127,31 @@
 
 @section('content')
 
-<!-- Main content -->
-<section class="content">
-
-    <div class="container-fluid">
+    <div class="container-fluid schedule-page">
         <div class="row">
             <div class="col-12">
+                <div class="card card-outline card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-calendar-alt me-1"></i>
+                            {{ __('frontend.menu.schedule') }}
+                        </h3>
 
-                <div class="card">
-                    <!-- /.card-header -->
-                    <div class="card-body">
-                        <div class="pb-3">
-                            <a href="{{ route('admin.schedule.create') }}" class="btn btn-info btn-sm pull-left">
-                                <span class="fa fa-plus"> &nbsp;</span> {{ __('frontend.str.add_schedule') }}
+                        <div class="card-tools">
+                            <a href="{{ route('admin.schedule.create') }}" class="btn btn-primary btn-sm">
+                                <i class="fas fa-plus me-1"></i>
+                                {{ __('frontend.str.add_schedule') }}
                             </a>
                         </div>
-
-                        <div id='calendar'></div>
-
                     </div>
-                    <!-- /.card-body -->
-                </div>
-                <!-- /.card -->
-            </div>
-            <!-- /.col -->
-        </div>
-        <!-- /.row -->
-    </div>
-    <!-- /.container-fluid -->
 
-</section>
-<!-- /.content -->
+                    <div class="card-body">
+                        <div id='calendar'></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
 @endsection
 
@@ -235,8 +229,8 @@
             }
 
             return content + '<div class="calendar-event-actions">' +
-                '<a href="{{ url("schedule/edit") }}/' + event.id + '" class="btn btn-info btn-xs" title="{{ __('frontend.str.edit') }}"><i class="fa fa-edit"></i></a>' +
-                '<button type="button" class="btn btn-danger btn-xs delete-event" data-id="' + event.id + '" title="{{ __('frontend.str.remove') }}"><i class="fa fa-trash"></i></button>' +
+                '<a href="{{ url("schedule/edit") }}/' + event.id + '" class="btn btn-outline-primary btn-sm" title="{{ __('frontend.str.edit') }}"><i class="fas fa-edit"></i></a>' +
+                '<button type="button" class="btn btn-outline-danger btn-sm delete-event" data-id="' + event.id + '" title="{{ __('frontend.str.remove') }}"><i class="fas fa-trash"></i></button>' +
                 '</div>';
         }
 

@@ -4,19 +4,37 @@
 
 @section('css')
 
+    <style>
+        .settings-page .form-group.row {
+            margin-bottom: 1rem;
+        }
+
+        .settings-page .tab-pane > .form-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .settings-page .header-row + .header-row {
+            margin-top: .75rem;
+        }
+    </style>
 
 @endsection
 
 @section('content')
 
-    <!-- Main content -->
-    <section class="content">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-12">
-                    <div class="card">
-                        <div class="card-header p-2">
-                            <ul class="nav nav-pills">
+    <div class="container-fluid settings-page">
+        <div class="row">
+            <div class="col-12">
+                <div class="card card-outline card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-cogs me-1"></i>
+                            {{ $title }}
+                        </h3>
+                    </div>
+
+                    <div class="card-header bg-body-tertiary p-2">
+                        <ul class="nav nav-pills flex-column flex-sm-row gap-1">
                                 <li class="nav-item">
                                     <a class="nav-link active" href="#s1" data-bs-toggle="tab">{{ __('frontend.str.interface_settings') }}</a>
                                 </li>
@@ -26,10 +44,10 @@
                                 <li class="nav-item">
                                     <a class="nav-link" href="#s3" data-bs-toggle="tab">{{ __('frontend.str.additional_headers') }}</a>
                                 </li>
-                            </ul>
-                        </div><!-- /.card-header -->
+                        </ul>
+                    </div>
 
-                        {!! form_open(['url' => route('admin.settings.update'), 'method' => 'put', 'class' => 'form-horizontal']) !!}
+                    {!! form_open(['url' => route('admin.settings.update'), 'method' => 'put', 'class' => 'form-horizontal']) !!}
 
                         <div class="card-body">
                             <div class="tab-content">
@@ -244,7 +262,7 @@
                                                             'minute' => __('frontend.form.minute'),
                                                             'hour' => __('frontend.form.hour'),
                                                             'day' => __('frontend.form.day'),
-                                                            ], SettingsHelper::getInstance()->getValueForKey('INTERVAL_TYPE') ? SettingsHelper::getInstance()->getValueForKey('INTERVAL_TYPE') : 'no', ['class' => 'form-control']
+                                                            ], SettingsHelper::getInstance()->getValueForKey('INTERVAL_TYPE') ? SettingsHelper::getInstance()->getValueForKey('INTERVAL_TYPE') : 'no', ['class' => 'form-select']
                                                             ) !!}
 
                                             @if ($errors->has('INTERVAL_TYPE'))
@@ -372,7 +390,7 @@
                                                                              'bulk' => 'bulk',
                                                                              'junk' => 'junk',
                                                                               'list' => 'list',
-                                                                            ], SettingsHelper::getInstance()->getValueForKey('PRECEDENCE') ? SettingsHelper::getInstance()->getValueForKey('PRECEDENCE') : 'no', ['class' => 'form-control']
+                                                                            ], SettingsHelper::getInstance()->getValueForKey('PRECEDENCE') ? SettingsHelper::getInstance()->getValueForKey('PRECEDENCE') : 'no', ['class' => 'form-select']
                                              ) !!}
 
                                             @if ($errors->has('CHARSET'))
@@ -389,7 +407,7 @@
 
                                         <div class="col-sm-10">
 
-                                            {!! form_select('CHARSET', $option_charset, SettingsHelper::getInstance()->getValueForKey('CHARSET') ? SettingsHelper::getInstance()->getValueForKey('CHARSET') : 'no', ['class' => 'form-control'] ) !!}
+                                            {!! form_select('CHARSET', $option_charset, SettingsHelper::getInstance()->getValueForKey('CHARSET') ? SettingsHelper::getInstance()->getValueForKey('CHARSET') : 'no', ['class' => 'form-select'] ) !!}
 
                                             @if ($errors->has('CHARSET'))
                                                 <span class="text-danger">{{ $errors->first('CHARSET') }}</span>
@@ -515,16 +533,21 @@
                                                     </div>
 
                                                     <div class="col-md-2">
-                                                        <a class="btn btn-outline-danger removeBlock" title="{{ __('frontend.form.remove') }}"> - </a>
+                                                        <a class="btn btn-outline-danger btn-sm removeBlock" title="{{ __('frontend.form.remove') }}">
+                                                            <i class="fas fa-minus"></i>
+                                                        </a>
                                                     </div>
                                                 </div>
                                             </div>
 
                                         @endforeach
 
-                                        <div class="form-group">
+                                        <div class="form-group mb-0">
                                             <div class="col-lg-12">
-                                                <input class="btn btn-secondary" id="add_field" type="button" value="+ {{ __('frontend.form.add') }}">
+                                                <button class="btn btn-secondary btn-sm" id="add_field" type="button">
+                                                    <i class="fas fa-plus me-1"></i>
+                                                    {{ __('frontend.form.add') }}
+                                                </button>
                                             </div>
                                         </div>
 
@@ -535,26 +558,18 @@
                             <!-- /.tab-content -->
                         </div><!-- /.card-body -->
 
-                        <div class="card-footer">
-                            <button type="submit" class="btn btn-primary">
-                                {{ __('frontend.str.apply') }}
-                            </button>
-                        </div>
-
-                        {!! form_close() !!}
-
-                        <!-- /.card-body -->
+                    <div class="card-footer">
+                        <button type="submit" class="btn btn-primary">
+                            {{ __('frontend.str.apply') }}
+                        </button>
                     </div>
-                    <!-- /.card -->
-                </div>
-                <!-- /.col -->
-            </div>
-            <!-- /.row -->
-        </div>
-        <!-- /.container-fluid -->
 
-    </section>
-    <!-- /.content -->
+                    {!! form_close() !!}
+
+                </div>
+            </div>
+        </div>
+    </div>
 
 @endsection
 
@@ -569,7 +584,7 @@
                 html += '<div class="col-md-3"><input class="form-control" type="text" value="" name="header_name[]"></div>';
                 html += '<label class="col-sm-2 col-form-label">{{ __('frontend.str.value') }}</label>';
                 html += '<div class="col-md-3"><input class="form-control" type="text" value="" name="header_value[]"></div>';
-                html += '<div class="col-md-2"><a class="btn btn-outline-danger removeBlock" title="{{ __('frontend.form.remove') }}"> - </a></div>';
+                html += '<div class="col-md-2"><a class="btn btn-outline-danger btn-sm removeBlock" title="{{ __('frontend.form.remove') }}"><i class="fas fa-minus"></i></a></div>';
                 html += '</div></div>';
 
                 $('#headerslist').prepend(html);

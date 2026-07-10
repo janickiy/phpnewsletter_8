@@ -9,40 +9,59 @@
     <link rel="stylesheet" href="{{ asset('vendor/datatables-responsive-bs5/css/responsive.bootstrap5.min.css') }}">
     <link rel="stylesheet" href="{{ asset('vendor/datatables-buttons-bs5/css/buttons.bootstrap5.min.css') }}">
 
+    <style>
+        .log-page #itemList,
+        .log-page #logList {
+            width: 100% !important;
+        }
+
+        .log-page #itemList th,
+        .log-page #itemList td,
+        .log-page #logList th,
+        .log-page #logList td {
+            vertical-align: middle;
+        }
+
+        .log-page #itemList thead th,
+        .log-page #logList thead th {
+            white-space: nowrap;
+        }
+    </style>
+
 @endsection
 
 @section('content')
 
-    <!-- Main content -->
-    <section class="content">
+    <div class="container-fluid log-page">
+        <div class="row g-3">
+            <div class="col-12">
+                <div class="card card-outline card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-chart-area me-1"></i>
+                            {{ __('frontend.menu.log') }}
+                        </h3>
 
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-12">
+                        @if(PermissionsHelper::has_permission('admin'))
+                            <div class="card-tools d-flex align-items-center gap-2">
+                                <a id="clearLogButton"
+                                   class="btn btn-outline-danger btn-sm"
+                                   onclick="confirmation(event)"
+                                   title="{{ __('frontend.str.log_clear') }}">
+                                    <i class="fas fa-trash me-1"></i>
+                                    {{ __('frontend.str.log_clear') }}
+                                </a>
 
-                    <div class="card">
-                        <!-- /.card-header -->
-                        <div class="card-body">
+                                <span id="clearLogSpinner" class="d-none">
+                                    <span class="spinner-border spinner-border-sm text-danger" role="status" aria-hidden="true"></span>
+                                </span>
+                            </div>
+                        @endif
+                    </div>
 
-                            @if(PermissionsHelper::has_permission('admin'))
-
-                                <div class="row">
-                                    <div class="col-lg-12">
-                                        <p class="text-center">
-                                            <a id="clearLogButton" class="btn btn-outline-danger btn-lg" onclick="confirmation(event)"
-                                               title="{{ __('frontend.str.log_clear') }}">
-                                                <span class="fa fa-trash fa-2x"></span> {{ __('frontend.str.log_clear') }}
-                                            </a>
-                                            <span id="clearLogSpinner" class="ms-2 d-none">
-                                                <span class="spinner-border spinner-border-sm text-danger" role="status" aria-hidden="true"></span>
-                                            </span>
-                                        </p>
-                                    </div>
-                                </div>
-
-                            @endif
-
-                            <table id="itemList" class="table table-bordered table-striped">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table id="itemList" class="table table-striped table-hover mb-0 align-middle">
                                 <thead>
                                 <tr>
                                     <th>{{ __('frontend.str.time') }}</th>
@@ -53,58 +72,43 @@
                                     <th>{{ __('frontend.str.excel_report') }}</th>
                                 </tr>
                                 </thead>
-                                <tfoot>
-                                <tr>
-                                    <th>{{ __('frontend.str.time') }}</th>
-                                    <th>{{ __('frontend.str.total') }}</th>
-                                    <th>{{ __('frontend.str.sent') }}</th>
-                                    <th>{{ __('frontend.str.unsent') }}</th>
-                                    <th>{{ __('frontend.str.read') }}</th>
-                                    <th>{{ __('frontend.str.excel_report') }}</th>
-                                </tr>
-                                </tfoot>
                             </table>
-
-                            <div class="pt-3">
-                                <table id="logList" class="table table-striped table-bordered table-hover">
-                                    <thead>
-                                    <tr>
-                                        <th>{{ __('frontend.str.newsletter') }}</th>
-                                        <th>E-mail</th>
-                                        <th>{{ __('frontend.str.time') }}</th>
-                                        <th>{{ __('frontend.str.status') }}</th>
-                                        <th>{{ __('frontend.str.read') }}</th>
-                                        <th>{{ __('frontend.str.error') }}</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                    <tfoot>
-                                    <tr>
-                                        <th>{{ __('frontend.str.newsletter') }}</th>
-                                        <th>E-mail</th>
-                                        <th>{{ __('frontend.str.time') }}</th>
-                                        <th>{{ __('frontend.str.status') }}</th>
-                                        <th>{{ __('frontend.str.read') }}</th>
-                                        <th>{{ __('frontend.str.error') }}</th>
-                                    </tr>
-                                    </tfoot>
-                                </table>
-                            </div>
-
                         </div>
-                        <!-- /.card-body -->
                     </div>
-                    <!-- /.card -->
                 </div>
-                <!-- /.col -->
             </div>
-            <!-- /.row -->
-        </div>
-        <!-- /.container-fluid -->
 
-    </section>
-    <!-- /.content -->
+            <div class="col-12">
+                <div class="card card-outline card-info">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-list me-1"></i>
+                            {{ __('frontend.str.newsletter') }}
+                        </h3>
+                    </div>
+
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table id="logList" class="table table-striped table-hover mb-0 align-middle">
+                                <thead>
+                                <tr>
+                                    <th>{{ __('frontend.str.newsletter') }}</th>
+                                    <th>E-mail</th>
+                                    <th>{{ __('frontend.str.time') }}</th>
+                                    <th>{{ __('frontend.str.status') }}</th>
+                                    <th>{{ __('frontend.str.read') }}</th>
+                                    <th>{{ __('frontend.str.error') }}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
 @endsection
 
@@ -152,7 +156,7 @@
                     },
                 },
                 "sDom": "lrtip",
-                "autoWidth": true,
+                "autoWidth": false,
                 'createdRow': function (row, data, dataIndex) {
                     $(row).attr('id', 'rowid_' + data['id']);
                 },
@@ -185,10 +189,10 @@
                         "sNext": "{{ __('pagination.s_paginate.next') }}",
                         "sPrevious": "{{ __('pagination.s_paginate.previous') }}",
                     },
-                    "sSearch": '<span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>'
+                    "sSearch": ' <i class="fas fa-search" aria-hidden="true"></i>'
                 },
                 "sDom": "flrtip",
-                "autoWidth": true,
+                "autoWidth": false,
                 'createdRow': function (row, data, dataIndex) {
                     $(row).attr('id', 'rowid_' + data['id']);
                     if (data['status'] === 0) $(row).attr('class', 'table-danger');

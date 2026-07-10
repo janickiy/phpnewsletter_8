@@ -10,36 +10,26 @@
 
 @section('content')
 
-    <!-- Main content -->
-    <section class="content">
-
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-12">
-
-                    <div class="card">
-                        <!-- /.card-header -->
-                        <div class="card-body">
-
-                            <div id="tree" style="padding-bottom: 15px;">
-
-                                {!! StringHelper::tree($phpinfo) !!}
-
-                            </div>
-
-                        </div>
-                        <!-- /.card-body -->
+    <div class="container-fluid phpinfo-page">
+        <div class="row">
+            <div class="col-12">
+                <div class="card card-outline card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-info-circle me-1"></i>
+                            {{ $title }}
+                        </h3>
                     </div>
-                    <!-- /.card -->
-                </div>
-                <!-- /.col -->
-            </div>
-            <!-- /.row -->
-        </div>
-        <!-- /.container-fluid -->
 
-    </section>
-    <!-- /.content -->
+                    <div class="card-body">
+                        <div id="tree" class="pb-3">
+                            {!! StringHelper::tree($phpinfo) !!}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
 @endsection
 

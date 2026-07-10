@@ -4,91 +4,99 @@
 
 @section('css')
 
-
 @endsection
 
 @section('content')
 
-    <!-- Main content -->
-    <section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card card-outline card-success">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-file-import me-1"></i>
+                            {{ $title }}
+                        </h3>
+                    </div>
 
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-12">
+                    {!! form_open(['url' => route('admin.subscribers.import_subscribers'), 'files' => true, 'method' => 'post']) !!}
 
-                    <!-- general form elements -->
-                    <header class="card card-primary">
+                    <div class="card-body">
+                        <p class="text-muted small mb-3">*-{{ __('frontend.form.required_fields') }}</p>
 
-                        <!-- form start -->
-                        {!! form_open(['url' => route('admin.subscribers.import_subscribers'), 'files' => true, 'method' => 'post']) !!}
+                        <div class="row g-3">
+                            <div class="col-lg-8">
+                                <div class="form-group mb-3">
+                                    {!! form_label('import', __('frontend.form.attach_files') . '*', ['class' => 'form-label']) !!}
 
-                        <div class="card-body">
+                                    <div class="input-group has-validation">
+                                        <span class="input-group-text"><i class="fas fa-file-upload"></i></span>
+                                        {!! form_file('import',  ['id' => 'import', 'class' => 'form-control' . ($errors->has('import') ? ' is-invalid' : ''), 'accept' => '.csv,.xlsx,.xls,.ods,.txt']) !!}
 
-                            <p>*-{{ __('frontend.form.required_fields') }}</p>
+                                        @if ($errors->has('import'))
+                                            <div class="invalid-feedback">{{ $errors->first('import') }}</div>
+                                        @endif
+                                    </div>
 
-                            <div class="form-group">
+                                    <div class="form-text">
+                                        {{ __('frontend.form.maximum_size') }}: {{ $maxUploadFileSize }}
+                                    </div>
+                                </div>
 
-                                {!! form_label('import', __('frontend.form.attach_files') . '*') !!}
+                                <div class="form-group mb-3">
+                                    {!! form_label('categoryId[]', __('frontend.form.subscribers_category'), ['class' => 'form-label']) !!}
+                                    {!! form_select('categoryId[]', $category_options, old('categoryId'), ['multiple' => 'multiple', 'placeholder' => __('frontend.form.select_category'), 'class' => 'form-select' . ($errors->has('categoryId') ? ' is-invalid' : '')]) !!}
 
-                                {!! form_file('import',  ['id' => 'import', 'class' => 'form-control', 'accept' => '.csv,.xlsx,.xls,.ods,.txt']) !!}
+                                    @if ($errors->has('categoryId'))
+                                        <p class="text-danger mb-0 mt-1">{{ $errors->first('categoryId') }}</p>
+                                    @endif
+                                </div>
 
-                                @if ($errors->has('import'))
-                                    <p class="text-danger">{{ $errors->first('import') }}</p>
-                                @endif
+                                <div class="form-group mb-0">
+                                    {!! form_label('charset', __('frontend.form.charset'), ['class' => 'form-label']) !!}
+                                    {!! form_select('charset', $charsets, old('charset'), ['placeholder' => '--' . __('frontend.form.select') . '--', 'class' => 'form-select' . ($errors->has('charset') ? ' is-invalid' : '')]) !!}
 
-                                <blockquote class="quote-secondary">
-                                    <small>{{ __('frontend.form.maximum_size') }}: <cite
-                                            title="Source Title">{{ $maxUploadFileSize }}</cite></small>
-                                </blockquote>
-
+                                    @if ($errors->has('charset'))
+                                        <p class="text-danger mb-0 mt-1">{{ $errors->first('charset') }}</p>
+                                    @endif
+                                </div>
                             </div>
 
-                            <div class="form-group">
+                            <div class="col-lg-4">
+                                <div class="border rounded p-3 bg-body-tertiary">
+                                    <div class="fw-semibold mb-2">
+                                        <i class="fas fa-file-csv me-1"></i>
+                                        {{ __('frontend.form.format') }}
+                                    </div>
 
-                                {!! form_label('categoryId[]', __('frontend.form.charset')) !!}
-
-                                {!! form_select('charset', $charsets, null, ['placeholder' => '--' . __('frontend.form.select') . '--', 'class' => 'form-control']) !!}
-
-                                @if ($errors->has('charset'))
-                                    <p class="text-danger">{{ $errors->first('charset') }}</p>
-                                @endif
-
+                                    <div class="d-flex flex-wrap gap-2">
+                                        <span class="badge text-bg-light border">CSV</span>
+                                        <span class="badge text-bg-light border">XLSX</span>
+                                        <span class="badge text-bg-light border">XLS</span>
+                                        <span class="badge text-bg-light border">ODS</span>
+                                        <span class="badge text-bg-light border">TXT</span>
+                                    </div>
+                                </div>
                             </div>
-
-                            <div class="form-group">
-
-                                {!! form_label('categoryId[]', __('frontend.form.subscribers_category')) !!}
-
-                                {!! form_select('categoryId[]', $category_options, null, ['multiple' => 'multiple', 'placeholder' => __('frontend.form.select_category'), 'class' => 'form-control']) !!}
-
-                                @if ($errors->has('categoryId'))
-                                    <p class="text-danger">{{ $errors->first('categoryId') }}</p>
-                                @endif
-
-                            </div>
-
                         </div>
-                        <!-- /.card-body -->
+                    </div>
 
-                        <div class="card-footer">
-                            <button type="submit" class="btn btn-primary">
-                                {{ __('frontend.form.send') }}
-                            </button>
-                            <a class="btn btn-secondary float-sm-end" href="{{ route('admin.subscribers.index') }}">
-                                {{ __('frontend.form.back') }}
-                            </a>
-                        </div>
+                    <div class="card-footer d-flex flex-column flex-sm-row gap-2 justify-content-between">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-upload me-1"></i>
+                            {{ __('frontend.form.send') }}
+                        </button>
 
-                        {!! form_close() !!}
+                        <a class="btn btn-secondary" href="{{ route('admin.subscribers.index') }}">
+                            {{ __('frontend.form.back') }}
+                        </a>
+                    </div>
 
-                    </header>
+                    {!! form_close() !!}
                 </div>
-                <!-- /.card -->
             </div>
         </div>
-
-    </section>
-    <!-- /.content -->
+    </div>
 
 @endsection
 

@@ -4,86 +4,79 @@
 
 @section('css')
 
-
 @endsection
 
 @section('content')
 
-    <!-- Main content -->
-    <section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card card-outline card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas {{ isset($row) ? 'fa-pen' : 'fa-plus' }} me-1"></i>
+                            {{ $title }}
+                        </h3>
+                    </div>
 
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-12">
+                    {!! form_open(['url' => isset($row) ? route('admin.macros.update') : route('admin.macros.store'), 'method' => isset($row) ? 'put' : 'post']) !!}
 
-                    <!-- general form elements -->
-                    <header class="card card-primary">
+                    {!! isset($row) ? form_hidden('id', $row->id) : '' !!}
 
-                        <!-- form start -->
-                        {!! form_open(['url' => isset($row) ? route('admin.macros.update') : route('admin.macros.store'), 'method' => isset($row) ? 'put' : 'post']) !!}
+                    <div class="card-body">
+                        <p class="text-muted small mb-3">*-{{ __('frontend.form.required_fields') }}</p>
 
-                        {!! isset($row) ? form_hidden('id', $row->id) : '' !!}
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="form-group mb-0">
+                                    {!! form_label('name', __('frontend.form.macros_name') . '*', ['class' => 'form-label']) !!}
+                                    {!! form_text('name', old('name', $row->name ?? null), ['class' => 'form-control' . ($errors->has('name') ? ' is-invalid' : ''), 'placeholder' => __('frontend.form.name')]) !!}
 
-                        <div class="card-body">
-
-                            <p>*-{{ __('frontend.form.required_fields') }}</p>
-
-                            <div class="form-group">
-                                {!! form_label('name', __('frontend.form.macros_name') . '*') !!}
-
-                                {!! form_text('name', old('name', $row->name ?? null), ['class' => 'form-control', 'placeholder' => __('frontend.form.name')]) !!}
-
-                                @if ($errors->has('name'))
-                                    <p class="text-danger">{{ $errors->first('name') }}</p>
-                                @endif
+                                    @if ($errors->has('name'))
+                                        <div class="invalid-feedback">{{ $errors->first('name') }}</div>
+                                    @endif
+                                </div>
                             </div>
 
-                            <div class="form-group">
+                            <div class="col-md-6">
+                                <div class="form-group mb-0">
+                                    {!! form_label('type', __('frontend.form.macros_type') . '*', ['class' => 'form-label']) !!}
+                                    {!! form_select('type', $options, old('type', $row->type ?? null), ['placeholder' => __('frontend.form.macros_type'), 'class' => 'form-select' . ($errors->has('type') ? ' is-invalid' : '')]) !!}
 
-                                {!! form_label('value', __('frontend.form.value') . '*') !!}
-
-                                {!! form_textarea('value', old('value', $row->value ?? null), [ 'placeholder' => __('frontend.form.value'), 'rows' => 3, 'class' => 'form-control']) !!}
-
-                                @if ($errors->has('value'))
-                                    <p class="text-danger">{{ $errors->first('value') }}</p>
-                                @endif
-
+                                    @if ($errors->has('type'))
+                                        <div class="invalid-feedback">{{ $errors->first('type') }}</div>
+                                    @endif
+                                </div>
                             </div>
 
-                            <div class="form-group">
+                            <div class="col-12">
+                                <div class="form-group mb-0">
+                                    {!! form_label('value', __('frontend.form.value') . '*', ['class' => 'form-label']) !!}
+                                    {!! form_textarea('value', old('value', $row->value ?? null), ['placeholder' => __('frontend.form.value'), 'rows' => 4, 'class' => 'form-control' . ($errors->has('value') ? ' is-invalid' : '')]) !!}
 
-                                {!! form_label('type', __('frontend.form.macros_type') . '*') !!}
-
-                                {!! form_select('type', $options, $row->type ?? null, ['placeholder' => __('frontend.form.macros_type'), 'class' => 'form-select']) !!}
-
-                                @if ($errors->has('type'))
-                                    <p class="text-danger">{{ $errors->first('type') }}</p>
-                                @endif
+                                    @if ($errors->has('value'))
+                                        <div class="invalid-feedback">{{ $errors->first('value') }}</div>
+                                    @endif
+                                </div>
                             </div>
-
                         </div>
-                        <!-- /.card-body -->
+                    </div>
 
-                        <div class="card-footer">
-                            <button type="submit" class="btn btn-primary">
-                                {{ isset($row) ? __('frontend.form.edit') : __('frontend.form.add') }}
-                            </button>
-                            <a class="btn btn-secondary float-sm-end" href="{{ route('admin.macros.index') }}">
-                                {{ __('frontend.form.back') }}
-                            </a>
-                        </div>
+                    <div class="card-footer d-flex flex-column flex-sm-row gap-2 justify-content-between">
+                        <button type="submit" class="btn btn-primary">
+                            {{ isset($row) ? __('frontend.form.edit') : __('frontend.form.add') }}
+                        </button>
 
-                        {!! form_close() !!}
+                        <a class="btn btn-secondary" href="{{ route('admin.macros.index') }}">
+                            {{ __('frontend.form.back') }}
+                        </a>
+                    </div>
 
-                    </header>
-
+                    {!! form_close() !!}
                 </div>
-                <!-- /.card -->
             </div>
         </div>
-
-    </section>
-    <!-- /.content -->
+    </div>
 
 @endsection
 
@@ -115,4 +108,3 @@
     </script>
 
 @endsection
-

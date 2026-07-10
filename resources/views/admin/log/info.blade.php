@@ -9,24 +9,41 @@
     <link rel="stylesheet" href="{{ asset('vendor/datatables-responsive-bs5/css/responsive.bootstrap5.min.css') }}">
     <link rel="stylesheet" href="{{ asset('vendor/datatables-buttons-bs5/css/buttons.bootstrap5.min.css') }}">
 
+    <style>
+        .log-info-page #itemList {
+            width: 100% !important;
+        }
+
+        .log-info-page #itemList th,
+        .log-info-page #itemList td {
+            vertical-align: middle;
+        }
+    </style>
+
 @endsection
 
 @section('content')
 
-    <!-- Main content -->
-    <section class="content">
+    <div class="container-fluid log-info-page">
+        <div class="row">
+            <div class="col-12">
+                <div class="card card-outline card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-list me-1"></i>
+                            {{ $title }}
+                        </h3>
 
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-12">
+                        <div class="card-tools">
+                            <a class="btn btn-secondary btn-sm" href="{{ route('admin.log.index') }}">
+                                {{ __('frontend.str.back') }}
+                            </a>
+                        </div>
+                    </div>
 
-                    <div class="card">
-                        <!-- /.card-header -->
-                        <div class="card-body">
-
-                            <p>« <a href="{{ route('admin.log.index') }}">{{ __('frontend.str.back') }}</a></p>
-
-                            <table id="itemList" class="table table-striped table-bordered table-hover">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table id="itemList" class="table table-striped table-hover mb-0 align-middle">
                                 <thead>
                                 <tr>
                                     <th>{{ __('frontend.str.newsletter') }}</th>
@@ -40,20 +57,12 @@
                                 <tbody>
                                 </tbody>
                             </table>
-
                         </div>
-                        <!-- /.card-body -->
                     </div>
-                    <!-- /.card -->
                 </div>
-                <!-- /.col -->
             </div>
-            <!-- /.row -->
         </div>
-        <!-- /.container-fluid -->
-
-    </section>
-    <!-- /.content -->
+    </div>
 
 @endsection
 
@@ -77,7 +86,7 @@
         $(document).ready(function () {
             $('#itemList').dataTable({
                 "sDom": "flrtip",
-                "autoWidth": true,
+                "autoWidth": false,
                 "oLanguage": {
                     "sLengthMenu": "{{ __('pagination.s_length_menu') }}",
                     "sZeroRecords": "{{ __('pagination.s_zero_records') }}",

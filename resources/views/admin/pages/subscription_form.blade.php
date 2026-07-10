@@ -63,42 +63,33 @@
 
 @section('content')
 
-    <!-- Main content -->
-    <section class="content">
-
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-12">
-
-                    <div class="card">
-                        <!-- /.card-header -->
-                        <div class="card-body">
-
-                            @include('include.subform')
-
-                            <div class="form-group">
-
-                                <button type="button" class="btn btn-primary copy-code-button"
-                                        onclick="copyToClipboard('#codebox')">
-                                    <span id="myTooltip">{{ __('frontend.str.copy_to_clipboard') }}</span>
-                                </button>
-
-                                <pre><code class="language-html" id="codebox">{{ $embedCode }}</code></pre>
-
-                            </div>
-
-                            <!-- /.card-body -->
-                        </div>
-                        <!-- /.card -->
+    <div class="container-fluid subscription-form-page">
+        <div class="row">
+            <div class="col-12">
+                <div class="card card-outline card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-code me-1"></i>
+                            {{ $title }}
+                        </h3>
                     </div>
-                    <!-- /.col -->
-                </div>
-                <!-- /.row -->
-            </div>
-            <!-- /.container-fluid -->
 
-    </section>
-    <!-- /.content -->
+                    <div class="card-body">
+                        @include('include.subform')
+
+                        <div class="form-group mb-0">
+                            <button type="button" class="btn btn-primary copy-code-button"
+                                    onclick="copyToClipboard('#codebox')">
+                                {{ __('frontend.str.copy_to_clipboard') }}
+                            </button>
+
+                            <pre><code class="language-html" id="codebox">{{ $embedCode }}</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
 @endsection
 

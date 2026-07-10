@@ -9,39 +9,51 @@
     <link rel="stylesheet" href="{{ asset('vendor/datatables-responsive-bs5/css/responsive.bootstrap5.min.css') }}">
     <link rel="stylesheet" href="{{ asset('vendor/datatables-buttons-bs5/css/buttons.bootstrap5.min.css') }}">
 
+    <style>
+        .redirect-page #itemList {
+            width: 100% !important;
+        }
+
+        .redirect-page #itemList th,
+        .redirect-page #itemList td {
+            vertical-align: middle;
+        }
+    </style>
+
 @endsection
 
 @section('content')
 
-    <!-- Main content -->
-    <section class="content">
+    <div class="container-fluid redirect-page">
+        <div class="row">
+            <div class="col-12">
+                <div class="card card-outline card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-mouse-pointer me-1"></i>
+                            {{ __('frontend.menu.redirect') }}
+                        </h3>
 
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-12">
+                        @if(PermissionsHelper::has_permission('admin'))
+                            <div class="card-tools d-flex align-items-center gap-2">
+                                <a id="clearRedirectButton"
+                                   class="btn btn-outline-danger btn-sm"
+                                   title="{{ __('frontend.str.log_clear') }}"
+                                   onclick="confirmation(event)">
+                                    <i class="fas fa-trash me-1"></i>
+                                    {{ __('frontend.str.redirect_clear') }}
+                                </a>
 
-                    <div class="card">
-                        <!-- /.card-header -->
-                        <div class="card-body">
+                                <span id="clearRedirectSpinner" class="d-none">
+                                    <span class="spinner-border spinner-border-sm text-danger" role="status" aria-hidden="true"></span>
+                                </span>
+                            </div>
+                        @endif
+                    </div>
 
-                            @if(PermissionsHelper::has_permission('admin'))
-
-                                <div class="row">
-                                    <div class="col-lg-12"><p class="text-center">
-                                            <a id="clearRedirectButton" class="btn btn-outline-danger btn-lg"
-                                               title="{{ __('frontend.str.log_clear') }}" onclick="confirmation(event)">
-                                                <span class="fa fa-trash fa-2x"></span> {{ __('frontend.str.redirect_clear') }}
-                                            </a>
-                                            <span id="clearRedirectSpinner" class="ms-2 d-none">
-                                                <span class="spinner-border spinner-border-sm text-danger" role="status" aria-hidden="true"></span>
-                                            </span>
-                                        </p>
-                                    </div>
-                                </div>
-
-                            @endif
-
-                            <table id="itemList" class="table table-striped table-bordered table-hover">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table id="itemList" class="table table-striped table-hover mb-0 align-middle">
                                 <thead>
                                 <tr>
                                     <th>URL</th>
@@ -49,28 +61,13 @@
                                     <th>{{ __('frontend.str.excel_report') }}</th>
                                 </tr>
                                 </thead>
-                                <tfoot>
-                                <tr>
-                                    <th>URL</th>
-                                    <th>{{ __('frontend.str.redirect_number') }}</th>
-                                    <th>{{ __('frontend.str.excel_report') }}</th>
-                                </tr>
-                                </tfoot>
                             </table>
-
                         </div>
-                        <!-- /.card-body -->
                     </div>
-                    <!-- /.card -->
                 </div>
-                <!-- /.col -->
             </div>
-            <!-- /.row -->
         </div>
-        <!-- /.container-fluid -->
-
-    </section>
-    <!-- /.content -->
+    </div>
 
 @endsection
 
@@ -118,7 +115,7 @@
                     "sSearch": ' <i class="fas fa-search" aria-hidden="true"></i>'
                 },
                 "sDom": "flrtip",
-                "autoWidth": true,
+                "autoWidth": false,
                 aaSorting: [[0, 'asc']],
                 processing: true,
                 serverSide: true,

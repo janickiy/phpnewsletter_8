@@ -4,41 +4,42 @@
 
 @section('css')
 
-
 @endsection
 
 @section('content')
 
-    <!-- Main content -->
-    <section class="content">
+    <div class="container-fluid update-page">
+        <div class="row">
+            <div class="col-12">
+                <div class="card card-outline card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-sync-alt me-1"></i>
+                            {{ $title }}
+                        </h3>
+                    </div>
 
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-12">
+                    <div class="card-body">
+                        @if (!empty($button_update))
+                            <div id="btn_refresh">
+                                <a id="start_update" class="btn btn-primary">
+                                    <i class="fas fa-sync-alt me-1"></i>
+                                    {!! $button_update !!}
+                                </a>
+                            </div>
+                        @endif
 
-                    @if (!empty($button_update))
-                        <div id="btn_refresh">
-                            <a id="start_update" class="btn btn-outline-secondary">
-                                <i class="fa fa-sync-alt"></i> {!! $button_update !!}
-                            </a>
-                        </div>
-                    @endif
-
-                    @if (!empty($msg_no_update))
-                        <a class="btn btn-outline-secondary" disabled>
-                            <i class="fa fa-sync-alt"></i> {!! $msg_no_update !!}
-                        </a>
-                    @endif
-
+                        @if (!empty($msg_no_update))
+                            <button type="button" class="btn btn-outline-secondary" disabled>
+                                <i class="fas fa-check me-1"></i>
+                                {!! $msg_no_update !!}
+                            </button>
+                        @endif
+                    </div>
                 </div>
-                <!-- /.col -->
             </div>
-            <!-- /.row -->
         </div>
-        <!-- /.container-fluid -->
-
-    </section>
-    <!-- /.content -->
+    </div>
 
 @endsection
 
@@ -86,7 +87,7 @@
 
         function renderRetryButton(message) {
             const $button = $('<a>', {id: 'start_update', class: 'btn btn-outline-secondary'}).append(
-                $('<i>', {class: 'fa fa-sync-alt'})
+                $('<i>', {class: 'fas fa-sync-alt me-1'})
             ).append(' ' + buttonUpdateLabel);
             const $status = $('<p>', {class: 'text-muted text-danger', id: 'status_process'}).text(message || failedToUpdateText);
 

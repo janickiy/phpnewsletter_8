@@ -9,111 +9,104 @@
 @endsection
 
 @section('content')
-    <!-- Main content -->
-    <section class="content">
+    @php
+        $selectedCategoryIds = collect(old('categoryId', $categoryId ?? []))
+            ->map(fn ($value) => (string) $value)
+            ->all();
+    @endphp
 
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-12">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card card-outline card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas {{ isset($row) ? 'fa-pen' : 'fa-plus' }} me-1"></i>
+                            {{ $title }}
+                        </h3>
+                    </div>
 
-                    <!-- general form elements -->
-                    <header class="card card-primary">
+                    {!! form_open(['url' => isset($row) ? route('admin.schedule.update') : route('admin.schedule.store'), 'method' => isset($row) ? 'put' : 'post']) !!}
 
-                        <!-- form start -->
+                    {!! isset($row) ? form_hidden('id', $row->id) : '' !!}
 
-                        {!! form_open(['url' => isset($row) ? route('admin.schedule.update') : route('admin.schedule.store'), 'method' => isset($row) ? 'put' : 'post']) !!}
+                    <div class="card-body">
+                        <p class="text-muted small mb-3">*-{{ __('frontend.form.required_fields') }}</p>
 
-                        {!! isset($row) ? form_hidden('id', $row->id) : '' !!}
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="form-group mb-0">
+                                    {!! form_label('event_name', __('frontend.form.name') . '*', ['class' => 'form-label']) !!}
+                                    {!! form_text('event_name', old('event_name', $row->event_name ?? null), ['class' => 'form-control' . ($errors->has('event_name') ? ' is-invalid' : ''), 'placeholder' => __('frontend.form.name')]) !!}
 
-                        <div class="card-body">
-
-                            <p>*-{{ __('frontend.form.required_fields') }}</p>
-
-                            <div class="form-group">
-                                {!! form_label('event_name', __('frontend.form.name') . '*') !!}
-
-                                {!! form_text('event_name', old('event_name', $row->event_name ?? null), ['class' => 'form-control', 'placeholder' => __('frontend.form.name')]) !!}
-
-                                @if ($errors->has('event_name'))
-                                    <p class="text-danger">{{ $errors->first('event_name') }}</p>
-                                @endif
-                            </div>
-
-                            <div class="form-group">
-
-                                {!! form_label('template_id',  __('frontend.form.template')) !!}
-
-                                {!! form_select('template_id', $options, old('template_id', $row->template_id ?? null), ['placeholder' => __('frontend.form.select'), 'class' => 'form-select']) !!}
-
-                                @if ($errors->has('template_id'))
-                                    <p class="text-danger">{{ $errors->first('template_id') }}</p>
-                                @endif
-
-                            </div>
-
-                            <div class="form-group">
-                                <div class="row">
-                                    <div class="col-3">
-                                        <div class="input-group">
-                                            <span class="input-group-text">
-                                                <i class="far fa-calendar-alt"></i>
-                                            </span>
-                                            {!! form_text('date_interval', old('date_interval', $date_interval ?? null), ['placeholder' => 'DD.MM.YYYY HH:MM - DD.MM.YYYY HH:MM', 'class' => 'form-control', 'id' => 'date_interval']) !!}
-                                        </div>
-                                        @if ($errors->has('date_interval'))
-                                            <p class="text-danger">{{ $errors->first('date_interval') }}</p>
-                                        @endif
-                                    </div>
-
+                                    @if ($errors->has('event_name'))
+                                        <div class="invalid-feedback">{{ $errors->first('event_name') }}</div>
+                                    @endif
                                 </div>
                             </div>
 
-                            <div class="form-group">
+                            <div class="col-md-6">
+                                <div class="form-group mb-0">
+                                    {!! form_label('template_id', __('frontend.form.template'), ['class' => 'form-label']) !!}
+                                    {!! form_select('template_id', $options, old('template_id', $row->template_id ?? null), ['placeholder' => __('frontend.form.select'), 'class' => 'form-select' . ($errors->has('template_id') ? ' is-invalid' : '')]) !!}
 
-                                {!! form_label('categoryId',  __('frontend.form.subscribers_category')) !!}
-
-                                @php
-                                    $selectedCategoryIds = collect(old('categoryId', $categoryId ?? []))
-                                        ->map(fn ($value) => (string) $value)
-                                        ->all();
-                                @endphp
-
-                                <select name="categoryId[]" id="categoryId" multiple class="form-control">
-                                    @foreach($category_options as $categoryValue => $categoryLabel)
-                                        <option value="{{ $categoryValue }}" @selected(in_array((string) $categoryValue, $selectedCategoryIds, true))>
-                                            {{ $categoryLabel }}
-                                        </option>
-                                    @endforeach
-                                </select>
-
-                                @if ($errors->has('categoryId'))
-                                    <p class="text-danger">{{ $errors->first('categoryId') }}</p>
-                                @endif
+                                    @if ($errors->has('template_id'))
+                                        <div class="invalid-feedback">{{ $errors->first('template_id') }}</div>
+                                    @endif
+                                </div>
                             </div>
 
-                            <!-- /.card-body -->
+                            <div class="col-md-6">
+                                <div class="form-group mb-0">
+                                    {!! form_label('date_interval', __('frontend.str.date'), ['class' => 'form-label']) !!}
+                                    <div class="input-group has-validation">
+                                        <span class="input-group-text">
+                                            <i class="far fa-calendar-alt"></i>
+                                        </span>
+                                        {!! form_text('date_interval', old('date_interval', $date_interval ?? null), ['placeholder' => 'DD.MM.YYYY HH:MM - DD.MM.YYYY HH:MM', 'class' => 'form-control' . ($errors->has('date_interval') ? ' is-invalid' : ''), 'id' => 'date_interval']) !!}
+
+                                        @if ($errors->has('date_interval'))
+                                            <div class="invalid-feedback">{{ $errors->first('date_interval') }}</div>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group mb-0">
+                                    {!! form_label('categoryId', __('frontend.form.subscribers_category'), ['class' => 'form-label']) !!}
+
+                                    <select name="categoryId[]" id="categoryId" multiple class="form-select{{ $errors->has('categoryId') ? ' is-invalid' : '' }}">
+                                        @foreach($category_options as $categoryValue => $categoryLabel)
+                                            <option value="{{ $categoryValue }}" @selected(in_array((string) $categoryValue, $selectedCategoryIds, true))>
+                                                {{ $categoryLabel }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+
+                                    @if ($errors->has('categoryId'))
+                                        <div class="invalid-feedback">{{ $errors->first('categoryId') }}</div>
+                                    @endif
+                                </div>
+                            </div>
                         </div>
+                    </div>
 
-                        <div class="card-footer">
-                            <button type="submit" class="btn btn-primary">
-                                {{ isset($row) ? __('frontend.form.edit') : __('frontend.form.add') }}
-                            </button>
-                            <a class="btn btn-secondary float-sm-end" href="{{ route('admin.schedule.index') }}">
-                                {{ __('frontend.form.back') }}
-                            </a>
-                        </div>
+                    <div class="card-footer d-flex flex-column flex-sm-row gap-2 justify-content-between">
+                        <button type="submit" class="btn btn-primary">
+                            {{ isset($row) ? __('frontend.form.edit') : __('frontend.form.add') }}
+                        </button>
 
-                        {!! form_close() !!}
+                        <a class="btn btn-secondary" href="{{ route('admin.schedule.index') }}">
+                            {{ __('frontend.form.back') }}
+                        </a>
+                    </div>
 
-                    </header>
-
+                    {!! form_close() !!}
                 </div>
-                <!-- /.card -->
             </div>
         </div>
-
-    </section>
-    <!-- /.content -->
+    </div>
 
 @endsection
 

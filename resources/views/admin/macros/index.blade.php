@@ -9,55 +9,60 @@
     <link rel="stylesheet" href="{{ asset('vendor/datatables-responsive-bs5/css/responsive.bootstrap5.min.css') }}">
     <link rel="stylesheet" href="{{ asset('vendor/datatables-buttons-bs5/css/buttons.bootstrap5.min.css') }}">
 
+    <style>
+        .macros-page #itemList {
+            width: 100% !important;
+        }
+
+        .macros-page #itemList th,
+        .macros-page #itemList td {
+            vertical-align: middle;
+        }
+
+        .macros-page #itemList thead th {
+            white-space: nowrap;
+        }
+    </style>
+
 @endsection
 
 @section('content')
 
-    <!-- Main content -->
-    <section class="content">
+    <div class="container-fluid macros-page">
+        <div class="row">
+            <div class="col-12">
+                <div class="card card-outline card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-scroll me-1"></i>
+                            {{ __('frontend.menu.macros') }}
+                        </h3>
 
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-12">
+                        <div class="card-tools">
+                            <a href="{{ route('admin.macros.create') }}" class="btn btn-primary btn-sm">
+                                <i class="fas fa-plus me-1"></i>
+                                {{ __('frontend.str.add_macros') }}
+                            </a>
+                        </div>
+                    </div>
 
-                    <div class="card">
-                        <!-- /.card-header -->
-                        <div class="card-body">
-                            <div class="pb-3">
-                                <a href="{{ route('admin.macros.create') }}"
-                                   class="btn btn-info btn-sm pull-left">
-                                    <span class="fa fa-plus"> &nbsp;</span> {{ __('frontend.str.add_macros') }}
-                                </a>
-                            </div>
-                            <table id="itemList" class="table table-bordered table-striped">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table id="itemList" class="table table-striped table-hover mb-0 align-middle">
                                 <thead>
                                 <tr>
                                     <th>{{ __('frontend.str.macros_name') }}</th>
                                     <th>{{ __('frontend.str.macros_type') }}</th>
-                                    <th style="width: 10%">{{ __('frontend.str.action') }}</th>
+                                    <th class="text-end" style="width: 10%">{{ __('frontend.str.action') }}</th>
                                 </tr>
                                 </thead>
-                                <tfoot>
-                                <tr>
-                                    <th>{{ __('frontend.str.macros_name') }}</th>
-                                    <th>{{ __('frontend.str.macros_type') }}</th>
-                                    <th style="width: 10%">{{ __('frontend.str.action') }}</th>
-                                </tr>
-                                </tfoot>
                             </table>
                         </div>
-                        <!-- /.card-body -->
                     </div>
-                    <!-- /.card -->
                 </div>
-                <!-- /.col -->
             </div>
-            <!-- /.row -->
         </div>
-        <!-- /.container-fluid -->
-
-    </section>
-    <!-- /.content -->
+    </div>
 
 @endsection
 
@@ -99,11 +104,14 @@
                 },
                 "processing": true,
                 "responsive": true,
-                "autoWidth": true,
+                "autoWidth": false,
                 'serverSide': true,
                 'ajax': {
                     url: '{{ route('admin.datatable.macros') }}'
                 },
+                'columnDefs': [
+                    {targets: 2, className: 'text-end', orderable: false, searchable: false}
+                ],
                 'columns': [
                     {data: 'name', name: 'name'},
                     {data: 'type', name: 'type', searchable: false},

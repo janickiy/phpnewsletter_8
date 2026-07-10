@@ -4,100 +4,95 @@
 
 @section('css')
 
-
 @endsection
 
 @section('content')
 
-    <!-- Main content -->
-    <section class="content">
+    @php
+        $selectedCategoryIds = collect((array) old('categoryId', $subscriberCategoryIds ?? []))
+            ->map(fn ($value) => (string) $value)
+            ->all();
+    @endphp
 
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-12">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card card-outline card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas {{ isset($row) ? 'fa-user-edit' : 'fa-user-plus' }} me-1"></i>
+                            {{ $title }}
+                        </h3>
+                    </div>
 
-                    <!-- general form elements -->
-                    <header class="card card-primary">
+                    {!! form_open(['url' => isset($row) ? route('admin.subscribers.update') : route('admin.subscribers.store'), 'method' => isset($row) ? 'put' : 'post']) !!}
 
-                        <!-- form start -->
-                        {!! form_open(['url' => isset($row) ? route('admin.subscribers.update') : route('admin.subscribers.store'), 'method' => isset($row) ? 'put' : 'post']) !!}
+                    {!! isset($row) ? form_hidden('id', $row->id) : '' !!}
 
-                        {!! isset($row) ? form_hidden('id', $row->id) : '' !!}
+                    <div class="card-body">
+                        <p class="text-muted small mb-3">*-{{ __('frontend.form.required_fields') }}</p>
 
-                        <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="form-group mb-0">
+                                    {!! form_label('name', __('frontend.form.name'), ['class' => 'form-label']) !!}
+                                    {!! form_text('name', old('name', $row->name ?? null), ['class' => 'form-control' . ($errors->has('name') ? ' is-invalid' : ''), 'placeholder' => __('frontend.form.name')]) !!}
 
-                            <p>*-{{ __('frontend.form.required_fields') }}</p>
-
-                            <div class="form-group">
-                                {!! form_label('name', __('frontend.form.name')) !!}
-
-                                {!! form_text('name', old('name', $row->name ?? null), ['class' => 'form-control']) !!}
-
-                                @if ($errors->has('name'))
-                                    <p class="text-danger">{{ $errors->first('name') }}</p>
-                                @endif
+                                    @if ($errors->has('name'))
+                                        <div class="invalid-feedback">{{ $errors->first('name') }}</div>
+                                    @endif
+                                </div>
                             </div>
 
-                            <div class="form-group">
-                                {!! form_label('email', 'Email*') !!}
+                            <div class="col-md-6">
+                                <div class="form-group mb-0">
+                                    {!! form_label('email', 'Email*', ['class' => 'form-label']) !!}
+                                    {!! form_text('email', old('email', $row->email ?? null), ['class' => 'form-control' . ($errors->has('email') ? ' is-invalid' : ''), 'placeholder' => 'mail@example.com', 'autocomplete' => 'email']) !!}
 
-                                {!! form_text('email', old('email', $row->email ?? null), ['class' => 'form-control']) !!}
-
-                                @if ($errors->has('email'))
-                                    <p class="text-danger">{{ $errors->first('email') }}</p>
-                                @endif
+                                    @if ($errors->has('email'))
+                                        <div class="invalid-feedback">{{ $errors->first('email') }}</div>
+                                    @endif
+                                </div>
                             </div>
 
-                            <div class="form-group">
+                            <div class="col-12 col-md-6">
+                                <div class="form-group mb-0">
+                                    {!! form_label('categoryId', __('frontend.form.subscribers_category'), ['class' => 'form-label']) !!}
 
-                                {!! form_label('categoryId',  __('frontend.form.subscribers_category')) !!}
+                                    <select name="categoryId[]" id="categoryId" multiple class="form-select{{ $errors->has('categoryId') ? ' is-invalid' : '' }}">
+                                        @foreach($options as $categoryValue => $categoryLabel)
+                                            <option value="{{ $categoryValue }}" @selected(in_array((string) $categoryValue, $selectedCategoryIds, true))>
+                                                {{ $categoryLabel }}
+                                            </option>
+                                        @endforeach
+                                    </select>
 
-                                @php
-                                    $selectedCategoryIds = collect((array) old('categoryId', $subscriberCategoryIds ?? []))
-                                        ->map(fn ($value) => (string) $value)
-                                        ->all();
-                                @endphp
-
-                                <select name="categoryId[]" id="categoryId" multiple class="form-control">
-                                    @foreach($options as $categoryValue => $categoryLabel)
-                                        <option value="{{ $categoryValue }}" @selected(in_array((string) $categoryValue, $selectedCategoryIds, true))>
-                                            {{ $categoryLabel }}
-                                        </option>
-                                    @endforeach
-                                </select>
-
-                                @if ($errors->has('categoryId'))
-                                    <p class="text-danger">{{ $errors->first('categoryId') }}</p>
-                                @endif
+                                    @if ($errors->has('categoryId'))
+                                        <div class="invalid-feedback">{{ $errors->first('categoryId') }}</div>
+                                    @endif
+                                </div>
                             </div>
-
                         </div>
-                        <!-- /.card-body -->
+                    </div>
 
-                        <div class="card-footer">
-                            <button type="submit" class="btn btn-primary">
-                                {{ isset($row) ? __('frontend.form.edit') : __('frontend.form.add') }}
-                            </button>
-                            <a class="btn btn-secondary float-sm-end" href="{{ route('admin.subscribers.index') }}">
-                                {{ __('frontend.form.back') }}
-                            </a>
-                        </div>
+                    <div class="card-footer d-flex flex-column flex-sm-row gap-2 justify-content-between">
+                        <button type="submit" class="btn btn-primary">
+                            {{ isset($row) ? __('frontend.form.edit') : __('frontend.form.add') }}
+                        </button>
 
-                        {!! form_close() !!}
+                        <a class="btn btn-secondary" href="{{ route('admin.subscribers.index') }}">
+                            {{ __('frontend.form.back') }}
+                        </a>
+                    </div>
 
-                    </header>
-
+                    {!! form_close() !!}
                 </div>
-                <!-- /.card -->
             </div>
         </div>
-
-    </section>
-    <!-- /.content -->
+    </div>
 
 @endsection
 
 @section('js')
-
 
 @endsection

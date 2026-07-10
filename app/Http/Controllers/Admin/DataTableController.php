@@ -83,18 +83,18 @@ class DataTableController extends Controller
         return DataTables::of($rows)
             ->addColumn('actions', function ($row) {
                 $editBtn = sprintf(
-                    '<a title="%s" class="btn btn-xs btn-primary" href="%s"><span class="fa fa-edit"></span></a>&nbsp;',
+                    '<a title="%s" class="btn btn-outline-primary" href="%s"><i class="fas fa-edit"></i></a>',
                     __('frontend.str.edit'),
                     route('admin.category.edit', ['id' => $row->id])
                 );
 
                 $deleteBtn = sprintf(
-                    '<a title="%s" class="btn btn-xs btn-danger deleteRow" id="%d"><span class="fa fa-trash"></span></a>',
+                    '<a title="%s" class="btn btn-outline-danger deleteRow" id="%d"><i class="fas fa-trash"></i></a>',
                     __('frontend.str.remove'),
                     $row->id
                 );
 
-                return '<div class="nobr">' . $editBtn . $deleteBtn . '</div>';
+                return '<div class="btn-group btn-group-sm" role="group">' . $editBtn . $deleteBtn . '</div>';
             })
             ->rawColumns(['actions'])
             ->make(true);
@@ -112,29 +112,30 @@ class DataTableController extends Controller
 
         return DataTables::of($rows)
             ->addColumn('checkbox', fn ($row) => sprintf(
-                '<input type="checkbox" class="check" value="%d" name="activate[]">',
+                '<input type="checkbox" class="form-check-input check" value="%d" name="activate[]">',
                 $row->id
             ))
             ->editColumn('active', fn ($row) => $row->active === 1
-                ? __('frontend.str.yes')
-                : __('frontend.str.no'))
+                ? '<span class="badge text-bg-success">' . e(__('frontend.str.yes')) . '</span>'
+                : '<span class="badge text-bg-secondary">' . e(__('frontend.str.no')) . '</span>')
             ->editColumn('activeStatus', fn ($row) => $row->active)
             ->addColumn('action', function ($row) {
                 $editBtn = sprintf(
-                    '<a title="%s" class="btn btn-xs btn-primary" href="%s"><span class="fa fa-edit"></span></a>&nbsp;',
+                    '<a title="%s" class="btn btn-outline-primary" href="%s"><i class="fas fa-edit"></i></a>',
                     __('frontend.str.edit'),
                     route('admin.smtp.edit', ['id' => $row->id])
                 );
 
                 $deleteBtn = sprintf(
-                    '<a class="btn btn-xs btn-danger deleteRow" id="%d"><span class="fa fa-trash"></span></a>',
+                    '<a title="%s" class="btn btn-outline-danger deleteRow" id="%d"><i class="fas fa-trash"></i></a>',
+                    __('frontend.str.remove'),
                     $row->id
                 );
 
-                return '<div class="nobr">' . $editBtn . $deleteBtn . '</div>';
+                return '<div class="btn-group btn-group-sm" role="group">' . $editBtn . $deleteBtn . '</div>';
             })
             ->editColumn('created_at', fn ($row) => $this->formatDateTime($row->created_at))
-            ->rawColumns(['action', 'checkbox'])
+            ->rawColumns(['action', 'checkbox', 'active'])
             ->make(true);
     }
 
@@ -383,18 +384,18 @@ class DataTableController extends Controller
         return DataTables::of($rows)
             ->addColumn('actions', function ($row) {
                 $editBtn = sprintf(
-                    '<a title="%s" class="btn btn-xs btn-primary" href="%s"><span class="fa fa-edit"></span></a>&nbsp;',
+                    '<a title="%s" class="btn btn-outline-primary" href="%s"><i class="fas fa-edit"></i></a>',
                     __('frontend.str.edit'),
                     route('admin.macros.edit', ['id' => $row->id])
                 );
 
                 $deleteBtn = sprintf(
-                    '<a title="%s" class="btn btn-xs btn-danger deleteRow" id="%d"><span class="fa fa-trash"></span></a>',
+                    '<a title="%s" class="btn btn-outline-danger deleteRow" id="%d"><i class="fas fa-trash"></i></a>',
                     __('frontend.str.remove'),
                     $row->id
                 );
 
-                return '<div class="nobr">' . $editBtn . $deleteBtn . '</div>';
+                return '<div class="btn-group btn-group-sm" role="group">' . $editBtn . $deleteBtn . '</div>';
             })
             ->rawColumns(['actions'])
             ->make(true);
