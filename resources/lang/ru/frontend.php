@@ -351,6 +351,7 @@ return [
         'subscribers_category' => 'Категория подписчиков',
         'logs' => 'Логи',
         'log' => 'Лог',
+        'redirect' => 'Релиректы',
         'mailing_log'   => 'Журнал рассылки',
         'referrens_log' => 'Статистика переходов',
         'settings' => 'Настройки',

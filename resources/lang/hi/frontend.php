@@ -348,6 +348,7 @@ return [
         'subscribers_category' => 'सदस्य श्रेणी',
         'logs' => 'लॉग्स',
         'log' => 'लॉग',
+        'redirect' => 'रीडायरेक्ट',
         'mailing_log' => 'मेलिंग लॉग्स',
         'referrens_log' => 'रेफ़रल लॉग्स',
         'settings' => 'सेटिंग्स',

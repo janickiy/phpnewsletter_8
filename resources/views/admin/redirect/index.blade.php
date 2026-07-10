@@ -18,6 +18,97 @@
         .redirect-page #itemList td {
             vertical-align: middle;
         }
+
+        .redirect-page #itemList thead th {
+            white-space: nowrap;
+        }
+
+        .redirect-page .redirect-clear-action {
+            min-width: 0;
+        }
+
+        .redirect-page .redirect-url-cell {
+            min-width: 320px;
+            white-space: normal;
+            word-break: break-word;
+        }
+
+        .redirect-page .card-body.p-0 .table-responsive {
+            padding: 1rem;
+        }
+
+        .redirect-page .card-body.p-0 .table-responsive > .dt-container {
+            width: 100%;
+        }
+
+        .redirect-page .card-body.p-0 .table-responsive > .dt-container > .row {
+            margin-left: 0;
+            margin-right: 0;
+        }
+
+        .redirect-page .card-body.p-0 .table-responsive > .dt-container > .row:first-child {
+            align-items: center;
+            border-bottom: 1px solid var(--bs-border-color);
+            padding-bottom: .75rem;
+            padding-top: 0;
+        }
+
+        .redirect-page .card-body.p-0 .table-responsive > .dt-container > .row:last-child {
+            align-items: center;
+            border-top: 1px solid var(--bs-border-color);
+            justify-content: center;
+            margin-bottom: 0;
+            margin-top: 0 !important;
+            padding-bottom: 0;
+            padding-top: 1rem;
+            row-gap: .75rem;
+        }
+
+        .redirect-page .card-body.p-0 table.dataTable {
+            margin-bottom: .75rem !important;
+            margin-top: .75rem !important;
+        }
+
+        .redirect-page .card-body.p-0 .table-responsive > .dt-container > .row:last-child > .dt-layout-start {
+            flex: 0 0 100%;
+            max-width: 100%;
+            text-align: left;
+        }
+
+        .redirect-page .card-body.p-0 .table-responsive > .dt-container > .row:last-child > .dt-layout-end {
+            display: flex;
+            flex: 0 0 100%;
+            justify-content: center;
+            margin-left: 0 !important;
+            max-width: 100%;
+        }
+
+        .redirect-page .dt-length,
+        .redirect-page .dt-search,
+        .redirect-page .dt-info,
+        .redirect-page .dt-paging {
+            padding: 0;
+        }
+
+        .redirect-page .dt-search {
+            align-items: center;
+            display: flex;
+            gap: .5rem;
+            justify-content: flex-end;
+        }
+
+        .redirect-page .dt-search label {
+            margin-bottom: 0;
+        }
+
+        .redirect-page .dt-search input {
+            margin-left: 0;
+        }
+
+        .redirect-page .dt-paging .pagination {
+            justify-content: center;
+            margin-bottom: 0;
+        }
     </style>
 
 @endsection
@@ -36,13 +127,14 @@
 
                         @if(PermissionsHelper::has_permission('admin'))
                             <div class="card-tools d-flex align-items-center gap-2">
-                                <a id="clearRedirectButton"
-                                   class="btn btn-outline-danger btn-sm"
+                                <button id="clearRedirectButton"
+                                   type="button"
+                                   class="btn btn-outline-danger btn-sm redirect-clear-action"
                                    title="{{ __('frontend.str.log_clear') }}"
                                    onclick="confirmation(event)">
                                     <i class="fas fa-trash me-1"></i>
                                     {{ __('frontend.str.redirect_clear') }}
-                                </a>
+                                </button>
 
                                 <span id="clearRedirectSpinner" class="d-none">
                                     <span class="spinner-border spinner-border-sm text-danger" role="status" aria-hidden="true"></span>
@@ -53,12 +145,12 @@
 
                     <div class="card-body p-0">
                         <div class="table-responsive">
-                            <table id="itemList" class="table table-striped table-hover mb-0 align-middle">
+                            <table id="itemList" class="table table-striped table-hover mb-0 align-middle nowrap">
                                 <thead>
                                 <tr>
                                     <th>URL</th>
-                                    <th>{{ __('frontend.str.redirect_number') }}</th>
-                                    <th>{{ __('frontend.str.excel_report') }}</th>
+                                    <th class="text-center">{{ __('frontend.str.redirect_number') }}</th>
+                                    <th class="text-end">{{ __('frontend.str.excel_report') }}</th>
                                 </tr>
                                 </thead>
                             </table>
@@ -116,6 +208,7 @@
                 },
                 "sDom": "flrtip",
                 "autoWidth": false,
+                "responsive": true,
                 aaSorting: [[0, 'asc']],
                 processing: true,
                 serverSide: true,
@@ -126,6 +219,11 @@
                     {data: 'url', name: 'url'},
                     {data: 'count', name: 'count', searchable: false},
                     {data: 'report', name: 'report', orderable: false, searchable: false},
+                ],
+                columnDefs: [
+                    {targets: 0, className: 'redirect-url-cell'},
+                    {targets: 1, className: 'text-center'},
+                    {targets: 2, className: 'text-end'}
                 ],
             });
         });

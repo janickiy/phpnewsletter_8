@@ -348,6 +348,7 @@ return [
         'subscribers_category' => '订阅者分类',
         'logs' => '日志',
         'log' => '日志',
+        'redirect' => '重定向',
         'mailing_log' => '发送日志',
         'referrens_log' => '推荐日志',
         'settings' => '设置',

@@ -348,6 +348,7 @@ return [
         'subscribers_category' => 'Abonnentenkategorie',
         'logs' => 'Protokolle',
         'log' => 'Protokoll',
+        'redirect' => 'Weiterleitungen',
         'mailing_log' => 'Versandprotokolle',
         'referrens_log' => 'Referral-Protokolle',
         'settings' => 'Einstellungen',

@@ -348,6 +348,7 @@ return [
         'subscribers_category' => 'فئة المشتركين',
         'logs' => 'السجلات',
         'log' => 'السجل',
+        'redirect' => 'إعادة التوجيه',
         'mailing_log' => 'سجلات الإرسال',
         'referrens_log' => 'سجلات الإحالة',
         'settings' => 'الإعدادات',

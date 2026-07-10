@@ -348,6 +348,7 @@ return [
         'subscribers_category' => 'Subscribers category',
         'logs' => 'Logs',
         'log' => 'Log',
+        'redirect' => 'Redirects',
         'mailing_log' => 'Mailing logs',
         'referrens_log' => 'Referrens logs',
         'settings' => 'Settings',

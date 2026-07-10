@@ -348,6 +348,7 @@ return [
         'subscribers_category' => 'Catégorie d’abonnés',
         'logs' => 'Journaux',
         'log' => 'Journal',
+        'redirect' => 'Redirections',
         'mailing_log' => 'Journaux d’envoi',
         'referrens_log' => 'Journaux de référencement',
         'settings' => 'Paramètres',

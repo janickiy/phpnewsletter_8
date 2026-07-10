@@ -320,6 +320,7 @@ return [
         'subscribers_category' => 'Categorias de assinantes',
         'logs' => 'Logs',
         'log' => 'Log',
+        'redirect' => 'Redirecionamentos',
         'mailing_log' => 'Logs de envio',
         'referrens_log' => 'Logs de referência',
         'settings' => 'Configurações',

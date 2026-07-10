@@ -325,15 +325,15 @@ class DataTableController extends Controller
 
         return DataTables::of($rows)
             ->editColumn('count', fn ($row) => sprintf(
-                '<a href="%s">%s</a>',
+                '<a href="%s" class="btn btn-outline-primary btn-sm"><i class="fas fa-list me-1"></i>%d</a>',
                 route('admin.redirect.info', ['url' => $this->encodeRouteBase64($row->url)]),
-                $row->count
+                (int) $row->count
             ))
             ->addColumn('report', fn ($row) => PermissionsHelper::has_permission('admin')
                 ? sprintf(
-                    '<a href="%s">%s</a>',
+                    '<a href="%s" class="btn btn-outline-success btn-sm"><i class="fas fa-file-excel me-1"></i>%s</a>',
                     route('admin.redirect.report', ['url' => $this->encodeRouteBase64($row->url)]),
-                    __('frontend.str.download')
+                    e(__('frontend.str.download'))
                 )
                 : '')
             ->rawColumns(['count', 'report'])
