@@ -114,7 +114,7 @@
                         </div>
                     </div>
 
-                    <div class="card-footer form-actions-footer d-flex flex-column flex-sm-row gap-2 justify-content-start">
+                    <div class="card-footer form-actions-footer d-flex flex-column flex-sm-row justify-content-start">
                         <button type="submit" class="btn btn-primary">
                             {{ isset($row) ? __('frontend.form.edit') : __('frontend.form.add') }}
                         </button>

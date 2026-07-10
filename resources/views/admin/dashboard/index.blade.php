@@ -167,7 +167,7 @@
                 'theme' => 'dark',
                 'linkClass' => 'link-light',
                 'url' => route('admin.redirect.index'),
-                'icon' => 'fas fa-mouse-pointer',
+                'icon' => 'fas fa-link',
                 'value' => number_format($stats['clicks']),
                 'label' => __('frontend.str.redirect'),
                 'note' => __('frontend.str.redirect_number'),

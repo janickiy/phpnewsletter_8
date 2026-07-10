@@ -80,13 +80,13 @@
                         </div>
                     </div>
 
-                    <div class="card-footer d-flex flex-column flex-sm-row gap-2 justify-content-between">
+                    <div class="card-footer form-actions-footer d-flex flex-column flex-sm-row justify-content-start">
                         <button type="submit" class="btn btn-primary">
                             <i class="fas fa-download me-1"></i>
                             {{ __('frontend.form.send') }}
                         </button>
 
-                        <a class="btn btn-secondary" href="{{ route('admin.subscribers.index') }}">
+                        <a class="btn btn-secondary btn-back" href="{{ route('admin.subscribers.index') }}">
                             {{ __('frontend.form.back') }}
                         </a>
                     </div>
