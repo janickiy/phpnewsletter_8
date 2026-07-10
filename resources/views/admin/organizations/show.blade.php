@@ -4,14 +4,6 @@
 
 @section('content')
 
-    @php
-        $statusClasses = [
-            \App\Models\Project::STATUS_ACTIVE => 'text-bg-success',
-            \App\Models\Project::STATUS_ARCHIVED => 'text-bg-secondary',
-            \App\Models\Project::STATUS_BLOCKED => 'text-bg-danger',
-        ];
-    @endphp
-
     <div class="container-fluid">
         <div class="row g-3">
             <div class="col-12">
@@ -174,7 +166,7 @@
                                             @endif
                                         </td>
                                         <td>
-                                            <span class="badge {{ $statusClasses[$project->status] ?? 'text-bg-secondary' }}">
+                                            <span class="badge {{ \App\Enums\ProjectStatus::badgeClassFor($project->status) }}">
                                                 {{ $project->status_label }}
                                             </span>
                                         </td>

@@ -29,10 +29,13 @@ class ProjectAccess
                 'organization',
                 fn (Builder $organizationQuery): Builder => self::organizationAccessConstraint($organizationQuery, $user)
             ),
-            UserRole::ProjectAdmin->value,
-            UserRole::Moderator->value => $query->whereHas(
+            UserRole::ProjectAdmin->value => $query->whereHas(
                 'administrators',
                 fn (Builder $administratorQuery): Builder => $administratorQuery->whereKey($user->id)
+            ),
+            UserRole::Moderator->value => $query->whereHas(
+                'moderators',
+                fn (Builder $moderatorQuery): Builder => $moderatorQuery->whereKey($user->id)
             ),
             default => $query->whereRaw('1 = 0'),
         };

@@ -169,6 +169,8 @@ return [
         'owner' => 'Owner',
         'administrators' => 'Administrators',
         'add_administrator' => 'Add administrator',
+        'add_project_administrator' => 'Add project administrator',
+        'add_moderator' => 'Add moderator',
         'project' => 'Project',
         'projects' => 'Projects',
         'add_project' => 'Add project',

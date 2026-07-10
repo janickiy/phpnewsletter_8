@@ -78,14 +78,6 @@
 
 @section('content')
 
-    @php
-        $statusClasses = [
-            \App\Models\Project::STATUS_ACTIVE => 'text-bg-success',
-            \App\Models\Project::STATUS_ARCHIVED => 'text-bg-secondary',
-            \App\Models\Project::STATUS_BLOCKED => 'text-bg-danger',
-        ];
-    @endphp
-
     <div class="container-fluid project-page">
         <div class="row g-3">
             <div class="col-12">
@@ -114,7 +106,7 @@
 
                             <dt class="col-sm-3">{{ __('frontend.str.status') }}</dt>
                             <dd class="col-sm-9">
-                                <span class="badge {{ $statusClasses[$project->status] ?? 'text-bg-secondary' }}">
+                                <span class="badge {{ \App\Enums\ProjectStatus::badgeClassFor($project->status) }}">
                                     {{ $project->status_label }}
                                 </span>
                             </dd>
@@ -149,6 +141,178 @@
                             {{ __('frontend.form.back') }}
                         </a>
                     </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-xl-6">
+                <div class="card card-outline card-secondary h-100">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-user-shield me-1"></i>
+                            {{ __('frontend.str.project_admin') }}
+                        </h3>
+                    </div>
+
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover mb-0 align-middle">
+                                <thead>
+                                <tr>
+                                    <th>{{ __('frontend.str.name') }}</th>
+                                    <th>{{ __('frontend.str.login') }}</th>
+                                    @if($canManageProjectRoles)
+                                        <th class="text-end">{{ __('frontend.str.action') }}</th>
+                                    @endif
+                                </tr>
+                                </thead>
+                                <tbody>
+                                @forelse($project->administrators as $administrator)
+                                    <tr>
+                                        <td>{{ $administrator->name ?: '-' }}</td>
+                                        <td>{{ $administrator->login }}</td>
+                                        @if($canManageProjectRoles)
+                                            <td class="text-end">
+                                                <form action="{{ route('admin.projects.administrators.destroy', ['organization' => $organization->id, 'project' => $project->id, 'user' => $administrator->id]) }}"
+                                                      method="post"
+                                                      class="d-inline"
+                                                      onsubmit="return confirm('{{ __('frontend.str.confirm_remove') }}');">
+                                                    @csrf
+                                                    @method('delete')
+                                                    <button type="submit" class="btn btn-outline-danger btn-sm" title="{{ __('frontend.str.remove') }}">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        @endif
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="{{ $canManageProjectRoles ? 3 : 2 }}" class="text-center text-muted py-4">
+                                            {{ __('frontend.str.no_data') }}
+                                        </td>
+                                    </tr>
+                                @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    @if($canManageProjectRoles && $projectAdministratorOptions !== [])
+                        <div class="card-footer">
+                            <form action="{{ route('admin.projects.administrators.store', ['organization' => $organization->id, 'project' => $project->id]) }}"
+                                  method="post"
+                                  class="row g-2 align-items-end">
+                                @csrf
+
+                                <div class="col-md-8">
+                                    {!! form_label('user_id', __('frontend.str.add_project_administrator'), ['class' => 'form-label']) !!}
+                                    {!! form_select('user_id', $projectAdministratorOptions, old('user_id'), [
+                                        'placeholder' => __('frontend.form.select'),
+                                        'class' => 'form-select js-live-search-select' . ($errors->has('user_id') ? ' is-invalid' : ''),
+                                        'data-search-placeholder' => __('frontend.form.search'),
+                                        'data-no-results' => __('pagination.s_zero_records'),
+                                        'required' => true,
+                                    ]) !!}
+
+                                    @if ($errors->has('user_id'))
+                                        <div class="invalid-feedback">{{ $errors->first('user_id') }}</div>
+                                    @endif
+                                </div>
+
+                                <div class="col-md-auto">
+                                    <button type="submit" class="btn btn-primary">
+                                        {{ __('frontend.form.add') }}
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    @endif
+                </div>
+            </div>
+
+            <div class="col-12 col-xl-6">
+                <div class="card card-outline card-secondary h-100">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-user-check me-1"></i>
+                            {{ __('frontend.str.moderator') }}
+                        </h3>
+                    </div>
+
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover mb-0 align-middle">
+                                <thead>
+                                <tr>
+                                    <th>{{ __('frontend.str.name') }}</th>
+                                    <th>{{ __('frontend.str.login') }}</th>
+                                    @if($canManageProjectRoles)
+                                        <th class="text-end">{{ __('frontend.str.action') }}</th>
+                                    @endif
+                                </tr>
+                                </thead>
+                                <tbody>
+                                @forelse($project->moderators as $moderator)
+                                    <tr>
+                                        <td>{{ $moderator->name ?: '-' }}</td>
+                                        <td>{{ $moderator->login }}</td>
+                                        @if($canManageProjectRoles)
+                                            <td class="text-end">
+                                                <form action="{{ route('admin.projects.moderators.destroy', ['organization' => $organization->id, 'project' => $project->id, 'user' => $moderator->id]) }}"
+                                                      method="post"
+                                                      class="d-inline"
+                                                      onsubmit="return confirm('{{ __('frontend.str.confirm_remove') }}');">
+                                                    @csrf
+                                                    @method('delete')
+                                                    <button type="submit" class="btn btn-outline-danger btn-sm" title="{{ __('frontend.str.remove') }}">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        @endif
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="{{ $canManageProjectRoles ? 3 : 2 }}" class="text-center text-muted py-4">
+                                            {{ __('frontend.str.no_data') }}
+                                        </td>
+                                    </tr>
+                                @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    @if($canManageProjectRoles && $projectModeratorOptions !== [])
+                        <div class="card-footer">
+                            <form action="{{ route('admin.projects.moderators.store', ['organization' => $organization->id, 'project' => $project->id]) }}"
+                                  method="post"
+                                  class="row g-2 align-items-end">
+                                @csrf
+
+                                <div class="col-md-8">
+                                    {!! form_label('user_id', __('frontend.str.add_moderator'), ['class' => 'form-label']) !!}
+                                    {!! form_select('user_id', $projectModeratorOptions, old('user_id'), [
+                                        'placeholder' => __('frontend.form.select'),
+                                        'class' => 'form-select js-live-search-select' . ($errors->has('user_id') ? ' is-invalid' : ''),
+                                        'data-search-placeholder' => __('frontend.form.search'),
+                                        'data-no-results' => __('pagination.s_zero_records'),
+                                        'required' => true,
+                                    ]) !!}
+
+                                    @if ($errors->has('user_id'))
+                                        <div class="invalid-feedback">{{ $errors->first('user_id') }}</div>
+                                    @endif
+                                </div>
+
+                                <div class="col-md-auto">
+                                    <button type="submit" class="btn btn-primary">
+                                        {{ __('frontend.form.add') }}
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    @endif
                 </div>
             </div>
 

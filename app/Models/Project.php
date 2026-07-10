@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Enums\ProjectStatus;
+use App\Enums\UserRole;
 use App\Http\Traits\StaticTableName;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -11,10 +13,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Project extends Model
 {
     use StaticTableName;
-
-    public const STATUS_ACTIVE = 'active';
-    public const STATUS_ARCHIVED = 'archived';
-    public const STATUS_BLOCKED = 'blocked';
 
     protected $fillable = [
         'organization_id',
@@ -46,6 +44,23 @@ class Project extends Model
     public function administrators(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'project_admins')
+            ->withPivot('role')
+            ->wherePivot('role', UserRole::ProjectAdmin->value)
+            ->withTimestamps();
+    }
+
+    public function moderators(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'project_admins')
+            ->withPivot('role')
+            ->wherePivot('role', UserRole::Moderator->value)
+            ->withTimestamps();
+    }
+
+    public function projectUsers(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'project_admins')
+            ->withPivot('role')
             ->withTimestamps();
     }
 
@@ -57,20 +72,16 @@ class Project extends Model
 
     public function getStatusLabelAttribute(): string
     {
-        return self::statusOptions()[$this->status] ?? $this->status;
+        return ProjectStatus::labelFor($this->status);
     }
 
     public static function statusOptions(): array
     {
-        return [
-            self::STATUS_ACTIVE => __('frontend.str.project_status_active'),
-            self::STATUS_ARCHIVED => __('frontend.str.project_status_archived'),
-            self::STATUS_BLOCKED => __('frontend.str.project_status_blocked'),
-        ];
+        return ProjectStatus::options();
     }
 
     public static function statusValues(): array
     {
-        return array_keys(self::statusOptions());
+        return ProjectStatus::values();
     }
 }

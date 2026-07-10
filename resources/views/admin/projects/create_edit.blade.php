@@ -57,7 +57,7 @@
                             <div class="col-md-4">
                                 <div class="form-group mb-3">
                                     {!! form_label('status', __('frontend.str.status') . '*') !!}
-                                    {!! form_select('status', $statusOptions, old('status', $row->status ?? \App\Models\Project::STATUS_ACTIVE), ['class' => 'form-select']) !!}
+                                    {!! form_select('status', $statusOptions, old('status', $row->status ?? \App\Enums\ProjectStatus::Active->value), ['class' => 'form-select']) !!}
 
                                     @if ($errors->has('status'))
                                         <p class="text-danger">{{ $errors->first('status') }}</p>

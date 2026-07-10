@@ -41,6 +41,16 @@ class User extends Authenticatable
     public function administeredProjects(): BelongsToMany
     {
         return $this->belongsToMany(Project::class, 'project_admins')
+            ->withPivot('role')
+            ->wherePivot('role', UserRole::ProjectAdmin->value)
+            ->withTimestamps();
+    }
+
+    public function moderatedProjects(): BelongsToMany
+    {
+        return $this->belongsToMany(Project::class, 'project_admins')
+            ->withPivot('role')
+            ->wherePivot('role', UserRole::Moderator->value)
             ->withTimestamps();
     }
 

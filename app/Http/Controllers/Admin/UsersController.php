@@ -6,7 +6,6 @@ namespace App\Http\Controllers\Admin;
 use App\Enums\UserRole;
 use App\Http\Requests\Admin\Users\StoreRequest;
 use App\Http\Requests\Admin\Users\UpdateRequest;
-use App\Models\User;
 use App\Repositories\UserRepository;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;

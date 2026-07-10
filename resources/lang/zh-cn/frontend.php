@@ -169,6 +169,8 @@ return [
         'owner' => 'Owner',
         'administrators' => 'Administrators',
         'add_administrator' => 'Add administrator',
+        'add_project_administrator' => '添加项目管理员',
+        'add_moderator' => '添加版主',
         'project' => 'Project',
         'projects' => 'Projects',
         'add_project' => 'Add project',

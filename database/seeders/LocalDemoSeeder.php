@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\ProjectStatus;
 use App\Models\Category;
 use App\Models\Macros;
 use App\Models\Organization;
@@ -220,7 +221,7 @@ class LocalDemoSeeder extends Seeder
             ],
             [
                 'description' => 'Демо-проект для тестовых рассылок.',
-                'status' => Project::STATUS_ACTIVE,
+                'status' => ProjectStatus::Active->value,
                 'default_sender_name' => 'PHP Newsletter',
                 'default_from_email' => 'newsletter@example.test',
                 'default_reply_to' => 'reply@example.test',

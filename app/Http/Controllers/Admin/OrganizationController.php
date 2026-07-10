@@ -3,25 +3,35 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Enums\UserRole;
+use App\Http\Requests\Admin\Organizations\StoreAdministratorRequest;
 use App\Http\Requests\Admin\Organizations\StoreRequest;
+use App\Http\Requests\Admin\Organizations\UpdateRequest;
 use App\Models\Organization;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Builder;
+use App\Repositories\OrganizationRepository;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class OrganizationController extends Controller
 {
+    /**
+     * Inject the organization repository used by organization CRUD actions.
+     */
+    public function __construct(
+        private readonly OrganizationRepository $organizationRepository,
+    ) {
+        parent::__construct();
+    }
+
     /**
      * Show organizations and their project counts.
      */
     public function index(): View
     {
         return view('admin.organizations.index', [
-            'organizations' => $this->organizationsQueryForCurrentUser()
+            'organizations' => $this->organizationRepository
+                ->queryForUser(Auth::user())
                 ->with('owner:id,name,login')
                 ->withCount('projects')
                 ->orderBy('name')
@@ -48,7 +58,9 @@ class OrganizationController extends Controller
     public function store(StoreRequest $request): RedirectResponse
     {
         try {
-            $organization = Organization::query()->create($this->organizationCreateData($request));
+            $organization = $this->organizationRepository->createFromData(
+                $request->toDto((int) Auth::id())
+            );
         } catch (\Throwable $e) {
             report($e);
 
@@ -68,15 +80,11 @@ class OrganizationController extends Controller
     {
         $this->ensureOrganizationAvailable($organization);
 
-        $organization->load([
-            'owner:id,name,login',
-            'administrators:id,name,login,role',
-            'projects' => fn ($query) => $query->orderBy('name'),
-        ]);
+        $organization = $this->organizationRepository->loadDetails($organization);
 
         return view('admin.organizations.show', [
             'organization' => $organization,
-            'administratorOptions' => $this->administratorOptions($organization),
+            'administratorOptions' => $this->organizationRepository->administratorOptions($organization),
             'infoAlert' => __('frontend.hint.organizations_show'),
             'title' => $organization->name,
         ]);
@@ -91,7 +99,7 @@ class OrganizationController extends Controller
 
         return view('admin.organizations.create_edit', [
             'row' => $organization,
-            'ownerOptions' => $this->ownerOptions(),
+            'ownerOptions' => $this->organizationRepository->ownerOptions(Auth::user()),
             'infoAlert' => __('frontend.hint.organizations_edit'),
             'title' => __('frontend.title.organizations_edit'),
         ]);
@@ -100,12 +108,19 @@ class OrganizationController extends Controller
     /**
      * Save organization changes.
      */
-    public function update(StoreRequest $request, Organization $organization): RedirectResponse
+    public function update(UpdateRequest $request, Organization $organization): RedirectResponse
     {
         $this->ensureOrganizationAvailable($organization);
 
         try {
-            $organization->update($this->organizationData($request));
+            $ownerId = $this->currentUserIsAdmin()
+                ? (int) ($request->input('owner_id') ?: $organization->owner_id)
+                : (int) Auth::id();
+
+            $this->organizationRepository->updateFromData(
+                $organization->id,
+                $request->toDto($ownerId)
+            );
         } catch (\Throwable $e) {
             report($e);
 
@@ -126,7 +141,7 @@ class OrganizationController extends Controller
         $this->ensureOrganizationAvailable($organization);
 
         try {
-            $organization->delete();
+            $this->organizationRepository->delete($organization->id);
         } catch (\Throwable $e) {
             report($e);
 
@@ -137,26 +152,14 @@ class OrganizationController extends Controller
             ->with('success', __('frontend.msg.data_successfully_deleted'));
     }
 
-    public function storeAdministrator(Request $request, Organization $organization): RedirectResponse
+    public function storeAdministrator(StoreAdministratorRequest $request, Organization $organization): RedirectResponse
     {
         $this->ensureOrganizationAvailable($organization);
 
-        $validated = $request->validate([
-            'user_id' => [
-                'required',
-                'integer',
-                Rule::exists(User::getTableName(), 'id')->where(function ($query): void {
-                    $query->whereIn('role', [
-                        UserRole::Admin->value,
-                        UserRole::OrganizationAdmin->value,
-                    ]);
-                }),
-            ],
-        ]);
-
-        if ((int) $validated['user_id'] !== (int) $organization->owner_id) {
-            $organization->administrators()->syncWithoutDetaching([(int) $validated['user_id']]);
-        }
+        $this->organizationRepository->attachAdministrator(
+            $organization,
+            $request->integer('user_id')
+        );
 
         return to_route('admin.organizations.show', ['organization' => $organization->id])
             ->with('success', __('message.information_successfully_added'));
@@ -166,70 +169,10 @@ class OrganizationController extends Controller
     {
         $this->ensureOrganizationAvailable($organization);
 
-        $organization->administrators()->detach($user->id);
+        $this->organizationRepository->detachAdministrator($organization, $user);
 
         return to_route('admin.organizations.show', ['organization' => $organization->id])
             ->with('success', __('frontend.msg.data_successfully_deleted'));
-    }
-
-    private function ownerOptions(bool $onlyCurrentUser = false): array
-    {
-        $query = User::query();
-
-        if ($onlyCurrentUser || ! $this->currentUserIsAdmin()) {
-            $query->whereKey(Auth::id());
-        }
-
-        return $query
-            ->orderBy('name')
-            ->orderBy('login')
-            ->get(['id', 'name', 'login'])
-            ->mapWithKeys(function (User $user): array {
-                $name = trim((string) $user->name);
-                $login = (string) $user->login;
-                $label = $name !== '' && $name !== $login
-                    ? $name . ' (' . $login . ')'
-                    : $login;
-
-                return [$user->id => $label];
-            })
-            ->toArray();
-    }
-
-    private function organizationsQueryForCurrentUser(): Builder
-    {
-        $query = Organization::query();
-
-        if (! $this->currentUserIsAdmin()) {
-            $query->where(function (Builder $query): void {
-                $query
-                    ->where('owner_id', Auth::id())
-                    ->orWhereHas('administrators', function (Builder $query): void {
-                        $query->whereKey(Auth::id());
-                    });
-            });
-        }
-
-        return $query;
-    }
-
-    private function organizationData(StoreRequest $request): array
-    {
-        $data = $request->validated();
-
-        if (! $this->currentUserIsAdmin()) {
-            $data['owner_id'] = Auth::id();
-        }
-
-        return $data;
-    }
-
-    private function organizationCreateData(StoreRequest $request): array
-    {
-        $data = $request->validated();
-        $data['owner_id'] = Auth::id();
-
-        return $data;
     }
 
     private function ensureOrganizationAvailable(Organization $organization): void
@@ -245,35 +188,5 @@ class OrganizationController extends Controller
     private function currentUserIsAdmin(): bool
     {
         return Auth::user()?->role === UserRole::Admin->value;
-    }
-
-    private function administratorOptions(Organization $organization): array
-    {
-        $attachedIds = $organization->administrators
-            ->pluck('id')
-            ->push($organization->owner_id)
-            ->filter()
-            ->unique()
-            ->all();
-
-        return User::query()
-            ->whereIn('role', [
-                UserRole::Admin->value,
-                UserRole::OrganizationAdmin->value,
-            ])
-            ->when($attachedIds !== [], fn (Builder $query) => $query->whereNotIn('id', $attachedIds))
-            ->orderBy('name')
-            ->orderBy('login')
-            ->get(['id', 'name', 'login'])
-            ->mapWithKeys(function (User $user): array {
-                $name = trim((string) $user->name);
-                $login = (string) $user->login;
-                $label = $name !== '' && $name !== $login
-                    ? $name . ' (' . $login . ')'
-                    : $login;
-
-                return [$user->id => $label];
-            })
-            ->toArray();
     }
 }

@@ -172,6 +172,10 @@ Route::group(['middleware' => ['install']], function () {
             Route::get('{organization}/projects/{project}/edit', [ProjectController::class, 'edit'])->name('admin.projects.edit')->where(['organization' => '[0-9]+', 'project' => '[0-9]+']);
             Route::put('{organization}/projects/{project}', [ProjectController::class, 'update'])->name('admin.projects.update')->where(['organization' => '[0-9]+', 'project' => '[0-9]+']);
             Route::delete('{organization}/projects/{project}', [ProjectController::class, 'destroy'])->name('admin.projects.destroy')->where(['organization' => '[0-9]+', 'project' => '[0-9]+']);
+            Route::post('{organization}/projects/{project}/administrators', [ProjectController::class, 'storeAdministrator'])->name('admin.projects.administrators.store')->where(['organization' => '[0-9]+', 'project' => '[0-9]+']);
+            Route::delete('{organization}/projects/{project}/administrators/{user}', [ProjectController::class, 'destroyAdministrator'])->name('admin.projects.administrators.destroy')->where(['organization' => '[0-9]+', 'project' => '[0-9]+', 'user' => '[0-9]+']);
+            Route::post('{organization}/projects/{project}/moderators', [ProjectController::class, 'storeModerator'])->name('admin.projects.moderators.store')->where(['organization' => '[0-9]+', 'project' => '[0-9]+']);
+            Route::delete('{organization}/projects/{project}/moderators/{user}', [ProjectController::class, 'destroyModerator'])->name('admin.projects.moderators.destroy')->where(['organization' => '[0-9]+', 'project' => '[0-9]+', 'user' => '[0-9]+']);
         });
     });
 

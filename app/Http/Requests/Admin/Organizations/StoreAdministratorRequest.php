@@ -2,12 +2,12 @@
 
 namespace App\Http\Requests\Admin\Organizations;
 
-use App\DTO\OrganizationCreateData;
+use App\Enums\UserRole;
 use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class StoreRequest extends FormRequest
+class StoreAdministratorRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,24 +25,16 @@ class StoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:255'],
-            'owner_id' => [
-                'nullable',
+            'user_id' => [
+                'required',
                 'integer',
-                Rule::exists(User::getTableName(), 'id'),
+                Rule::exists(User::getTableName(), 'id')->where(function ($query): void {
+                    $query->whereIn('role', [
+                        UserRole::Admin->value,
+                        UserRole::OrganizationAdmin->value,
+                    ]);
+                }),
             ],
-            'description' => ['nullable', 'string'],
         ];
-    }
-
-    public function toDto(int $ownerId): OrganizationCreateData
-    {
-        $data = $this->validated();
-
-        return new OrganizationCreateData(
-            ownerId: $ownerId,
-            name: (string) $data['name'],
-            description: $data['description'] ?? null,
-        );
     }
 }

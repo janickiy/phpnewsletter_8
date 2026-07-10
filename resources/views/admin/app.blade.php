@@ -352,9 +352,6 @@
     <!-- /.content-wrapper -->
 
     <footer class="app-footer">
-        <div class="float-end d-none d-sm-inline">
-            {{ env('VERSION') }}
-        </div>
 
             &copy; 2006-{{ date('Y') }}
             <a href="https://janickiy.com" class="text-decoration-none">PHP Newsletter</a>.
