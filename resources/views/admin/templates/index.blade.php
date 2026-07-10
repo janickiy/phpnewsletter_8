@@ -10,6 +10,57 @@
     <link rel="stylesheet" href="{{ asset('vendor/datatables-buttons-bs5/css/buttons.bootstrap5.min.css') }}">
 
     <style>
+        .templates-page #itemList {
+            width: 100% !important;
+        }
+
+        .templates-page #itemList th,
+        .templates-page #itemList td {
+            vertical-align: middle;
+        }
+
+        .templates-page #itemList thead th {
+            white-space: nowrap;
+        }
+
+        .template-cell-title {
+            font-weight: 600;
+        }
+
+        .template-cell-excerpt {
+            display: block;
+            line-height: 1.35;
+            margin-top: .35rem;
+        }
+
+        .templates-bulk-actions {
+            max-width: 520px;
+        }
+
+        .template-online-log {
+            background-color: var(--bs-tertiary-bg);
+            border: 1px solid var(--bs-border-color);
+            border-radius: var(--bs-border-radius);
+            max-height: 260px;
+            min-height: 72px;
+            overflow: auto;
+            padding: .75rem;
+        }
+
+        .template-send-stats {
+            align-items: center;
+            display: flex;
+            flex-wrap: wrap;
+            gap: .5rem .75rem;
+        }
+
+        .template-send-controls {
+            align-items: center;
+            display: flex;
+            gap: .75rem;
+            margin-top: 1rem;
+        }
+
         #divStatus {
             display: inline-block;
             min-height: 20px;
@@ -29,131 +80,127 @@
 
 @section('content')
 
-    <!-- Main content -->
-    <section class="content">
+    <div class="container-fluid templates-page">
+        <div class="row">
+            <div class="col-12">
+                <div class="card card-outline card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-envelope-open-text me-1"></i>
+                            {{ __('frontend.menu.templates') }}
+                        </h3>
 
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-12">
+                        <div class="card-tools">
+                            <a href="{{ route('admin.templates.create') }}" class="btn btn-primary btn-sm">
+                                <i class="fas fa-plus me-1"></i>
+                                {{ __('frontend.str.add_template') }}
+                            </a>
+                        </div>
+                    </div>
 
-                    <div class="card">
-                        <!-- /.card-header -->
-                        <div class="card-body">
-                            <div class="pb-3">
-                                <a href="{{ route('admin.templates.create') }}" class="btn btn-info btn-sm pull-left">
-                                    <span class="fa fa-plus"> &nbsp;</span> {{ __('frontend.str.add_template') }}
-                                </a>
-                            </div>
+                    {!! form_open(['url' => route('admin.templates.status'), 'method' => 'post']) !!}
 
-                            {!! form_open(['url' => route('admin.templates.status'), 'method' => 'post']) !!}
-
-                            <table id="itemList" class="table table-bordered table-striped">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table id="itemList" class="table table-striped table-hover mb-0 align-middle">
                                 <thead>
                                 <tr>
-                                    <th style="width: 10px">
-                                        <span>
-                                            <input type="checkbox" title="{{ __('frontend.str.check_uncheck_all') }}"
-                                                   id="checkAll">
-                                        </span>
+                                    <th class="text-center" style="width: 48px">
+                                        <input type="checkbox"
+                                               class="form-check-input"
+                                               title="{{ __('frontend.str.check_uncheck_all') }}"
+                                               id="checkAll">
                                     </th>
-                                    <th style="width: 10px">ID</th>
+                                    <th style="width: 72px">ID</th>
                                     <th>{{ __('frontend.str.template') }}</th>
                                     <th>{{ __('frontend.str.importance') }}</th>
                                     <th>{{ __('frontend.str.attachments') }}</th>
                                     <th>{{ __('frontend.str.date') }}</th>
-                                    <th style="width: 10%">{{ __('frontend.str.action') }}</th>
+                                    <th class="text-end" style="width: 10%">{{ __('frontend.str.action') }}</th>
                                 </tr>
                                 </thead>
-                                <tfoot>
-                                <th style="width: 10px"></th>
-                                <th style="width: 10px">ID</th>
-                                <th>{{ __('frontend.str.template') }}</th>
-                                <th>{{ __('frontend.str.importance') }}</th>
-                                <th>{{ __('frontend.str.attachments') }}</th>
-                                <th>{{ __('frontend.str.date') }}</th>
-                                <th style="width: 10%">{{ __('frontend.str.action') }}</th>
-                                </tfoot>
                             </table>
-
-                            <div class="row">
-                                <div class="col-sm-12 padding-bottom-10">
-                                    <div class="form-inline">
-                                        <div class="control-group">
-
-                                            {!! form_select('action',[
-                                            '0' => __('frontend.str.send'),
-                                            '1' => __('frontend.str.remove')
-                                            ],null,['class' => 'span3 form-control', 'id' => 'select_action','placeholder' => '--' . __('frontend.str.action') . '--'],[0 => ['data-id' => 'sendmail', 'class' => 'open_modal']]) !!}
-
-                                            <span class="help-inline">
-
-                                            {!! form_submit(__('frontend.str.apply'), ['class' => 'btn btn-success', 'disabled' => "", 'id' => 'apply']) !!}
-
-                                            </span>
-
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {!! form_close() !!}
-
-                            <!-- /.card-body -->
                         </div>
                     </div>
-                    <!-- /.card -->
+
+                    <div class="card-footer bg-body-tertiary">
+                        <div class="input-group input-group-sm templates-bulk-actions">
+                            <span class="input-group-text">
+                                <i class="fas fa-list-check"></i>
+                            </span>
+
+                            {!! form_select('action',[
+                                '0' => __('frontend.str.send'),
+                                '1' => __('frontend.str.remove')
+                            ],null,['class' => 'form-select', 'id' => 'select_action','placeholder' => '--' . __('frontend.str.action') . '--'],[0 => ['data-id' => 'sendmail', 'class' => 'open_modal']]) !!}
+
+                            {!! form_submit(__('frontend.str.apply'), ['class' => 'btn btn-success', 'disabled' => "", 'id' => 'apply']) !!}
+                        </div>
+                    </div>
+
+                    {!! form_close() !!}
                 </div>
-                <!-- /.col -->
             </div>
-            <!-- /.row -->
         </div>
-        <!-- /.container-fluid -->
+    </div>
 
-    </section>
-    <!-- /.content -->
-
-    <div class="modal fade" id="modal-lg">
+    <div class="modal fade template-send-modal" id="modal-lg">
         <input id="logId" type="hidden" value="0">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">{{ __('frontend.str.online_newsletter_log') }}<span id="process"></span>
-                    </h4>
+                    <h5 class="modal-title">
+                        <i class="fas fa-paper-plane me-1"></i>
+                        {{ __('frontend.str.online_newsletter_log') }}
+                        <span id="process"></span>
+                    </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div id="onlinelog"></div>
-                    <div class="row">
-                        <div class="col-sm-12 padding-top-10 padding-bottom-10">
-                            <div class="form-inline">
-                                <div class="control-group">
+                    <div class="mb-3">
+                        {!! form_label('categoryId', __('frontend.form.subscribers_category'), ['class' => 'form-label']) !!}
+                        {!! form_select('categoryId[]', $categoryOptions, null, ['id' => 'categoryId','multiple'=>'multiple', 'placeholder' => __('frontend.form.select_category'), 'class' => 'form-select custom-scroll', 'style' => 'width: 100%']) !!}
+                    </div>
 
-                                    {!! form_select('categoryId[]', $categoryOptions, null, ['id' => 'categoryId','multiple'=>'multiple', 'placeholder' => __('frontend.form.select_category'), 'class' => 'form-control custom-scroll', 'style' => 'width: 100%']) !!}
+                    <div id="onlinelog" class="template-online-log mb-3"></div>
 
-                                </div>
-                            </div>
+                    <div class="d-flex justify-content-between small text-muted mb-2">
+                        <span><span id="leftsend">0</span>% {{ __('frontend.str.left') }}</span>
+                        <span id="timer2">00:00:00</span>
+                    </div>
+
+                    <div class="progress progress-sm progress-bar-striped progress-bar-animated mb-3">
+                        <div class="progress-bar bg-dark" role="progressbar" style="width: 0%"></div>
+                    </div>
+
+                    <div class="online_statistics">
+                        <div class="template-send-stats">
+                            <span class="badge text-bg-secondary">
+                                {{ __('frontend.str.total') }}: <span id="totalsendlog">0</span>
+                            </span>
+                            <span class="badge text-bg-success">
+                                {{ __('frontend.str.good') }}: <span id="successful">0</span>
+                            </span>
+                            <span class="badge text-bg-danger">
+                                {{ __('frontend.str.bad') }}: <span id="unsuccessful">0</span>
+                            </span>
                         </div>
-                    </div>
-                    <p><span id="leftsend">0</span>% {{ __('frontend.str.left') }}: <span id="timer2">00:00:00</span>
-                    </p>
-                    <div class="progress progress-sm progress-bar-striped progress-bar-animated">
-                        <div class="progress-bar bg-dark" role="progressbar" style="width: 1%"></div>
-                    </div>
-                    <div class="online_statistics">{{ __('frontend.str.total') }}:
-                        <span id="totalsendlog">0</span>
-                        <span style="color: green">{{ __('frontend.str.good') }}: </span>
-                        <span style="color: green" id="successful">0</span>
-                        <span style="color: red">{{ __('frontend.str.bad') }}: </span>
-                        <span style="color: red" id="unsuccessful">0</span><br><br>
-                        <span id="divStatus"></span><br>
-                        <button id="sendout" class="btn btn-secondary rounded-circle btn-lg"
-                                style="margin-right: 15px;" title="{{ __('frontend.str.send_out_newsletter') }}"><i
-                                class="fa fa-play"></i></button>
-                        <button id="stopsendout"
-                                class="btn btn-danger rounded-circle btn-lg disabled" disabled="disabled"
-                                title="{{ __('frontend.str.stop_newsletter') }}">
-                            <i class="fa fa-stop"></i>
-                        </button>
+
+                        <div class="mt-3">
+                            <span id="divStatus"></span>
+                        </div>
+
+                        <div class="template-send-controls">
+                            <button id="sendout" class="btn btn-secondary rounded-circle btn-lg"
+                                    title="{{ __('frontend.str.send_out_newsletter') }}">
+                                <i class="fa fa-play"></i>
+                            </button>
+                            <button id="stopsendout"
+                                    class="btn btn-danger rounded-circle btn-lg disabled" disabled="disabled"
+                                    title="{{ __('frontend.str.stop_newsletter') }}">
+                                <i class="fa fa-stop"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer justify-content-between">
@@ -303,11 +350,17 @@
                 aaSorting: [[1, 'asc']],
                 processing: true,
                 responsive: true,
-                autoWidth: true,
+                autoWidth: false,
                 serverSide: true,
                 ajax: {
                     url: '{{ route('admin.datatable.templates') }}'
                 },
+                columnDefs: [
+                    {targets: 0, className: 'text-center', width: '48px'},
+                    {targets: 1, width: '72px'},
+                    {targets: [3, 4], className: 'text-nowrap'},
+                    {targets: 6, className: 'text-end text-nowrap'}
+                ],
                 columns: [
                     {data: 'checkbox', name: 'checkbox', orderable: false, searchable: false},
                     {data: 'id', name: 'id'},

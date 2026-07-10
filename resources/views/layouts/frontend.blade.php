@@ -32,7 +32,7 @@
 
 <!-- BOOTSTRAP JS -->
 
-<script src="{{ asset('admin/js/bootstrap/bootstrap.min.js') }}"></script>
+<script src="{{ asset('vendor/bootstrap5/js/bootstrap.bundle.min.js') }}"></script>
 
 @yield('js')
 

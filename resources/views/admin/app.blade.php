@@ -25,7 +25,7 @@
     <link rel="stylesheet" href="{{ asset('plugins/flag-icon-css/css/flag-icon.min.css') }}">
 
     <!-- Custom style -->
-    <link rel="stylesheet" href="{{ asset('dist/css/admin.css?v=11') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/admin.css') }}?v={{ filemtime(public_path('assets/css/admin.css')) }}">
 
     @yield('css')
 
@@ -92,7 +92,7 @@
         <!-- Brand Logo -->
         <div class="sidebar-brand">
             <a href="{{ route('admin.dashboard.index') }}" class="brand-link">
-                <img src="{{ url('/dist/img/logo-sidebar-icon.png') }}?v={{ filemtime(public_path('dist/img/logo-sidebar-icon.png')) }}" alt="PHP Newsletter" class="brand-icon">
+                <img src="{{ url('/assets/img/logo-sidebar-icon.png') }}?v={{ filemtime(public_path('assets/img/logo-sidebar-icon.png')) }}" alt="PHP Newsletter" class="brand-icon">
                 <span class="brand-wordmark">
                     <span class="brand-wordmark-main"><span>PHP</span>Newsletter</span>
                     <span class="brand-wordmark-sub">Mailing System</span>

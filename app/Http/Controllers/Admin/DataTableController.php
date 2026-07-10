@@ -34,27 +34,36 @@ class DataTableController extends Controller
 
         return DataTables::of($rows)
             ->addColumn('checkbox', fn ($row) => sprintf(
-                '<input type="checkbox" class="check" value="%d" name="templateId[]">',
+                '<input type="checkbox" class="form-check-input check" value="%d" name="templateId[]">',
                 $row->id
             ))
             ->addColumn('action', fn ($row) => sprintf(
-                '<a title="%s" class="btn btn-xs btn-primary" href="%s"><span class="fa fa-edit"></span></a>&nbsp;',
+                '<div class="btn-group btn-group-sm" role="group"><a title="%s" class="btn btn-outline-primary" href="%s"><i class="fa fa-edit"></i></a></div>',
                 __('frontend.str.edit'),
                 route('admin.templates.edit', ['id' => $row->id])
             ))
             ->editColumn('name', function ($row) {
                 $body = preg_replace('/(<.*?>)|(&.*?;)/', '', $row->body);
 
-                return $row->name . '<br><br><small class="text-muted">' .
-                    StringHelper::shortText($body ?? '', 500) .
+                return '<div class="template-cell-title">' . e($row->name) . '</div>' .
+                    '<small class="template-cell-excerpt text-muted">' .
+                    e(StringHelper::shortText($body ?? '', 500)) .
                     '</small>';
             })
-            ->editColumn('prior', fn ($row) => $row->getPrior())
+            ->editColumn('prior', function ($row) {
+                $class = match ((int) $row->prior) {
+                    1 => 'text-bg-danger',
+                    2 => 'text-bg-secondary',
+                    default => 'text-bg-primary',
+                };
+
+                return '<span class="badge ' . $class . '">' . e($row->getPrior()) . '</span>';
+            })
             ->addColumn('attach', fn ($row) => $row->attach->count() > 0
-                ? __('frontend.str.yes')
-                : __('frontend.str.no'))
+                ? '<span class="badge text-bg-success">' . e(__('frontend.str.yes')) . '</span>'
+                : '<span class="badge text-bg-secondary">' . e(__('frontend.str.no')) . '</span>')
             ->editColumn('created_at', fn ($row) => $this->formatDateTime($row->created_at))
-            ->rawColumns(['action', 'name', 'checkbox'])
+            ->rawColumns(['action', 'name', 'checkbox', 'prior', 'attach'])
             ->make(true);
     }
 
@@ -149,37 +158,44 @@ class DataTableController extends Controller
 
         return DataTables::of($rows)
             ->addColumn('checkbox', fn ($row) => sprintf(
-                '<input type="checkbox" class="check" value="%d" name="activate[]">',
+                '<input type="checkbox" class="form-check-input check" value="%d" name="activate[]">',
                 $row->id
             ))
             ->addColumn('subscriptions', function ($row) {
-                return $row->subscriptions
+                $categories = $row->subscriptions
                     ->map(fn ($subscription) => $subscription->category?->name)
                     ->filter()
-                    ->unique()
-                    ->implode(', ');
+                    ->unique();
+
+                if ($categories->isEmpty()) {
+                    return '<span class="text-muted">-</span>';
+                }
+
+                return $categories
+                    ->map(fn ($name) => '<span class="badge text-bg-secondary me-1">' . e($name) . '</span>')
+                    ->implode('');
             })
             ->editColumn('active', fn ($row) => $row->active === 1
-                ? __('frontend.str.yes')
-                : __('frontend.str.no'))
+                ? '<span class="badge text-bg-success">' . e(__('frontend.str.yes')) . '</span>'
+                : '<span class="badge text-bg-secondary">' . e(__('frontend.str.no')) . '</span>')
             ->editColumn('activeStatus', fn ($row) => $row->active)
             ->addColumn('action', function ($row) {
                 $editBtn = sprintf(
-                    '<a title="%s" class="btn btn-xs btn-primary" href="%s"><span class="fa fa-edit"></span></a>&nbsp;',
+                    '<a title="%s" class="btn btn-outline-primary" href="%s"><i class="fa fa-edit"></i></a>',
                     __('frontend.str.edit'),
                     route('admin.subscribers.edit', ['id' => $row->id])
                 );
 
                 $deleteBtn = sprintf(
-                    '<a title="%s" class="btn btn-xs btn-danger deleteRow" id="%d"><span class="fa fa-trash"></span></a>',
+                    '<a title="%s" class="btn btn-outline-danger deleteRow" id="%d"><i class="fa fa-trash"></i></a>',
                     __('frontend.str.remove'),
                     $row->id
                 );
 
-                return '<div class="nobr">' . $editBtn . $deleteBtn . '</div>';
+                return '<div class="btn-group btn-group-sm" role="group">' . $editBtn . $deleteBtn . '</div>';
             })
             ->editColumn('created_at', fn ($row) => $this->formatDateTime($row->created_at))
-            ->rawColumns(['action', 'checkbox'])
+            ->rawColumns(['action', 'checkbox', 'subscriptions', 'active'])
             ->make(true);
     }
 

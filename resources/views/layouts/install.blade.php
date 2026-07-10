@@ -23,7 +23,7 @@
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
 
-    <link rel="stylesheet" href="{{ asset('plugins/fontawesome-free/css/all.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('vendor/fontawesome7/css/all.min.css') }}">
 
     @yield('css')
 
@@ -48,7 +48,7 @@
         </div>
 
         <div class="col-md-6 offset-3 logo-wrapper">
-            <img src="{{ url('/dist/img/logo-auth-install.png') }}?v={{ filemtime(public_path('dist/img/logo-auth-install.png')) }}" alt="PHP Newsletter" class="logo">
+            <img src="{{ url('/assets/img/logo-auth-install.png') }}?v={{ filemtime(public_path('assets/img/logo-auth-install.png')) }}" alt="PHP Newsletter" class="logo">
         </div>
     </div>
     <div class="wizard col-md-6 offset-3">
@@ -61,8 +61,8 @@
 <!-- jQuery -->
 <script src="{{ asset('plugins/jquery/jquery.min.js') }}"></script>
 
-<!-- Bootstrap 4 -->
-<script src="{{ asset('plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+<!-- Bootstrap 5 -->
+<script src="{{ asset('vendor/bootstrap5/js/bootstrap.bundle.min.js') }}"></script>
 
 <script src="{{ asset('plugins/bootstrap-select/js/bootstrap-select.min.js') }}"></script>
 

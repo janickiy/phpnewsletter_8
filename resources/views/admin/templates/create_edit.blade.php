@@ -10,162 +10,206 @@
     <link rel="stylesheet" href="{{ asset('plugins/codemirror/codemirror.css') }}">
     <link rel="stylesheet" href="{{ asset('plugins/codemirror/theme/monokai.css') }}">
 
+    <style>
+        .template-editor-page .note-editor {
+            margin-bottom: 0;
+        }
+
+        .template-editor-page .template-help {
+            background-color: var(--bs-tertiary-bg);
+            border-left: 3px solid var(--bs-primary);
+            border-radius: var(--bs-border-radius);
+            color: var(--bs-secondary-color);
+            margin-top: 1rem;
+            padding: .75rem 1rem;
+        }
+
+        .template-editor-page .template-side-section {
+            border: 1px solid var(--bs-border-color);
+            border-radius: var(--bs-border-radius);
+            padding: 1rem;
+        }
+
+        .template-editor-page .template-side-section + .template-side-section {
+            margin-top: 1rem;
+        }
+
+        .template-editor-page .template-section-title {
+            align-items: center;
+            display: flex;
+            font-size: 1rem;
+            font-weight: 600;
+            gap: .45rem;
+            margin-bottom: 1rem;
+        }
+
+        .template-editor-page .attachment-list {
+            display: flex;
+            flex-direction: column;
+            gap: .5rem;
+        }
+
+        .template-editor-page .attachment-item {
+            align-items: center;
+            background-color: var(--bs-tertiary-bg);
+            border: 1px solid var(--bs-border-color);
+            border-radius: var(--bs-border-radius);
+            display: flex;
+            gap: .5rem;
+            justify-content: space-between;
+            padding: .5rem .75rem;
+        }
+    </style>
+
 @endsection
 
 @section('content')
 
-    <!-- Main content -->
-    <section class="content">
+    @php
+        $selectedPrior = old('prior', $template->prior ?? 3);
+    @endphp
 
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-12">
+    {!! form_open(['url' => isset($template) ? route('admin.templates.update') : route('admin.templates.store'), 'files' => true, 'method' => isset($template) ? 'put' : 'post', 'id' => 'tmplForm']) !!}
 
-                    <!-- general form elements -->
-                    <header class="card card-primary">
+    {!! isset($template) ? form_hidden('id', $template->id) : '' !!}
 
-                        <!-- form start -->
-                        {!! form_open(['url' => isset($template) ? route('admin.templates.update') : route('admin.templates.store'), 'files' => true, 'method' => isset($template) ? 'put' : 'post', 'id' => 'tmplForm']) !!}
+    <div class="container-fluid template-editor-page">
+        <div class="row">
+            <div class="col-12">
+                <div class="card card-outline card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-envelope-open-text me-1"></i>
+                            {{ $title }}
+                        </h3>
+                    </div>
 
-                        {!! isset($template) ? form_hidden('id', $template->id) : '' !!}
+                    <div class="card-body">
+                        <p class="text-muted small mb-3">*-{{ __('frontend.form.required_fields') }}</p>
 
-                        <div class="card-body">
+                        <div class="row">
+                            <div class="col-xl-8">
+                                <div class="form-group mb-3">
+                                    {!! form_label('name', __('frontend.form.name') . '*', ['class' => 'form-label']) !!}
+                                    {!! form_text('name', old('name', $template->name ?? null), ['class' => 'form-control', 'placeholder' => __('frontend.form.name')]) !!}
 
-                            <p>*-{{ __('frontend.form.required_fields') }}</p>
-
-                            <div class="form-group">
-
-                                {!! form_label('name', __('frontend.form.name') . '*') !!}
-
-                                {!! form_text('name', old('name', $template->name ?? null), ['class' => 'form-control']) !!}
-
-                                @if ($errors->has('name'))
-                                    <p class="text-danger">{{ $errors->first('name') }}</p>
-                                @endif
-                            </div>
-
-                            <div class="form-group">
-
-                                {!! form_label('body', __('frontend.form.template') . '*') !!}
-
-                                {!! form_textarea('body', old('name', $template->body ?? null), ['rows' => "3", 'placeholder' => __('frontend.form.template'), 'class' => 'form-control']) !!}
-
-                                @if ($errors->has('body'))
-                                    <p class="text-danger">{{ $errors->first('body') }}</p>
-                                @endif
-
-                                <blockquote class="quote-secondary">
-                                    <small>{!! __('frontend.note.personalization') !!}</small>
-                                </blockquote>
-
-                                @if($macrosList)
-                                <blockquote class="quote-secondary">
-                                    <small>{!! __('frontend.note.macros') !!} {!! $macrosList !!}</small>
-                                </blockquote>
-                                @endif
-
-                            </div>
-
-                            <div class="form-group">
-
-                                {!! form_label('attachfile[]', __('frontend.form.attach_files')) !!}
-
-                                {!! form_file('attachfile[]',  ['id' => 'attachfile', 'multiple' => true, 'class' => 'form-control']) !!}
-
-                                @if ($errors->has('attachfile'))
-                                    <p class="text-danger">{{ $errors->first('attachfile') }}</p>
-                                @endif
-
-                            </div>
-
-                            <div class="form-group">
-
-                                {!! form_label('attachments', __('frontend.str.attachments')) !!}
-
-                                <div class="inline-group">
-                                    @if(isset($attachment))
-                                        @foreach($attachment as $a)
-                                            <span id="attach_{{ $a->id }}">{{ $a->file_name }}
-                                                <a href="#" data-num="{{ $a->id }}" class="remove_attach" title="{{ __('frontend.str.remove') }}"> X </a>&nbsp;&nbsp;
-                                            </span>
-                                        @endforeach
+                                    @if ($errors->has('name'))
+                                        <p class="text-danger mb-0">{{ $errors->first('name') }}</p>
                                     @endif
                                 </div>
 
+                                <div class="form-group mb-3">
+                                    {!! form_label('body', __('frontend.form.template') . '*', ['class' => 'form-label']) !!}
+                                    {!! form_textarea('body', old('body', $template->body ?? null), ['rows' => '8', 'placeholder' => __('frontend.form.template'), 'class' => 'form-control']) !!}
+
+                                    @if ($errors->has('body'))
+                                        <p class="text-danger mb-0">{{ $errors->first('body') }}</p>
+                                    @endif
+
+                                    <div class="template-help">
+                                        <small>{!! __('frontend.note.personalization') !!}</small>
+                                    </div>
+
+                                    @if($macrosList)
+                                        <div class="template-help">
+                                            <small>{!! __('frontend.note.macros') !!} {!! $macrosList !!}</small>
+                                        </div>
+                                    @endif
+                                </div>
                             </div>
 
-                            <div class="form-group">
+                            <div class="col-xl-4">
+                                <div class="template-side-section">
+                                    <div class="template-section-title">
+                                        <i class="fas fa-sliders-h"></i>
+                                        {{ __('frontend.form.prior') }}
+                                    </div>
 
-                                {!! form_label('prior', __('frontend.form.prior')) !!}
+                                    <div class="form-check mb-2">
+                                        {!! form_radio('prior', 3, (string) $selectedPrior === '3', ['class' => 'form-check-input', 'id' => 'prior_normal']) !!}
+                                        {!! form_label('prior_normal', __('frontend.form.normal'), ['class' => 'form-check-label']) !!}
+                                    </div>
 
-                                <div class="inline-group">
-                                    <label class="radio">
+                                    <div class="form-check mb-2">
+                                        {!! form_radio('prior', 2, (string) $selectedPrior === '2', ['class' => 'form-check-input', 'id' => 'prior_low']) !!}
+                                        {!! form_label('prior_low', __('frontend.form.low'), ['class' => 'form-check-label']) !!}
+                                    </div>
 
-                                        {!! form_radio('prior', 3, (isset($template) && $template->prior == 3) || !isset($template)) !!}
-
-                                        <i></i>{{ __('frontend.form.normal') }}
-                                    </label>
-                                    <label class="radio">
-
-                                        {!! form_radio('prior', 2, isset($template) && $template->prior == 2) !!}
-
-                                        <i></i>{{ __('frontend.form.low') }}
-                                    </label>
-                                    <label class="radio">
-
-                                        {!! form_radio('prior', 1, isset($template) && $template->prior == 1) !!}
-
-                                        <i></i>{{ __('frontend.form.high') }}
-                                    </label>
+                                    <div class="form-check">
+                                        {!! form_radio('prior', 1, (string) $selectedPrior === '1', ['class' => 'form-check-input', 'id' => 'prior_high']) !!}
+                                        {!! form_label('prior_high', __('frontend.form.high'), ['class' => 'form-check-label']) !!}
+                                    </div>
 
                                     @if ($errors->has('prior'))
-                                        <p class="text-danger">{{ $errors->first('prior') }}</p>
+                                        <p class="text-danger mb-0 mt-2">{{ $errors->first('prior') }}</p>
                                     @endif
-
                                 </div>
 
+                                <div class="template-side-section">
+                                    <div class="template-section-title">
+                                        <i class="fas fa-paperclip"></i>
+                                        {{ __('frontend.str.attachments') }}
+                                    </div>
+
+                                    <div class="form-group mb-3">
+                                        {!! form_label('attachfile[]', __('frontend.form.attach_files'), ['class' => 'form-label']) !!}
+                                        {!! form_file('attachfile[]', ['id' => 'attachfile', 'multiple' => true, 'class' => 'form-control']) !!}
+
+                                        @if ($errors->has('attachfile'))
+                                            <p class="text-danger mb-0">{{ $errors->first('attachfile') }}</p>
+                                        @endif
+                                    </div>
+
+                                    <div class="attachment-list">
+                                        @forelse($attachment ?? [] as $a)
+                                            <div id="attach_{{ $a->id }}" class="attachment-item">
+                                                <span class="text-truncate">{{ $a->file_name }}</span>
+                                                <a href="#" data-num="{{ $a->id }}" class="btn btn-outline-danger btn-sm remove_attach" title="{{ __('frontend.str.remove') }}">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                            </div>
+                                        @empty
+                                            <span class="text-muted">{{ __('frontend.str.no') }}</span>
+                                        @endforelse
+                                    </div>
+                                </div>
+
+                                <div class="template-side-section">
+                                    <div class="template-section-title">
+                                        <i class="fas fa-paper-plane"></i>
+                                        {{ __('frontend.str.send_test_letter') }}
+                                        <span id="process"></span>
+                                    </div>
+
+                                    <div id="resultSend"></div>
+
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                        {!! form_text('email', null, ['class' => 'form-control', 'placeholder' => 'Email', 'id' => 'email']) !!}
+                                        <button type="button" id="send_test" class="btn btn-info">
+                                            {{ __('frontend.str.send') }}
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
-
                         </div>
-                        <!-- /.card-body -->
+                    </div>
 
-                        <div class="card-footer">
-                            <button type="submit" class="btn btn-primary">
-                                {{ isset($template) ? __('frontend.form.edit') : __('frontend.form.add') }}
-                            </button>
-                            <a class="btn btn-secondary float-sm-end" href="{{ route('admin.templates.index') }}">
-                                {{ __('frontend.form.back') }}
-                            </a>
+                    <div class="card-footer d-flex flex-column flex-sm-row gap-2 justify-content-between">
+                        <button type="submit" class="btn btn-primary">
+                            {{ isset($template) ? __('frontend.form.edit') : __('frontend.form.add') }}
+                        </button>
 
-                        </div>
-                    </header>
-
-                    <header class="card card-info">
-                        <div class="card-header">
-                            <h3 class="card-title">{{ __('frontend.str.send_test_letter') }}<span id="process"></span></h3>
-                        </div>
-                        <div class="card-body">
-
-                            <div id="resultSend"></div>
-
-                            <div class="input-group mb-3">
-                                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                                {!! form_text('email', null, ['class' => 'form-control', 'placeholder' => 'Email', 'id' => 'email']) !!}
-                                <button type="button" id="send_test" class="btn btn-info rounded-0">{{ __('frontend.str.send') }}</button>
-
-                            </div>
-                        </div>
-                    </header>
-
-                    {!! form_close() !!}
-
+                        <a class="btn btn-secondary" href="{{ route('admin.templates.index') }}">
+                            {{ __('frontend.form.back') }}
+                        </a>
+                    </div>
                 </div>
-                <!-- /.card -->
             </div>
         </div>
+    </div>
 
-    </section>
-    <!-- /.content -->
+    {!! form_close() !!}
 
 @endsection
 

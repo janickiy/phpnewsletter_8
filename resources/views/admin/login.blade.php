@@ -39,7 +39,7 @@
     <div class="card card-outline card-primary">
         <div class="card-header text-center">
 
-            <img src="{{ url('/dist/img/logo-auth-install.png') }}?v={{ filemtime(public_path('dist/img/logo-auth-install.png')) }}" alt="PHP Newsletter" class="auth-logo">
+            <img src="{{ url('/assets/img/logo-auth-install.png') }}?v={{ filemtime(public_path('assets/img/logo-auth-install.png')) }}" alt="PHP Newsletter" class="auth-logo">
         </div>
         <div class="card-body">
             <p class="login-box-msg">{{ __('auth.admin_area') }}</p>
