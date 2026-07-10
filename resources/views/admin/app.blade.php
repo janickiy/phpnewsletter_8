@@ -350,7 +350,7 @@
             {{ env('VERSION') }}
         </div>
 
-            Copyright &copy; 2006-{{ date('Y') }}
+            &copy; 2006-{{ date('Y') }}
             <a href="https://janickiy.com" class="text-decoration-none">PHP Newsletter</a>.
 
         {{ __('frontend.str.author') }}.
