@@ -64,6 +64,51 @@
         background-color: var(--bs-tertiary-bg);
     }
 
+    #calendar .calendar-list-event {
+        align-items: center;
+        display: flex;
+        gap: 0.5rem;
+        min-width: 0;
+        width: 100%;
+    }
+
+    #calendar .calendar-list-event-title {
+        flex: 1 1 auto;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    #calendar .calendar-list-event-actions {
+        display: flex;
+        flex: 0 0 auto;
+        gap: 0.25rem;
+        margin-left: auto;
+    }
+
+    #calendar .calendar-list-event-actions .btn {
+        align-items: center;
+        display: inline-flex;
+        height: 1.75rem;
+        justify-content: center;
+        padding: 0;
+        width: 1.75rem;
+    }
+
+    #calendar .calendar-list-event-actions .btn-outline-primary {
+        color: var(--bs-primary) !important;
+    }
+
+    #calendar .calendar-list-event-actions .btn-outline-danger {
+        color: var(--bs-danger) !important;
+    }
+
+    #calendar .calendar-list-event-actions .btn-outline-primary:hover,
+    #calendar .calendar-list-event-actions .btn-outline-danger:hover {
+        color: #fff !important;
+    }
+
     .fc-day-today a,
     .fc-day-today a:hover,
     .fc-day-today a:focus,
@@ -197,7 +242,10 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        $('#calendar').on('click', '.delete-event', function () {
+        $('#calendar').on('click', '.delete-event', function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+
             let rowid = $(this).attr('data-id');
 
             Swal.fire({
@@ -249,7 +297,15 @@
             let eventTitle = escapeHtml(event.title);
 
             if (isListView) {
-                return '<span class="calendar-list-event-title">' + eventTitle + '</span>';
+                let listActions = '<span class="calendar-list-event-actions">' +
+                    '<a href="{{ url("schedule/edit") }}/' + event.id + '" class="btn btn-outline-primary btn-sm" title="{{ __('frontend.str.edit') }}"><i class="fas fa-edit"></i></a>' +
+                    '<button type="button" class="btn btn-outline-danger btn-sm delete-event" data-id="' + event.id + '" title="{{ __('frontend.str.remove') }}"><i class="fas fa-trash"></i></button>' +
+                    '</span>';
+
+                return '<span class="calendar-list-event">' +
+                    '<span class="calendar-list-event-title">' + eventTitle + '</span>' +
+                    listActions +
+                    '</span>';
             }
 
             let eventTime = formatEventTime(event);
