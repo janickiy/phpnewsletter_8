@@ -84,14 +84,6 @@ Route::group(['middleware' => ['install']], function () {
             Route::post('status', [SubscribersController::class, 'status'])->name('admin.subscribers.status');
         });
 
-        Route::group(['prefix' => 'macros'], function () {
-            Route::get('', [MacrosController::class, 'index'])->name('admin.macros.index');
-            Route::get('create', [MacrosController::class, 'create'])->name('admin.macros.create');
-            Route::post('store', [MacrosController::class, 'store'])->name('admin.macros.store');
-            Route::get('edit/{id}', [MacrosController::class, 'edit'])->name('admin.macros.edit')->where('id', '[0-9]+');
-            Route::put('update', [MacrosController::class, 'update'])->name('admin.macros.update');
-            Route::delete('destroy/{id}', [MacrosController::class, 'destroy'])->name('admin.macros.destroy')->where('id', '[0-9]+');
-        });
     });
 
     Route::group(['prefix' => 'schedule'], function () {
@@ -120,6 +112,15 @@ Route::group(['middleware' => ['install']], function () {
     });
 
     Route::middleware(['permission:admin'])->group(function () {
+        Route::group(['prefix' => 'macros'], function () {
+            Route::get('', [MacrosController::class, 'index'])->name('admin.macros.index');
+            Route::get('create', [MacrosController::class, 'create'])->name('admin.macros.create');
+            Route::post('store', [MacrosController::class, 'store'])->name('admin.macros.store');
+            Route::get('edit/{id}', [MacrosController::class, 'edit'])->name('admin.macros.edit')->where('id', '[0-9]+');
+            Route::put('update', [MacrosController::class, 'update'])->name('admin.macros.update');
+            Route::delete('destroy/{id}', [MacrosController::class, 'destroy'])->name('admin.macros.destroy')->where('id', '[0-9]+');
+        });
+
         Route::group(['prefix' => 'smtp'], function () {
             Route::get('', [SmtpController::class, 'index'])->name('admin.smtp.index');
             Route::get('create', [SmtpController::class, 'create'])->name('admin.smtp.create');
@@ -190,7 +191,7 @@ Route::group(['middleware' => ['install']], function () {
         Route::any('info-log/{id?}', [DataTableController::class, 'getInfoLog'])->name('admin.datatable.info_log')->where('id', '[0-9]+');
         Route::any('redirect-log', [DataTableController::class, 'getRedirectLogs'])->name('admin.datatable.redirect');
         Route::any('info-redirect-log/{url}', [DataTableController::class, 'getInfoRedirectLog'])->name('admin.datatable.info_redirect');
-        Route::any('macros', [DataTableController::class, 'getMacros'])->name('admin.datatable.macros');
+        Route::any('macros', [DataTableController::class, 'getMacros'])->name('admin.datatable.macros')->middleware(['permission:admin']);
     });
 });
 

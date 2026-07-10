@@ -156,6 +156,9 @@
                             </a>
                         </li>
 
+                    @endif
+
+                    @if(PermissionsHelper::has_permission('admin'))
                         <li class="nav-item">
                             <a href="{{ route('admin.macros.index') }}" class="nav-link{{ Request::is('macros*') ? ' active' : '' }}"
                                title="{{ __('frontend.menu.macros') }}">
@@ -163,7 +166,6 @@
                                 <p>{{ __('frontend.menu.macros') }}</p>
                             </a>
                         </li>
-
                     @endif
 
                     <li class="nav-item">
@@ -227,7 +229,7 @@
                         </ul>
                     </li>
 
-                    @if(PermissionsHelper::has_permission(Auth::user()->role,'admin'))
+                    @if(PermissionsHelper::has_permission('admin'))
 
                         <li class="nav-item">
                             <a href="{{ route('admin.settings.index') }}" class="nav-link{{  Request::is('settings*') ? ' active' : '' }}"
@@ -239,7 +241,7 @@
 
                     @endif
 
-                    @if(PermissionsHelper::has_permission(Auth::user()->role,'admin'))
+                    @if(PermissionsHelper::has_permission('admin'))
 
                         <li class="nav-item">
                             <a href="{{ route('admin.users.index') }}" class="nav-link{{ Request::is('users*') ? ' active' : '' }}"
