@@ -131,7 +131,7 @@
                     <div class="card-header">
                         <h3 class="card-title">
                             <i class="fas fa-link me-1"></i>
-                            {{ __('frontend.menu.redirect') }}
+                            {{ __('frontend.title.redirect_index') }}
                         </h3>
 
                         @if(PermissionsHelper::has_permission('admin'))
@@ -245,7 +245,7 @@
 
             Swal.fire({
                 title: "{{ __('frontend.str.clear_confirmation') }}",
-                text: "{{ __('frontend.str.want_to_log_clear') }}",
+                text: "{{ __('frontend.str.want_to_redirect_clear') }}",
                 showCancelButton: true,
                 icon: 'warning',
                 cancelButtonText: "{{ __('frontend.str.cancel') }}",

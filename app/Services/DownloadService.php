@@ -52,9 +52,7 @@ class DownloadService
     public function redirect(string $url): StreamedResponse
     {
         $decodedUrl = $this->decodeRouteBase64($url);
-        $rowsExist = Redirect::query()
-            ->where('url', $decodedUrl)
-            ->exists();
+        $rowsExist = $this->redirectLogQuery($decodedUrl)->exists();
 
         abort_if(!$rowsExist, 404);
 
@@ -353,9 +351,7 @@ class DownloadService
      */
     private function writeRedirectWorksheet($sheet, string $url): void
     {
-        $total = Redirect::query()
-            ->where('url', $url)
-            ->count();
+        $total = $this->redirectLogQuery($url)->count();
 
         fwrite($sheet, '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>');
         fwrite($sheet, '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">');
@@ -370,9 +366,8 @@ class DownloadService
 
         $rowIndex = 1;
 
-        Redirect::query()
+        $this->redirectLogQuery($url)
             ->select(['id', 'email', 'created_at'])
-            ->where('url', $url)
             ->orderBy('id')
             ->chunkById(2000, function ($rows) use ($sheet, &$rowIndex): void {
                 foreach ($rows as $row) {
@@ -530,6 +525,13 @@ class DownloadService
         $query = ReadySent::query()->where('schedule_id', $scheduleId);
 
         return ProjectAccess::scopeReadySentQuery($query);
+    }
+
+    private function redirectLogQuery(string $url): EloquentBuilder
+    {
+        $query = Redirect::query()->where('url', $url);
+
+        return ProjectAccess::scopeRedirectQuery($query);
     }
 
     /**

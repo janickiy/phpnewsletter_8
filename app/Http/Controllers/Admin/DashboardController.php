@@ -4,10 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\Category;
 use App\Models\Macros;
+use App\Models\Organization;
 use App\Models\ReadySent;
 use App\Models\Redirect;
 use App\Models\Schedule;
-use App\Models\Smtp;
 use App\Models\Subscribers;
 use App\Models\Templates;
 use App\Models\User;
@@ -25,7 +25,6 @@ class DashboardController extends Controller
         $sentSuccess = ReadySent::query()->where('success', 1)->count();
         $sentFailed = ReadySent::query()->where('success', 0)->count();
         $readTotal = ReadySent::query()->where('readMail', 1)->count();
-        $smtpTotal = Smtp::query()->count();
 
         $stats = [
             'templates' => Templates::query()->count(),
@@ -34,8 +33,7 @@ class DashboardController extends Controller
             'categories' => Category::query()->count(),
             'schedule' => Schedule::query()->count(),
             'upcomingSchedule' => Schedule::query()->where('event_start', '>=', now())->count(),
-            'smtp' => $smtpTotal,
-            'activeSmtp' => Smtp::query()->where('active', 1)->count(),
+            'organizations' => Organization::query()->count(),
             'macros' => Macros::query()->count(),
             'users' => User::query()->count(),
             'sentTotal' => $sentTotal,

@@ -108,6 +108,8 @@
 
 @section('content')
     @php
+        $isModerator = auth()->user()?->role === \App\Enums\UserRole::Moderator->value;
+
         $summaryBoxes = [
             [
                 'theme' => 'info',
@@ -117,6 +119,7 @@
                 'value' => number_format($stats['templates']),
                 'label' => __('frontend.menu.templates'),
                 'note' => __('frontend.str.add_template'),
+                'visibleForModerator' => false,
             ],
             [
                 'theme' => 'success',
@@ -126,6 +129,7 @@
                 'value' => number_format($stats['subscribers']),
                 'label' => __('frontend.menu.subscribers'),
                 'note' => __('frontend.dashboard.active_count', ['count' => number_format($stats['activeSubscribers'])]),
+                'visibleForModerator' => true,
             ],
             [
                 'theme' => 'warning',
@@ -135,6 +139,7 @@
                 'value' => number_format($stats['schedule']),
                 'label' => __('frontend.menu.schedule'),
                 'note' => __('frontend.dashboard.active_count', ['count' => number_format($stats['upcomingSchedule'])]),
+                'visibleForModerator' => false,
             ],
             [
                 'theme' => 'danger',
@@ -142,8 +147,9 @@
                 'url' => route('admin.log.index'),
                 'icon' => 'fas fa-paper-plane',
                 'value' => number_format($stats['sentTotal']),
-                'label' => __('frontend.str.sent'),
+                'label' => __('frontend.menu.mailing_log'),
                 'note' => number_format($stats['sentFailed']) . ' ' . __('frontend.str.error'),
+                'visibleForModerator' => true,
             ],
             [
                 'theme' => 'primary',
@@ -153,15 +159,17 @@
                 'value' => number_format($stats['categories']),
                 'label' => __('frontend.menu.category'),
                 'note' => __('frontend.str.category'),
+                'visibleForModerator' => false,
             ],
             [
                 'theme' => 'secondary',
                 'linkClass' => 'link-light',
-                'url' => route('admin.smtp.index'),
-                'icon' => 'fas fa-inbox',
-                'value' => number_format($stats['smtp']),
-                'label' => __('frontend.str.smtp_server'),
-                'note' => __('frontend.dashboard.active_count', ['count' => number_format($stats['activeSmtp'])]),
+                'url' => route('admin.organizations.index'),
+                'icon' => 'fas fa-building',
+                'value' => number_format($stats['organizations']),
+                'label' => __('frontend.menu.organizations'),
+                'note' => __('frontend.str.projects'),
+                'visibleForModerator' => false,
             ],
             [
                 'theme' => 'dark',
@@ -171,6 +179,7 @@
                 'value' => number_format($stats['clicks']),
                 'label' => __('frontend.str.redirect'),
                 'note' => __('frontend.str.redirect_number'),
+                'visibleForModerator' => true,
             ],
             [
                 'theme' => 'light',
@@ -180,8 +189,13 @@
                 'value' => number_format($stats['users']),
                 'label' => __('frontend.menu.users'),
                 'note' => number_format($stats['macros']) . ' ' . __('frontend.menu.macros'),
+                'visibleForModerator' => false,
             ],
         ];
+
+        if ($isModerator) {
+            $summaryBoxes = array_values(array_filter($summaryBoxes, static fn (array $box): bool => $box['visibleForModerator']));
+        }
     @endphp
 
     <div class="container-fluid dashboard-page">
@@ -205,6 +219,7 @@
             @endforeach
         </div>
 
+        @unless($isModerator)
         <div class="row g-3 mb-3 dashboard-equal-row">
             <div class="col-12 col-xl-4">
                 <div class="card card-outline card-primary dashboard-card h-100">
@@ -493,5 +508,6 @@
                 </div>
             </div>
         </div>
+        @endunless
     </div>
 @endsection

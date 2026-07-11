@@ -106,10 +106,10 @@ Route::group(['middleware' => ['install']], function () {
         Route::get('info/{id}', [LogController::class, 'info'])->name('admin.log.info')->where('id', '[0-9]+');
     });
 
-    Route::group(['prefix' => 'redirect'], function () {
+    Route::middleware(['permission:admin|organization_admin|project_admin'])->prefix('redirect')->group(function () {
         Route::get('', [RedirectController::class, 'index'])->name('admin.redirect.index');
-        Route::get('clear', [RedirectController::class, 'clear'])->name('admin.redirect.clear');
-        Route::get('download/{url}', [RedirectController::class, 'download'])->name('admin.redirect.report');
+        Route::get('clear', [RedirectController::class, 'clear'])->name('admin.redirect.clear')->middleware(['permission:admin']);
+        Route::get('download/{url}', [RedirectController::class, 'download'])->name('admin.redirect.report')->middleware(['permission:admin']);
         Route::get('info/{url}', [RedirectController::class, 'info'])->name('admin.redirect.info');
     });
 
@@ -191,8 +191,8 @@ Route::group(['middleware' => ['install']], function () {
         Route::any('users', [DataTableController::class, 'getUsers'])->name('admin.datatable.users')->middleware(['permission:admin']);
         Route::any('logs', [DataTableController::class, 'getLogs'])->name('admin.datatable.logs')->middleware(['permission:admin|organization_admin|project_admin']);
         Route::any('info-log/{id?}', [DataTableController::class, 'getInfoLog'])->name('admin.datatable.info_log')->where('id', '[0-9]+')->middleware(['permission:admin|organization_admin|project_admin']);
-        Route::any('redirect-log', [DataTableController::class, 'getRedirectLogs'])->name('admin.datatable.redirect');
-        Route::any('info-redirect-log/{url}', [DataTableController::class, 'getInfoRedirectLog'])->name('admin.datatable.info_redirect');
+        Route::any('redirect-log', [DataTableController::class, 'getRedirectLogs'])->name('admin.datatable.redirect')->middleware(['permission:admin|organization_admin|project_admin']);
+        Route::any('info-redirect-log/{url}', [DataTableController::class, 'getInfoRedirectLog'])->name('admin.datatable.info_redirect')->middleware(['permission:admin|organization_admin|project_admin']);
         Route::any('macros', [DataTableController::class, 'getMacros'])->name('admin.datatable.macros')->middleware(['permission:admin']);
     });
 });

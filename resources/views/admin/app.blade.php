@@ -201,18 +201,18 @@
 
                     @endif
 
-                    <li class="nav-item{{ Request::is('log*') || Request::is('redirect*') ? ' menu-open' : '' }}">
-                        <a href="#" class="nav-link{{ Request::is('log*') || Request::is('redirect*') ? ' active' : '' }}" title="{{ __('frontend.menu.logs') }}">
-                            <i class="nav-icon fas fa-chart-area"></i>
-                            <p>
-                                {{ __('frontend.menu.logs') }}
-                                <i class="nav-arrow fas fa-angle-right"></i>
-                            </p>
-                        </a>
+                    @if(PermissionsHelper::has_permission('admin|organization_admin|project_admin'))
+                        <li class="nav-item{{ Request::is('log*') || Request::is('redirect*') ? ' menu-open' : '' }}">
+                            <a href="#" class="nav-link{{ Request::is('log*') || Request::is('redirect*') ? ' active' : '' }}" title="{{ __('frontend.menu.logs') }}">
+                                <i class="nav-icon fas fa-chart-area"></i>
+                                <p>
+                                    {{ __('frontend.menu.logs') }}
+                                    <i class="nav-arrow fas fa-angle-right"></i>
+                                </p>
+                            </a>
 
-                        <ul class="nav nav-treeview">
+                            <ul class="nav nav-treeview">
 
-                            @if(PermissionsHelper::has_permission('admin|organization_admin|project_admin'))
                                 <li class="nav-item">
                                     <a href="{{ route('admin.log.index') }}" class="nav-link{{ Request::is('log*') ? ' active' : '' }}"
                                        title="{{ __('frontend.menu.mailing_log') }}">
@@ -220,18 +220,18 @@
                                         <p>{{ __('frontend.menu.mailing_log') }}</p>
                                     </a>
                                 </li>
-                            @endif
 
-                            <li class="nav-item">
-                                <a href="{{ route('admin.redirect.index') }}" class="nav-link{{ Request::is('redirect*') ? ' active' : '' }}"
-                                   title="{{ __('frontend.menu.referrens_log') }}">
-                                    <i class="far fa-circle nav-icon"></i>
-                                    <p>{{ __('frontend.menu.referrens_log') }}</p>
-                                </a>
-                            </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.redirect.index') }}" class="nav-link{{ Request::is('redirect*') ? ' active' : '' }}"
+                                       title="{{ __('frontend.menu.referrens_log') }}">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>{{ __('frontend.menu.referrens_log') }}</p>
+                                    </a>
+                                </li>
 
-                        </ul>
-                    </li>
+                            </ul>
+                        </li>
+                    @endif
 
                     @if(PermissionsHelper::has_permission('admin'))
 

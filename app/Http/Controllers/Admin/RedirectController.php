@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 
+use App\Helpers\PermissionsHelper;
 use App\Services\DownloadService;
 use App\Models\Redirect;
+use App\Support\ProjectAccess;
 use Illuminate\Http\JsonResponse;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -40,6 +42,8 @@ class RedirectController  extends Controller
      */
     public function clear(): JsonResponse
     {
+        abort_unless(PermissionsHelper::has_permission('admin'), 403);
+
         try {
             Redirect::truncate();
 
@@ -65,6 +69,9 @@ class RedirectController  extends Controller
      */
     public function download(string $url): StreamedResponse
     {
+        abort_unless(PermissionsHelper::has_permission('admin'), 403);
+        abort_unless($this->canViewRedirectUrl($url), 404);
+
         return $this->downloadService->redirect($url);
     }
 
@@ -76,10 +83,34 @@ class RedirectController  extends Controller
      */
     public function info(string $url): View
     {
+        abort_unless($this->canViewRedirectUrl($url), 404);
+
         return view('admin.redirect.info', [
             'url' => $url,
             'infoAlert' => __('frontend.hint.redirectlog_info'),
             'title' => __('frontend.title.redirect_info'),
         ]);
+    }
+
+    private function canViewRedirectUrl(string $url): bool
+    {
+        $decodedUrl = $this->decodeRouteBase64($url);
+        $query = Redirect::query()->where('url', $decodedUrl);
+
+        ProjectAccess::scopeRedirectQuery($query);
+
+        return $query->exists();
+    }
+
+    private function decodeRouteBase64(string $value): string
+    {
+        $normalized = strtr($value, '-_', '+/');
+        $padding = strlen($normalized) % 4;
+
+        if ($padding > 0) {
+            $normalized .= str_repeat('=', 4 - $padding);
+        }
+
+        return base64_decode($normalized, true) ?: '';
     }
 }

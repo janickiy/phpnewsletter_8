@@ -349,6 +349,8 @@ class DataTableController extends Controller
             ->groupBy('url')
             ->distinct();
 
+        ProjectAccess::scopeRedirectQuery($rows);
+
         return DataTables::of($rows)
             ->editColumn('count', fn ($row) => sprintf(
                 '<a href="%s" class="btn btn-outline-primary btn-sm"><i class="fas fa-list me-1"></i>%d</a>',
@@ -378,6 +380,8 @@ class DataTableController extends Controller
         $decodedUrl = $this->decodeRouteBase64($url);
 
         $rows = Redirect::query()->where('url', $decodedUrl);
+
+        ProjectAccess::scopeRedirectQuery($rows);
 
         return DataTables::of($rows)
             ->editColumn('created_at', fn ($row) => $this->formatDateTime($row->created_at))

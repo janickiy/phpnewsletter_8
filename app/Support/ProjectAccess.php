@@ -80,6 +80,38 @@ class ProjectAccess
         });
     }
 
+    public static function scopeRedirectQuery(Builder $query, ?User $user = null, string $redirectTable = 'redirect'): Builder
+    {
+        $user ??= Auth::user();
+
+        if (!$user) {
+            return $query->whereRaw('1 = 0');
+        }
+
+        if ($user->role === UserRole::Admin->value) {
+            return $query;
+        }
+
+        if (!in_array($user->role, [UserRole::OrganizationAdmin->value, UserRole::ProjectAdmin->value], true)) {
+            return $query->whereRaw('1 = 0');
+        }
+
+        $projectIds = self::availableProjectIds($user);
+
+        if ($projectIds === []) {
+            return $query->whereRaw('1 = 0');
+        }
+
+        return $query->whereExists(function ($exists) use ($projectIds, $redirectTable): void {
+            $exists
+                ->selectRaw('1')
+                ->from('subscribers')
+                ->join('project_subscriber', 'project_subscriber.subscriber_id', '=', 'subscribers.id')
+                ->whereColumn('subscribers.email', $redirectTable . '.email')
+                ->whereIn('project_subscriber.project_id', $projectIds);
+        });
+    }
+
     public static function optionGroups(?User $user = null): array
     {
         $user ??= Auth::user();
