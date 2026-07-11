@@ -66,14 +66,15 @@
             aspect-ratio: 1 / 1;
             border-radius: 50% !important;
             display: inline-flex;
-            flex: 0 0 3.75rem;
-            height: 3.75rem;
+            flex: 0 0 3.25rem;
+            height: 3.25rem;
             justify-content: center;
             padding: 0;
-            width: 3.75rem;
+            width: 3.25rem;
         }
 
         .template-send-controls .btn i {
+            font-size: 1.05rem;
             line-height: 1;
         }
 

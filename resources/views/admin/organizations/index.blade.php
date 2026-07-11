@@ -50,7 +50,7 @@
                                         </td>
                                         <td>{{ optional($organization->created_at)->format('d.m.Y H:i') }}</td>
                                         <td class="text-end text-nowrap">
-                                            <div class="d-inline-flex align-items-center flex-nowrap">
+                                            <div class="d-inline-flex align-items-center flex-nowrap gap-1">
                                                 <div class="btn-group btn-group-sm" role="group">
                                                     <a class="btn btn-outline-secondary" href="{{ route('admin.organizations.show', ['organization' => $organization->id]) }}" title="{{ __('frontend.str.show') }}">
                                                         <i class="fas fa-eye"></i>
