@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Models\ReadySent;
 use App\Models\Logs;
 use App\Services\DownloadService;
+use App\Support\ProjectAccess;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Illuminate\View\View;
@@ -40,6 +41,8 @@ class LogController extends Controller
      */
     public function info(int $id): View
     {
+        abort_unless($this->canViewScheduleLog($id), 404);
+
         return view('admin.log.info', [
             'id' => $id,
             'infoAlert' => __('frontend.hint.log_info'),
@@ -55,6 +58,8 @@ class LogController extends Controller
      */
     public function download(int $id): Response|StreamedResponse
     {
+        abort_unless($this->canViewScheduleLog($id), 404);
+
         return $this->downloadService->log($id);
     }
 
@@ -83,5 +88,14 @@ class LogController extends Controller
                 'message' => __('frontend.str.delete_error'),
             ], 500);
         }
+    }
+
+    private function canViewScheduleLog(int $id): bool
+    {
+        $query = ReadySent::query()->where('schedule_id', $id);
+
+        ProjectAccess::scopeReadySentQuery($query);
+
+        return $query->exists();
     }
 }

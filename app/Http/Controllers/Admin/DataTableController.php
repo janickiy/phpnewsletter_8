@@ -269,6 +269,8 @@ class DataTableController extends Controller
             ->join('ready_sent', 'schedule.id', '=', 'ready_sent.schedule_id')
             ->groupBy('ready_sent.schedule_id', 'schedule.event_start', 'schedule.event_end', 'schedule.id');
 
+        ProjectAccess::scopeReadySentQuery($rows);
+
         return DataTables::of($rows)
             ->editColumn('count', fn ($row) => sprintf(
                 '<a href="%s" class="btn btn-outline-primary btn-sm"><i class="fas fa-list me-1"></i>%d</a>',
@@ -314,6 +316,8 @@ class DataTableController extends Controller
         $rows = $id
             ? ReadySent::query()->where('schedule_id', $id)
             : ReadySent::query();
+
+        ProjectAccess::scopeReadySentQuery($rows);
 
         return DataTables::of($rows)
             ->editColumn('success', fn ($row) => (int) $row->success === 1

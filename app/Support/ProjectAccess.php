@@ -49,6 +49,37 @@ class ProjectAccess
             ->all();
     }
 
+    public static function scopeReadySentQuery(Builder $query, ?User $user = null, string $readySentTable = 'ready_sent'): Builder
+    {
+        $user ??= Auth::user();
+
+        if (!$user) {
+            return $query->whereRaw('1 = 0');
+        }
+
+        if ($user->role === UserRole::Admin->value) {
+            return $query;
+        }
+
+        if (!in_array($user->role, [UserRole::OrganizationAdmin->value, UserRole::ProjectAdmin->value], true)) {
+            return $query->whereRaw('1 = 0');
+        }
+
+        $projectIds = self::availableProjectIds($user);
+
+        if ($projectIds === []) {
+            return $query->whereRaw('1 = 0');
+        }
+
+        return $query->whereExists(function ($exists) use ($projectIds, $readySentTable): void {
+            $exists
+                ->selectRaw('1')
+                ->from('project_subscriber')
+                ->whereColumn('project_subscriber.subscriber_id', $readySentTable . '.subscriber_id')
+                ->whereIn('project_subscriber.project_id', $projectIds);
+        });
+    }
+
     public static function optionGroups(?User $user = null): array
     {
         $user ??= Auth::user();

@@ -6,6 +6,8 @@ namespace App\Services;
 use App\Helpers\StringHelper;
 use App\Models\ReadySent;
 use App\Models\Redirect;
+use App\Support\ProjectAccess;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Database\Query\Builder as QueryBuilder;
@@ -33,9 +35,7 @@ class DownloadService
      */
     public function log(int $id): Response|StreamedResponse
     {
-        $rowsExist = ReadySent::query()
-            ->where('schedule_id', $id)
-            ->exists();
+        $rowsExist = $this->readySentLogQuery($id)->exists();
 
         abort_if(!$rowsExist, 404);
 
@@ -109,23 +109,18 @@ class DownloadService
      */
     private function buildLogStats(int $scheduleId): array
     {
-        $total = ReadySent::query()
-            ->where('schedule_id', $scheduleId)
-            ->count();
+        $total = $this->readySentLogQuery($scheduleId)->count();
 
-        $failedCount = ReadySent::query()
-            ->where('schedule_id', $scheduleId)
+        $failedCount = $this->readySentLogQuery($scheduleId)
             ->where('success', 0)
             ->count();
 
-        $readCount = ReadySent::query()
-            ->where('schedule_id', $scheduleId)
+        $readCount = $this->readySentLogQuery($scheduleId)
             ->where('readMail', 1)
             ->count();
 
-        $timeInfo = ReadySent::query()
+        $timeInfo = $this->readySentLogQuery($scheduleId)
             ->selectRaw('sec_to_time(UNIX_TIMESTAMP(max(created_at)) - UNIX_TIMESTAMP(min(created_at))) as totaltime')
-            ->where('schedule_id', $scheduleId)
             ->first();
 
         $successCount = max($total - $failedCount, 0);
@@ -314,9 +309,8 @@ class DownloadService
 
         $rowIndex = 2;
 
-        ReadySent::query()
+        $this->readySentLogQuery($scheduleId)
             ->select(['id', 'template', 'email', 'created_at', 'success', 'readMail', 'errorMsg'])
-            ->where('schedule_id', $scheduleId)
             ->orderBy('id')
             ->chunkById(2000, function ($rows) use ($sheet, &$rowIndex): void {
                 foreach ($rows as $row) {
@@ -529,6 +523,13 @@ class DownloadService
     private function xmlEscape(string $value): string
     {
         return htmlspecialchars($value, ENT_XML1 | ENT_COMPAT, 'UTF-8');
+    }
+
+    private function readySentLogQuery(int $scheduleId): EloquentBuilder
+    {
+        $query = ReadySent::query()->where('schedule_id', $scheduleId);
+
+        return ProjectAccess::scopeReadySentQuery($query);
     }
 
     /**

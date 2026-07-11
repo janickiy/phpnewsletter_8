@@ -212,13 +212,15 @@
 
                         <ul class="nav nav-treeview">
 
-                            <li class="nav-item">
-                                <a href="{{ route('admin.log.index') }}" class="nav-link{{ Request::is('log*') ? ' active' : '' }}"
-                                   title="{{ __('frontend.menu.mailing_log') }}">
-                                    <i class="far fa-circle nav-icon"></i>
-                                    <p>{{ __('frontend.menu.mailing_log') }}</p>
-                                </a>
-                            </li>
+                            @if(PermissionsHelper::has_permission('admin|organization_admin|project_admin'))
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.log.index') }}" class="nav-link{{ Request::is('log*') ? ' active' : '' }}"
+                                       title="{{ __('frontend.menu.mailing_log') }}">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>{{ __('frontend.menu.mailing_log') }}</p>
+                                    </a>
+                                </li>
+                            @endif
 
                             <li class="nav-item">
                                 <a href="{{ route('admin.redirect.index') }}" class="nav-link{{ Request::is('redirect*') ? ' active' : '' }}"
