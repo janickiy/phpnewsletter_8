@@ -49,26 +49,28 @@
                                             <span class="badge text-bg-primary">{{ $organization->projects_count }}</span>
                                         </td>
                                         <td>{{ optional($organization->created_at)->format('d.m.Y H:i') }}</td>
-                                        <td class="text-end">
-                                            <div class="btn-group btn-group-sm" role="group">
-                                                <a class="btn btn-outline-secondary" href="{{ route('admin.organizations.show', ['organization' => $organization->id]) }}" title="{{ __('frontend.str.show') }}">
-                                                    <i class="fas fa-eye"></i>
-                                                </a>
-                                                <a class="btn btn-outline-primary" href="{{ route('admin.organizations.edit', ['organization' => $organization->id]) }}" title="{{ __('frontend.form.edit') }}">
-                                                    <i class="fas fa-edit"></i>
-                                                </a>
-                                            </div>
+                                        <td class="text-end text-nowrap">
+                                            <div class="d-inline-flex align-items-center flex-nowrap">
+                                                <div class="btn-group btn-group-sm" role="group">
+                                                    <a class="btn btn-outline-secondary" href="{{ route('admin.organizations.show', ['organization' => $organization->id]) }}" title="{{ __('frontend.str.show') }}">
+                                                        <i class="fas fa-eye"></i>
+                                                    </a>
+                                                    <a class="btn btn-outline-primary" href="{{ route('admin.organizations.edit', ['organization' => $organization->id]) }}" title="{{ __('frontend.form.edit') }}">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                </div>
 
-                                            <form action="{{ route('admin.organizations.destroy', ['organization' => $organization->id]) }}"
-                                                  method="post"
-                                                  class="d-inline"
-                                                  onsubmit="return confirm('{{ __('frontend.str.confirm_remove') }}');">
-                                                @csrf
-                                                @method('delete')
-                                                <button type="submit" class="btn btn-outline-danger btn-sm" title="{{ __('frontend.str.remove') }}">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
-                                            </form>
+                                                <form action="{{ route('admin.organizations.destroy', ['organization' => $organization->id]) }}"
+                                                      method="post"
+                                                      class="d-inline-flex"
+                                                      onsubmit="return confirm('{{ __('frontend.str.confirm_remove') }}');">
+                                                    @csrf
+                                                    @method('delete')
+                                                    <button type="submit" class="btn btn-outline-danger btn-sm" title="{{ __('frontend.str.remove') }}">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
                                         </td>
                                     </tr>
                                 @empty

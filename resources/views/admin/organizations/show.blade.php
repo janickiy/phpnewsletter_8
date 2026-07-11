@@ -2,6 +2,44 @@
 
 @section('title', $title)
 
+@section('css')
+    <style>
+        .organization-delete-popup {
+            border-radius: .45rem;
+            max-width: 92vw;
+            width: 44rem;
+        }
+
+        .organization-delete-title {
+            font-size: clamp(1.6rem, 3vw, 2.35rem);
+            font-weight: 700;
+            line-height: 1.15;
+        }
+
+        .organization-delete-html {
+            color: var(--bs-secondary-color);
+            font-size: clamp(1.05rem, 2vw, 1.35rem);
+        }
+
+        .organization-delete-confirm,
+        .organization-delete-cancel {
+            border-radius: .35rem !important;
+            font-size: 1.05rem !important;
+            font-weight: 700 !important;
+            min-width: 5rem;
+            padding: .55rem 1rem !important;
+        }
+
+        .organization-delete-confirm {
+            background-color: #df6653 !important;
+        }
+
+        .organization-delete-cancel {
+            background-color: #6c757d !important;
+        }
+    </style>
+@endsection
+
 @section('content')
 
     <div class="container-fluid">
@@ -69,8 +107,7 @@
                                         <td class="text-end">
                                             <form action="{{ route('admin.organizations.administrators.destroy', ['organization' => $organization->id, 'user' => $administrator->id]) }}"
                                                   method="post"
-                                                  class="d-inline"
-                                                  onsubmit="return confirm('{{ __('frontend.str.confirm_remove') }}');">
+                                                  class="d-inline js-delete-confirm">
                                                 @csrf
                                                 @method('delete')
                                                 <button type="submit" class="btn btn-outline-danger btn-sm" title="{{ __('frontend.str.remove') }}">
@@ -185,8 +222,7 @@
 
                                                 <form action="{{ route('admin.projects.destroy', ['organization' => $organization->id, 'project' => $project->id]) }}"
                                                       method="post"
-                                                      class="d-inline"
-                                                      onsubmit="return confirm('{{ __('frontend.str.confirm_remove') }}');">
+                                                      class="d-inline js-delete-confirm">
                                                     @csrf
                                                     @method('delete')
                                                     <button type="submit" class="btn btn-outline-danger btn-sm" title="{{ __('frontend.str.remove') }}">
@@ -212,4 +248,39 @@
         </div>
     </div>
 
+@endsection
+
+@section('js')
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('form.js-delete-confirm').forEach((form) => {
+                form.addEventListener('submit', (event) => {
+                    event.preventDefault();
+
+                    Swal.fire({
+                        title: @json(__('frontend.str.delete_confirmation')),
+                        html: @json(__('frontend.str.confirm_remove')),
+                        showCancelButton: true,
+                        showConfirmButton: true,
+                        confirmButtonText: @json(__('frontend.str.yes')),
+                        cancelButtonText: @json(__('frontend.str.cancel')),
+                        buttonsStyling: true,
+                        reverseButtons: false,
+                        focusCancel: true,
+                        customClass: {
+                            popup: 'organization-delete-popup',
+                            title: 'organization-delete-title',
+                            htmlContainer: 'organization-delete-html',
+                            confirmButton: 'organization-delete-confirm',
+                            cancelButton: 'organization-delete-cancel',
+                        },
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit();
+                        }
+                    });
+                });
+            });
+        });
+    </script>
 @endsection
