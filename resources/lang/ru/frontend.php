@@ -11,6 +11,8 @@ return [
         'remove_all_subscribers' => 'Удалить всех подписчиков',
         'want_to_delete_all_subscribers' => 'Вы действительно хотите удалить всех подписчиков?',
         'add_subscriber'    => 'Добавить  подписчика',
+        'remove_from_project' => 'Удалить из проекта',
+        'no_subscribers' => 'Подписчиков пока нет.',
         'check_uncheck_all' => 'Отметить все/Снять отметку у всех',
         'name'  => 'Имя',
         'value' => 'Значение',

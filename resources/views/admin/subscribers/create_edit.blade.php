@@ -7,9 +7,18 @@
         <li class="breadcrumb-item">
             <a href="{{ route('admin.dashboard.index') }}">{{ __('frontend.str.admin_panel') }}</a>
         </li>
-        <li class="breadcrumb-item">
-            <a href="{{ route('admin.subscribers.index') }}">{{ __('frontend.menu.subscribers') }}</a>
-        </li>
+        @if(isset($lockedProject))
+            <li class="breadcrumb-item">
+                <a href="{{ route('admin.projects.index') }}">{{ __('frontend.menu.projects') }}</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{{ route('admin.projects.moderator.show', ['project' => $lockedProject->id]) }}">{{ $lockedProject->name }}</a>
+            </li>
+        @else
+            <li class="breadcrumb-item">
+                <a href="{{ route('admin.subscribers.index') }}">{{ __('frontend.menu.subscribers') }}</a>
+            </li>
+        @endif
         <li class="breadcrumb-item active">{{ $title }}</li>
     </ol>
 @endsection
@@ -40,7 +49,7 @@
                         </h3>
                     </div>
 
-                    {!! form_open(['url' => isset($row) ? route('admin.subscribers.update') : route('admin.subscribers.store'), 'method' => isset($row) ? 'put' : 'post']) !!}
+                    {!! form_open(['url' => $formUrl ?? (isset($row) ? route('admin.subscribers.update') : route('admin.subscribers.store')), 'method' => isset($row) ? 'put' : 'post']) !!}
 
                     {!! isset($row) ? form_hidden('id', $row->id) : '' !!}
 
@@ -88,35 +97,52 @@
                                 </div>
                             </div>
 
-                            <div class="col-12 col-md-6">
-                                <div class="form-group mb-0">
-                                    {!! form_label('projectId', __('frontend.str.project'), ['class' => 'form-label']) !!}
+                            @if(isset($lockedProject))
+                                <div class="col-12 col-md-6">
+                                    <div class="form-group mb-0">
+                                        {!! form_label('projectId', __('frontend.str.project'), ['class' => 'form-label']) !!}
+                                        {!! form_hidden('projectId[]', $lockedProject->id) !!}
 
-                                    <select name="projectId[]" id="projectId" multiple class="form-select{{ ($errors->has('projectId') || $errors->has('projectId.*')) ? ' is-invalid' : '' }}">
-                                        @foreach($projectGroups as $projectGroup)
-                                            @if($projectGroup['label'])
-                                                <optgroup label="{{ $projectGroup['label'] }}">
+                                        <div class="form-control bg-body-tertiary">
+                                            {{ $lockedProject->organization?->name ? $lockedProject->organization->name . ' / ' : '' }}{{ $lockedProject->name }}
+                                        </div>
+
+                                        @if ($errors->has('projectId') || $errors->has('projectId.*'))
+                                            <div class="invalid-feedback d-block">{{ $errors->first('projectId') ?: $errors->first('projectId.*') }}</div>
+                                        @endif
+                                    </div>
+                                </div>
+                            @else
+                                <div class="col-12 col-md-6">
+                                    <div class="form-group mb-0">
+                                        {!! form_label('projectId', __('frontend.str.project'), ['class' => 'form-label']) !!}
+
+                                        <select name="projectId[]" id="projectId" multiple class="form-select{{ ($errors->has('projectId') || $errors->has('projectId.*')) ? ' is-invalid' : '' }}">
+                                            @foreach($projectGroups as $projectGroup)
+                                                @if($projectGroup['label'])
+                                                    <optgroup label="{{ $projectGroup['label'] }}">
+                                                        @foreach($projectGroup['projects'] as $projectOption)
+                                                            <option value="{{ $projectOption['id'] }}" @selected(in_array((string) $projectOption['id'], $selectedProjectIds, true))>
+                                                                {{ $projectOption['name'] }}
+                                                            </option>
+                                                        @endforeach
+                                                    </optgroup>
+                                                @else
                                                     @foreach($projectGroup['projects'] as $projectOption)
                                                         <option value="{{ $projectOption['id'] }}" @selected(in_array((string) $projectOption['id'], $selectedProjectIds, true))>
                                                             {{ $projectOption['name'] }}
                                                         </option>
                                                     @endforeach
-                                                </optgroup>
-                                            @else
-                                                @foreach($projectGroup['projects'] as $projectOption)
-                                                    <option value="{{ $projectOption['id'] }}" @selected(in_array((string) $projectOption['id'], $selectedProjectIds, true))>
-                                                        {{ $projectOption['name'] }}
-                                                    </option>
-                                                @endforeach
-                                            @endif
-                                        @endforeach
-                                    </select>
+                                                @endif
+                                            @endforeach
+                                        </select>
 
-                                    @if ($errors->has('projectId') || $errors->has('projectId.*'))
-                                        <div class="invalid-feedback">{{ $errors->first('projectId') ?: $errors->first('projectId.*') }}</div>
-                                    @endif
+                                        @if ($errors->has('projectId') || $errors->has('projectId.*'))
+                                            <div class="invalid-feedback">{{ $errors->first('projectId') ?: $errors->first('projectId.*') }}</div>
+                                        @endif
+                                    </div>
                                 </div>
-                            </div>
+                            @endif
                         </div>
                     </div>
 
@@ -125,7 +151,7 @@
                             {{ isset($row) ? __('frontend.form.edit') : __('frontend.form.add') }}
                         </button>
 
-                        <a class="btn btn-secondary btn-back" href="{{ route('admin.subscribers.index') }}">
+                        <a class="btn btn-secondary btn-back" href="{{ $backUrl ?? route('admin.subscribers.index') }}">
                             {{ __('frontend.form.back') }}
                         </a>
                     </div>

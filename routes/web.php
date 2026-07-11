@@ -151,7 +151,13 @@ Route::group(['middleware' => ['install']], function () {
         Route::put('update', [UsersController::class, 'update'])->name('admin.users.update');
     });
 
-    Route::get('projects', [ProjectController::class, 'index'])->name('admin.projects.index')->middleware(['permission:moderator']);
+    Route::middleware(['permission:moderator'])->prefix('projects')->group(function () {
+        Route::get('', [ProjectController::class, 'index'])->name('admin.projects.index');
+        Route::get('{project}/subscribers/create', [SubscribersController::class, 'createForProject'])->name('admin.projects.subscribers.create')->where('project', '[0-9]+');
+        Route::post('{project}/subscribers', [SubscribersController::class, 'storeForProject'])->name('admin.projects.subscribers.store')->where('project', '[0-9]+');
+        Route::delete('{project}/subscribers/{subscriber}', [ProjectController::class, 'destroySubscriber'])->name('admin.projects.subscribers.destroy')->where(['project' => '[0-9]+', 'subscriber' => '[0-9]+']);
+        Route::get('{project}', [ProjectController::class, 'assignedShow'])->name('admin.projects.moderator.show')->where('project', '[0-9]+');
+    });
 
     Route::middleware(['permission:admin|organization_admin|project_admin|moderator'])->group(function () {
         Route::group(['prefix' => 'organizations'], function () {

@@ -44,7 +44,7 @@
                                 @forelse($projects as $project)
                                     <tr>
                                         <td>
-                                            <a href="{{ route('admin.projects.show', ['organization' => $project->organization_id, 'project' => $project->id]) }}">
+                                            <a href="{{ route('admin.projects.moderator.show', ['project' => $project->id]) }}">
                                                 <strong>{{ $project->name }}</strong>
                                             </a>
                                             @if($project->description)
@@ -68,7 +68,7 @@
                                         <td>{{ optional($project->created_at)->format('d.m.Y H:i') }}</td>
                                         <td class="text-end">
                                             <a class="btn btn-outline-secondary btn-sm"
-                                               href="{{ route('admin.projects.show', ['organization' => $project->organization_id, 'project' => $project->id]) }}"
+                                               href="{{ route('admin.projects.moderator.show', ['project' => $project->id]) }}"
                                                title="{{ __('frontend.str.show') }}">
                                                 <i class="fas fa-eye"></i>
                                             </a>

@@ -9,6 +9,7 @@ use App\Http\Requests\Admin\Subscribers\EditRequest;
 use App\Http\Requests\Admin\Subscribers\ImportRequest;
 use App\Http\Requests\Admin\Subscribers\StoreRequest;
 use App\Models\Charsets;
+use App\Models\Project;
 use App\Models\Subscribers;
 use App\Repositories\CategoryRepository;
 use App\Repositories\SubscriberRepository;
@@ -69,6 +70,33 @@ class SubscribersController extends Controller
         ]);
     }
 
+    public function createForProject(Project $project): View
+    {
+        $this->ensureProjectAvailable($project);
+        $project->loadMissing('organization:id,name');
+
+        return view('admin.subscribers.create_edit', [
+            'options' => $this->categoryRepository->getOption(),
+            'projectGroups' => [
+                [
+                    'label' => null,
+                    'projects' => [
+                        [
+                            'id' => $project->id,
+                            'name' => $project->name,
+                        ],
+                    ],
+                ],
+            ],
+            'subscriberProjectIds' => [$project->id],
+            'lockedProject' => $project,
+            'formUrl' => route('admin.projects.subscribers.store', ['project' => $project->id]),
+            'backUrl' => route('admin.projects.moderator.show', ['project' => $project->id]),
+            'infoAlert' => __('frontend.hint.subscribers_create'),
+            'title' => __('frontend.title.subscribers_create'),
+        ]);
+    }
+
     /**
      * Validate and persist a new active subscriber with a generated token.
      *
@@ -93,6 +121,30 @@ class SubscribersController extends Controller
         }
 
         return to_route('admin.subscribers.index')->with('success', __('message.information_successfully_added'));
+    }
+
+    public function storeForProject(StoreRequest $request, Project $project): RedirectResponse
+    {
+        $this->ensureProjectAvailable($project);
+
+        try {
+            $this->subscribersRepository->add([
+                ...$request->validated(),
+                'projectId' => [$project->id],
+                'timeSent' => now(),
+                'active' => 1,
+                'token' => StringHelper::token(),
+            ]);
+        } catch (\Throwable $e) {
+            report($e);
+
+            return back()
+                ->with('error', $e->getMessage())
+                ->withInput();
+        }
+
+        return to_route('admin.projects.moderator.show', ['project' => $project->id])
+            ->with('success', __('message.information_successfully_added'));
     }
 
     /**
@@ -337,6 +389,14 @@ class SubscribersController extends Controller
         abort_unless(
             in_array($id, $this->filterAvailableSubscriberIds([$id]), true),
             403
+        );
+    }
+
+    private function ensureProjectAvailable(Project $project): void
+    {
+        abort_unless(
+            ProjectAccess::availableProjectsQuery()->whereKey($project->id)->exists(),
+            404
         );
     }
 

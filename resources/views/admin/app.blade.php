@@ -133,7 +133,7 @@
                         </a>
                     </li>
 
-                    @if(PermissionsHelper::has_permission('admin|organization_admin|project_admin|moderator'))
+                    @if(!$isModerator && PermissionsHelper::has_permission('admin|organization_admin|project_admin|moderator'))
                         <li class="nav-item">
                             <a href="{{ route('admin.organizations.index') }}" class="nav-link{{ Request::is('organizations*') && !$isModeratorProjectPage ? ' active' : '' }}"
                                title="{{ __('frontend.menu.organizations') }}">

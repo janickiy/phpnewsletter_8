@@ -10,6 +10,7 @@ use App\Http\Requests\Admin\Projects\StoreRequest;
 use App\Http\Requests\Admin\Projects\UpdateRequest;
 use App\Models\Organization;
 use App\Models\Project;
+use App\Models\Subscribers;
 use App\Models\User;
 use App\Repositories\CategoryRepository;
 use App\Repositories\ProjectRepository;
@@ -43,6 +44,23 @@ class ProjectController extends Controller
                 ->paginate(20),
             'infoAlert' => __('frontend.hint.projects_index'),
             'title' => __('frontend.title.projects_index'),
+        ]);
+    }
+
+    public function assignedShow(Project $project): View
+    {
+        $this->ensureAssignedProject($project);
+
+        $project->loadMissing('organization');
+
+        return view('admin.projects.moderator_show', [
+            'project' => $project,
+            'subscribers' => $project->subscribers()
+                ->with(['subscriptions.category:id,name'])
+                ->orderByDesc('subscribers.created_at')
+                ->paginate(20),
+            'infoAlert' => __('frontend.hint.projects_index'),
+            'title' => $project->name,
         ]);
     }
 
@@ -86,9 +104,13 @@ class ProjectController extends Controller
     /**
      * Show project details.
      */
-    public function show(Organization $organization, Project $project): View
+    public function show(Organization $organization, Project $project): View|RedirectResponse
     {
         $this->ensureProjectBelongsToOrganization($organization, $project);
+
+        if (Auth::user()?->role === UserRole::Moderator->value) {
+            return to_route('admin.projects.moderator.show', ['project' => $project->id]);
+        }
 
         $project = $this->projectRepository->loadDetails($project);
 
@@ -193,6 +215,21 @@ class ProjectController extends Controller
         return $this->destroyProjectUser($organization, $project, $user, UserRole::Moderator);
     }
 
+    public function destroySubscriber(Project $project, Subscribers $subscriber): RedirectResponse
+    {
+        $this->ensureAssignedProject($project);
+
+        abort_unless(
+            $project->subscribers()->whereKey($subscriber->id)->exists(),
+            404
+        );
+
+        $project->subscribers()->detach($subscriber->id);
+
+        return to_route('admin.projects.moderator.show', ['project' => $project->id])
+            ->with('success', __('frontend.msg.data_successfully_deleted'));
+    }
+
     private function ensureProjectBelongsToOrganization(Organization $organization, Project $project): void
     {
         abort_unless($this->projectRepository->belongsToOrganization($project, $organization), 404);
@@ -202,6 +239,16 @@ class ProjectController extends Controller
     private function ensureCanManageProject(Organization $organization): void
     {
         abort_unless($this->canManageProject($organization), 403);
+    }
+
+    private function ensureAssignedProject(Project $project): void
+    {
+        abort_unless(Auth::user()?->role === UserRole::Moderator->value, 403);
+
+        abort_unless(
+            ProjectAccess::availableProjectsQuery()->whereKey($project->id)->exists(),
+            404
+        );
     }
 
     private function canViewProject(Organization $organization, Project $project): bool

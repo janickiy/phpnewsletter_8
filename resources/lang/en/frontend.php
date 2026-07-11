@@ -11,6 +11,8 @@ return [
         'remove_all_subscribers' => 'Delete all subscribers',
         'want_to_delete_all_subscribers' => 'Are you sure you want to delete all subscribers?',
         'add_subscriber' => 'Add Subscriber',
+        'remove_from_project' => 'Remove from project',
+        'no_subscribers' => 'No subscribers yet.',
         'check_uncheck_all' => 'Check all / uncheck all',
         'name' => 'name',
         'value' => 'value',
