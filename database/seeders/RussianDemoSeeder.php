@@ -4,8 +4,10 @@ namespace Database\Seeders;
 
 use App\Enums\ProjectStatus;
 use App\Enums\UserRole;
+use App\Models\Category;
 use App\Models\Organization;
 use App\Models\Project;
+use App\Models\Subscribers;
 use App\Models\Templates;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -18,8 +20,10 @@ class RussianDemoSeeder extends Seeder
         DB::transaction(function (): void {
             $users = $this->seedUsers();
             $projects = $this->seedOrganizationsAndProjects($users);
+            $categories = $this->seedSubscriberCategories();
 
             $this->seedTemplates($projects);
+            $this->seedSubscribers($projects, $categories);
         });
 
         $this->command?->info('Russian demo data has been added.');
@@ -203,6 +207,167 @@ class RussianDemoSeeder extends Seeder
         }
     }
 
+    /**
+     * @return array<int, Category>
+     */
+    private function seedSubscriberCategories(): array
+    {
+        $categories = [
+            'Новости компании',
+            'Акции и скидки',
+            'Обучающие материалы',
+            'События и вебинары',
+            'VIP клиенты',
+            'Новые подписчики',
+            'Реактивация базы',
+            'Сервисные уведомления',
+        ];
+
+        return array_map(
+            static fn (string $name): Category => Category::query()->firstOrCreate(['name' => $name]),
+            $categories
+        );
+    }
+
+    /**
+     * @param array<int, Project> $projects
+     * @param array<int, Category> $categories
+     */
+    private function seedSubscribers(array $projects, array $categories): void
+    {
+        if ($projects === [] || $categories === []) {
+            return;
+        }
+
+        $firstNames = [
+            'Александр',
+            'Дмитрий',
+            'Максим',
+            'Иван',
+            'Артем',
+            'Сергей',
+            'Андрей',
+            'Никита',
+            'Михаил',
+            'Егор',
+            'Анна',
+            'Мария',
+            'Елена',
+            'Ольга',
+            'Наталья',
+            'Ирина',
+            'Светлана',
+            'Татьяна',
+            'Виктория',
+            'Дарья',
+        ];
+
+        $lastNames = [
+            'Иванов',
+            'Петров',
+            'Смирнов',
+            'Кузнецов',
+            'Попов',
+            'Васильев',
+            'Соколов',
+            'Михайлов',
+            'Новиков',
+            'Федоров',
+            'Морозов',
+            'Волков',
+            'Алексеев',
+            'Лебедев',
+            'Семенов',
+            'Егоров',
+            'Павлов',
+            'Козлов',
+            'Степанов',
+            'Николаев',
+        ];
+
+        $patronymics = [
+            'Александрович',
+            'Дмитриевич',
+            'Максимович',
+            'Иванович',
+            'Сергеевич',
+            'Андреевич',
+            'Михайлович',
+            'Егорович',
+            'Александровна',
+            'Дмитриевна',
+            'Максимовна',
+            'Ивановна',
+            'Сергеевна',
+            'Андреевна',
+            'Михайловна',
+            'Егоровна',
+        ];
+
+        $projectCount = count($projects);
+        $categoryCount = count($categories);
+
+        for ($i = 1; $i <= 200; $i++) {
+            $email = sprintf('ru.subscriber%03d@phpnewsletter.test', $i);
+            $subscriber = Subscribers::query()->updateOrCreate(
+                ['email' => $email],
+                [
+                    'name' => $this->russianSubscriberName($i, $firstNames, $lastNames, $patronymics),
+                    'active' => $i % 9 === 0 ? 0 : 1,
+                    'token' => md5($email),
+                    'timeSent' => null,
+                ]
+            );
+
+            $primaryProject = $projects[($i - 1) % $projectCount];
+            $this->upsertProjectSubscriber($primaryProject, $subscriber);
+
+            if ($i % 5 === 0 && $projectCount > 1) {
+                $secondaryProject = $projects[$i % $projectCount];
+                $this->upsertProjectSubscriber($secondaryProject, $subscriber);
+            }
+
+            $this->upsertSubscription($subscriber, $categories[($i - 1) % $categoryCount]);
+            $this->upsertSubscription($subscriber, $categories[$i % $categoryCount]);
+
+            if ($i % 4 === 0) {
+                $this->upsertSubscription($subscriber, $categories[($i + 2) % $categoryCount]);
+            }
+        }
+    }
+
+    /**
+     * @param array<int, string> $firstNames
+     * @param array<int, string> $lastNames
+     * @param array<int, string> $patronymics
+     */
+    private function russianSubscriberName(int $index, array $firstNames, array $lastNames, array $patronymics): string
+    {
+        $firstName = $firstNames[($index - 1) % count($firstNames)];
+        $lastName = $lastNames[(int) floor(($index - 1) / count($firstNames)) % count($lastNames)];
+        $femaleNames = [
+            'Анна',
+            'Мария',
+            'Елена',
+            'Ольга',
+            'Наталья',
+            'Ирина',
+            'Светлана',
+            'Татьяна',
+            'Виктория',
+            'Дарья',
+        ];
+        $isFemale = in_array($firstName, $femaleNames, true);
+        $patronymicOffset = $isFemale ? 8 : 0;
+        $patronymic = $patronymics[$patronymicOffset + (($index - 1) % 8)];
+
+        if ($isFemale) {
+            $lastName .= 'а';
+        }
+
+        return sprintf('%s %s %s', $lastName, $firstName, $patronymic);
+    }
+
     private function upsertOrganizationAdministrator(Organization $organization, User $user): void
     {
         DB::table('organization_admins')->updateOrInsert(
@@ -229,6 +394,31 @@ class RussianDemoSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ]
+        );
+    }
+
+    private function upsertProjectSubscriber(Project $project, Subscribers $subscriber): void
+    {
+        DB::table('project_subscriber')->updateOrInsert(
+            [
+                'project_id' => $project->id,
+                'subscriber_id' => $subscriber->id,
+            ],
+            [
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]
+        );
+    }
+
+    private function upsertSubscription(Subscribers $subscriber, Category $category): void
+    {
+        DB::table('subscriptions')->updateOrInsert(
+            [
+                'subscriber_id' => $subscriber->id,
+                'category_id' => $category->id,
+            ],
+            []
         );
     }
 }

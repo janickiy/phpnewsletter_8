@@ -5,6 +5,7 @@ namespace App\Http\Requests\Admin\Users;
 use App\Enums\UserRole;
 use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
 class UpdateRequest extends FormRequest
@@ -14,7 +15,10 @@ class UpdateRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        $user = Auth::user();
+
+        return $user?->role === UserRole::Admin->value
+            || (int) $this->input('id') === (int) Auth::id();
     }
 
     /**

@@ -58,7 +58,7 @@ Route::group(['middleware' => ['install']], function () {
         Route::post('status', [TemplatesController::class, 'delete'])->name('admin.templates.status');
     });
 
-    Route::middleware(['permission:admin|moderator'])->group(function () {
+    Route::middleware(['permission:admin'])->group(function () {
         Route::group(['prefix' => 'category'], function () {
             Route::get('', [CategoryController::class, 'index'])->name('admin.category.index');
             Route::get('create', [CategoryController::class, 'create'])->name('admin.category.create');
@@ -99,14 +99,14 @@ Route::group(['middleware' => ['install']], function () {
         Route::delete('destroy/{id}', [ScheduleController::class, 'destroy'])->name('admin.schedule.destroy')->where('id', '[0-9]+');
     });
 
-    Route::middleware(['permission:admin|organization_admin|project_admin'])->prefix('log')->group(function () {
+    Route::middleware(['permission:admin|organization_admin|project_admin|moderator'])->prefix('log')->group(function () {
         Route::get('', [LogController::class, 'index'])->name('admin.log.index');
         Route::get('clear', [LogController::class, 'clear'])->name('admin.log.clear')->middleware(['permission:admin']);
         Route::get('download/{id}', [LogController::class, 'download'])->name('admin.log.report')->where('id', '[0-9]+')->middleware(['permission:admin']);
         Route::get('info/{id}', [LogController::class, 'info'])->name('admin.log.info')->where('id', '[0-9]+');
     });
 
-    Route::middleware(['permission:admin|organization_admin|project_admin'])->prefix('redirect')->group(function () {
+    Route::middleware(['permission:admin|organization_admin|project_admin|moderator'])->prefix('redirect')->group(function () {
         Route::get('', [RedirectController::class, 'index'])->name('admin.redirect.index');
         Route::get('clear', [RedirectController::class, 'clear'])->name('admin.redirect.clear')->middleware(['permission:admin']);
         Route::get('download/{url}', [RedirectController::class, 'download'])->name('admin.redirect.report')->middleware(['permission:admin']);
@@ -142,11 +142,16 @@ Route::group(['middleware' => ['install']], function () {
             Route::get('', [UsersController::class, 'index'])->name('admin.users.index');
             Route::get('create', [UsersController::class, 'create'])->name('admin.users.create');
             Route::post('store', [UsersController::class, 'store'])->name('admin.users.store');
-            Route::get('edit/{id}', [UsersController::class, 'edit'])->name('admin.users.edit');
-            Route::put('update', [UsersController::class, 'update'])->name('admin.users.update');
             Route::delete('destroy/{id}', [UsersController::class, 'destroy'])->name('admin.users.destroy')->where('id', '[0-9]+');
         });
     });
+
+    Route::middleware(['permission:admin|organization_admin|project_admin|moderator'])->prefix('users')->group(function () {
+        Route::get('edit/{id}', [UsersController::class, 'edit'])->name('admin.users.edit')->where('id', '[0-9]+');
+        Route::put('update', [UsersController::class, 'update'])->name('admin.users.update');
+    });
+
+    Route::get('projects', [ProjectController::class, 'index'])->name('admin.projects.index')->middleware(['permission:moderator']);
 
     Route::middleware(['permission:admin|organization_admin|project_admin|moderator'])->group(function () {
         Route::group(['prefix' => 'organizations'], function () {
@@ -185,14 +190,14 @@ Route::group(['middleware' => ['install']], function () {
 
     Route::group(['prefix' => 'datatable'], function () {
         Route::any('templates', [DataTableController::class, 'getTemplates'])->name('admin.datatable.templates');
-        Route::any('category', [DataTableController::class, 'getCategory'])->name('admin.datatable.category')->middleware(['permission:admin|moderator']);
+        Route::any('category', [DataTableController::class, 'getCategory'])->name('admin.datatable.category')->middleware(['permission:admin']);
         Route::any('smtp', [DataTableController::class, 'getSmtp'])->name('admin.datatable.smtp')->middleware(['permission:admin']);
         Route::any('subscribers', [DataTableController::class, 'getSubscribers'])->name('admin.datatable.subscribers')->middleware(['permission:admin|organization_admin|project_admin|moderator']);
         Route::any('users', [DataTableController::class, 'getUsers'])->name('admin.datatable.users')->middleware(['permission:admin']);
-        Route::any('logs', [DataTableController::class, 'getLogs'])->name('admin.datatable.logs')->middleware(['permission:admin|organization_admin|project_admin']);
-        Route::any('info-log/{id?}', [DataTableController::class, 'getInfoLog'])->name('admin.datatable.info_log')->where('id', '[0-9]+')->middleware(['permission:admin|organization_admin|project_admin']);
-        Route::any('redirect-log', [DataTableController::class, 'getRedirectLogs'])->name('admin.datatable.redirect')->middleware(['permission:admin|organization_admin|project_admin']);
-        Route::any('info-redirect-log/{url}', [DataTableController::class, 'getInfoRedirectLog'])->name('admin.datatable.info_redirect')->middleware(['permission:admin|organization_admin|project_admin']);
+        Route::any('logs', [DataTableController::class, 'getLogs'])->name('admin.datatable.logs')->middleware(['permission:admin|organization_admin|project_admin|moderator']);
+        Route::any('info-log/{id?}', [DataTableController::class, 'getInfoLog'])->name('admin.datatable.info_log')->where('id', '[0-9]+')->middleware(['permission:admin|organization_admin|project_admin|moderator']);
+        Route::any('redirect-log', [DataTableController::class, 'getRedirectLogs'])->name('admin.datatable.redirect')->middleware(['permission:admin|organization_admin|project_admin|moderator']);
+        Route::any('info-redirect-log/{url}', [DataTableController::class, 'getInfoRedirectLog'])->name('admin.datatable.info_redirect')->middleware(['permission:admin|organization_admin|project_admin|moderator']);
         Route::any('macros', [DataTableController::class, 'getMacros'])->name('admin.datatable.macros')->middleware(['permission:admin']);
     });
 });

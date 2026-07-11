@@ -13,6 +13,7 @@ use App\Models\Project;
 use App\Models\User;
 use App\Repositories\CategoryRepository;
 use App\Repositories\ProjectRepository;
+use App\Support\ProjectAccess;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
@@ -30,11 +31,27 @@ class ProjectController extends Controller
     }
 
     /**
+     * Show projects assigned to the current moderator.
+     */
+    public function index(): View
+    {
+        abort_unless(Auth::user()?->role === UserRole::Moderator->value, 403);
+
+        return view('admin.projects.index', [
+            'projects' => ProjectAccess::availableProjectsQuery()
+                ->withCount(['templates', 'subscribers'])
+                ->paginate(20),
+            'infoAlert' => __('frontend.hint.projects_index'),
+            'title' => __('frontend.title.projects_index'),
+        ]);
+    }
+
+    /**
      * Show project creation form scoped to an organization.
      */
     public function create(Organization $organization): View
     {
-        $this->ensureOrganizationAvailable($organization);
+        $this->ensureCanManageProject($organization);
 
         return view('admin.projects.create_edit', [
             'organization' => $organization,
@@ -50,7 +67,7 @@ class ProjectController extends Controller
      */
     public function store(StoreRequest $request, Organization $organization): RedirectResponse
     {
-        $this->ensureOrganizationAvailable($organization);
+        $this->ensureCanManageProject($organization);
 
         try {
             $this->projectRepository->createFromData($request->toDto($organization->id));
@@ -75,6 +92,7 @@ class ProjectController extends Controller
 
         $project = $this->projectRepository->loadDetails($project);
 
+        $canManageProject = $this->canManageProject($organization);
         $canManageProjectRoles = $this->canManageProjectUsers($organization);
 
         return view('admin.projects.show', [
@@ -82,7 +100,9 @@ class ProjectController extends Controller
             'project' => $project,
             'templates' => $this->projectRepository->templatesForProject($project),
             'categoryOptions' => $this->categoryRepository->getOption(),
+            'canManageProject' => $canManageProject,
             'canManageProjectRoles' => $canManageProjectRoles,
+            'backUrl' => $this->projectBackUrl($organization, $canManageProject),
             'projectAdministratorOptions' => $canManageProjectRoles
                 ? $this->projectRepository->roleOptions($project, UserRole::ProjectAdmin)
                 : [],
@@ -99,6 +119,7 @@ class ProjectController extends Controller
     public function edit(Organization $organization, Project $project): View
     {
         $this->ensureProjectBelongsToOrganization($organization, $project);
+        $this->ensureCanManageProject($organization);
 
         return view('admin.projects.create_edit', [
             'organization' => $organization,
@@ -116,6 +137,7 @@ class ProjectController extends Controller
     public function update(UpdateRequest $request, Organization $organization, Project $project): RedirectResponse
     {
         $this->ensureProjectBelongsToOrganization($organization, $project);
+        $this->ensureCanManageProject($organization);
 
         try {
             $this->projectRepository->updateFromData($project->id, $request->toDto($organization->id));
@@ -137,6 +159,7 @@ class ProjectController extends Controller
     public function destroy(Organization $organization, Project $project): RedirectResponse
     {
         $this->ensureProjectBelongsToOrganization($organization, $project);
+        $this->ensureCanManageProject($organization);
 
         try {
             $this->projectRepository->delete($project->id);
@@ -172,19 +195,51 @@ class ProjectController extends Controller
 
     private function ensureProjectBelongsToOrganization(Organization $organization, Project $project): void
     {
-        $this->ensureOrganizationAvailable($organization);
-
         abort_unless($this->projectRepository->belongsToOrganization($project, $organization), 404);
+        abort_unless($this->canViewProject($organization, $project), 404);
     }
 
-    private function ensureOrganizationAvailable(Organization $organization): void
+    private function ensureCanManageProject(Organization $organization): void
     {
-        abort_unless(
-            Auth::user()?->role === UserRole::Admin->value
-                || (int) $organization->owner_id === (int) Auth::id()
-                || $organization->administrators()->whereKey(Auth::id())->exists(),
-            404
-        );
+        abort_unless($this->canManageProject($organization), 403);
+    }
+
+    private function canViewProject(Organization $organization, Project $project): bool
+    {
+        $user = Auth::user();
+
+        if (!$user) {
+            return false;
+        }
+
+        return $this->canManageProject($organization)
+            || ProjectAccess::availableProjectsQuery($user)->whereKey($project->id)->exists();
+    }
+
+    private function canManageProject(Organization $organization): bool
+    {
+        $user = Auth::user();
+
+        if (!$user || $user->role === UserRole::Moderator->value) {
+            return false;
+        }
+
+        return $user->role === UserRole::Admin->value
+            || (int) $organization->owner_id === (int) $user->id
+            || $organization->administrators()->whereKey($user->id)->exists();
+    }
+
+    private function projectBackUrl(Organization $organization, bool $canManageProject): string
+    {
+        if ($canManageProject) {
+            return route('admin.organizations.show', ['organization' => $organization->id]);
+        }
+
+        if (Auth::user()?->role === UserRole::Moderator->value) {
+            return route('admin.projects.index');
+        }
+
+        return route('admin.dashboard.index');
     }
 
     private function storeProjectUser(int $userId, Organization $organization, Project $project, UserRole $role): RedirectResponse
@@ -216,9 +271,7 @@ class ProjectController extends Controller
 
     private function canManageProjectUsers(Organization $organization): bool
     {
-        return Auth::user()?->role === UserRole::Admin->value
-            || (int) $organization->owner_id === (int) Auth::id()
-            || $organization->administrators()->whereKey(Auth::id())->exists();
+        return $this->canManageProject($organization);
     }
 
     private function timezoneOptions(): array

@@ -148,12 +148,14 @@
                     </div>
 
                     <div class="card-footer form-actions-footer d-flex flex-column flex-sm-row gap-2 justify-content-start">
-                        <a class="btn btn-primary" href="{{ route('admin.projects.edit', ['organization' => $organization->id, 'project' => $project->id]) }}">
-                            <i class="fas fa-edit me-1"></i>
-                            {{ __('frontend.form.edit') }}
-                        </a>
+                        @if($canManageProject)
+                            <a class="btn btn-primary" href="{{ route('admin.projects.edit', ['organization' => $organization->id, 'project' => $project->id]) }}">
+                                <i class="fas fa-edit me-1"></i>
+                                {{ __('frontend.form.edit') }}
+                            </a>
+                        @endif
 
-                        <a class="btn btn-secondary btn-back" href="{{ route('admin.organizations.show', ['organization' => $organization->id]) }}">
+                        <a class="btn btn-secondary btn-back" href="{{ $backUrl }}">
                             {{ __('frontend.form.back') }}
                         </a>
                     </div>
@@ -340,12 +342,14 @@
                             {{ __('frontend.menu.templates') }}
                         </h3>
 
-                        <div class="card-tools">
-                            <a href="{{ route('admin.projects.templates.create', ['organization' => $organization->id, 'project' => $project->id]) }}" class="btn btn-primary btn-sm">
-                                <i class="fas fa-plus me-1"></i>
-                                {{ __('frontend.str.add_template') }}
-                            </a>
-                        </div>
+                        @if($canManageProject)
+                            <div class="card-tools">
+                                <a href="{{ route('admin.projects.templates.create', ['organization' => $organization->id, 'project' => $project->id]) }}" class="btn btn-primary btn-sm">
+                                    <i class="fas fa-plus me-1"></i>
+                                    {{ __('frontend.str.add_template') }}
+                                </a>
+                            </div>
+                        @endif
                     </div>
 
                     {!! form_open(['url' => route('admin.templates.status'), 'method' => 'post', 'id' => 'projectTemplatesForm']) !!}
@@ -357,10 +361,12 @@
                                 <thead>
                                 <tr>
                                     <th class="text-center" style="width: 48px">
-                                        <input type="checkbox"
-                                               class="form-check-input"
-                                               title="{{ __('frontend.str.check_uncheck_all') }}"
-                                               id="checkAll">
+                                        @if($canManageProject)
+                                            <input type="checkbox"
+                                                   class="form-check-input"
+                                                   title="{{ __('frontend.str.check_uncheck_all') }}"
+                                                   id="checkAll">
+                                        @endif
                                     </th>
                                     <th style="width: 72px">ID</th>
                                     <th>{{ __('frontend.str.template') }}</th>
@@ -381,7 +387,9 @@
                                     @endphp
                                     <tr>
                                         <td class="text-center">
-                                            <input type="checkbox" class="form-check-input check" value="{{ $template->id }}" name="templateId[]">
+                                            @if($canManageProject)
+                                                <input type="checkbox" class="form-check-input check" value="{{ $template->id }}" name="templateId[]">
+                                            @endif
                                         </td>
                                         <td>{{ $template->id }}</td>
                                         <td>
@@ -400,9 +408,11 @@
                                         </td>
                                         <td>{{ optional($template->created_at)->format('d.m.Y H:i') ?: '-' }}</td>
                                         <td class="text-end">
-                                            <a class="btn btn-outline-primary btn-sm" href="{{ route('admin.templates.edit', ['id' => $template->id]) }}" title="{{ __('frontend.form.edit') }}">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
+                                            @if($canManageProject)
+                                                <a class="btn btn-outline-primary btn-sm" href="{{ route('admin.templates.edit', ['id' => $template->id]) }}" title="{{ __('frontend.form.edit') }}">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                            @endif
                                         </td>
                                     </tr>
                                 @endforeach
@@ -411,20 +421,22 @@
                         </div>
                     </div>
 
-                    <div class="card-footer bg-body-tertiary">
-                        <div class="input-group input-group-sm templates-bulk-actions">
-                            <span class="input-group-text">
-                                <i class="fas fa-list-check"></i>
-                            </span>
+                    @if($canManageProject)
+                        <div class="card-footer bg-body-tertiary">
+                            <div class="input-group input-group-sm templates-bulk-actions">
+                                <span class="input-group-text">
+                                    <i class="fas fa-list-check"></i>
+                                </span>
 
-                            {!! form_select('action', [
-                                '0' => __('frontend.str.send'),
-                                '1' => __('frontend.str.remove'),
-                            ], null, ['class' => 'form-select', 'id' => 'select_action', 'placeholder' => '--' . __('frontend.str.action') . '--'], [0 => ['data-id' => 'sendmail', 'class' => 'open_modal']]) !!}
+                                {!! form_select('action', [
+                                    '0' => __('frontend.str.send'),
+                                    '1' => __('frontend.str.remove'),
+                                ], null, ['class' => 'form-select', 'id' => 'select_action', 'placeholder' => '--' . __('frontend.str.action') . '--'], [0 => ['data-id' => 'sendmail', 'class' => 'open_modal']]) !!}
 
-                            {!! form_submit(__('frontend.str.apply'), ['class' => 'btn btn-success', 'disabled' => '', 'id' => 'apply']) !!}
+                                {!! form_submit(__('frontend.str.apply'), ['class' => 'btn btn-success', 'disabled' => '', 'id' => 'apply']) !!}
+                            </div>
                         </div>
-                    </div>
+                    @endif
 
                     {!! form_close() !!}
                 </div>

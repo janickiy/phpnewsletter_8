@@ -46,6 +46,8 @@ class UsersController extends Controller
             'options' => UserRole::options(),
             'roleDescriptions' => UserRole::descriptions(),
             'defaultRole' => UserRole::Admin->value,
+            'canAccessUsersIndex' => true,
+            'backUrl' => route('admin.users.index'),
             'infoAlert' => __('frontend.hint.users_create'),
             'title' => __('frontend.title.users_create'),
         ]);
@@ -83,12 +85,17 @@ class UsersController extends Controller
         $row = $this->userRepository->find($id);
 
         abort_if(!$row, 404);
+        $this->ensureCanAccessUser((int) $row->id);
 
         return view('admin.users.create_edit', [
             'row' => $row,
             'options' => UserRole::options(),
             'roleDescriptions' => UserRole::descriptions(),
             'defaultRole' => UserRole::Admin->value,
+            'canAccessUsersIndex' => $this->currentUserIsAdmin(),
+            'backUrl' => $this->currentUserIsAdmin()
+                ? route('admin.users.index')
+                : route('admin.dashboard.index'),
             'infoAlert' => __('frontend.hint.users_edit'),
             'title' => __('frontend.title.users_edit'),
         ]);
@@ -102,10 +109,21 @@ class UsersController extends Controller
      */
     public function update(UpdateRequest $request): RedirectResponse
     {
+        $row = $this->userRepository->find((int) $request->id);
+
+        abort_if(!$row, 404);
+        $this->ensureCanAccessUser((int) $row->id);
+
         try {
+            $data = $request->safe()->except(['password_again', 'id']);
+
+            if (!$this->currentUserIsAdmin()) {
+                $data['role'] = $row->role;
+            }
+
             $this->userRepository->updateWithMapping(
-                (int) $request->id,
-                $request->safe()->except(['password_again', 'id'])
+                (int) $row->id,
+                $data
             );
         } catch (\Throwable $e) {
             report($e);
@@ -115,7 +133,9 @@ class UsersController extends Controller
                 ->withInput();
         }
 
-        return to_route('admin.users.index')->with('success', __('message.data_updated'));
+        return $this->currentUserIsAdmin()
+            ? to_route('admin.users.index')->with('success', __('message.data_updated'))
+            : to_route('admin.users.edit', ['id' => Auth::id()])->with('success', __('message.data_updated'));
     }
 
     /**
@@ -129,5 +149,15 @@ class UsersController extends Controller
         if ($id !== (int) Auth::id()) {
             $this->userRepository->delete($id);
         }
+    }
+
+    private function ensureCanAccessUser(int $id): void
+    {
+        abort_unless($this->currentUserIsAdmin() || $id === (int) Auth::id(), 403);
+    }
+
+    private function currentUserIsAdmin(): bool
+    {
+        return Auth::user()?->role === UserRole::Admin->value;
     }
 }

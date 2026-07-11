@@ -7,9 +7,11 @@
         <li class="breadcrumb-item">
             <a href="{{ route('admin.dashboard.index') }}">{{ __('frontend.str.admin_panel') }}</a>
         </li>
-        <li class="breadcrumb-item">
-            <a href="{{ route('admin.users.index') }}">{{ __('frontend.menu.users') }}</a>
-        </li>
+        @if($canAccessUsersIndex ?? true)
+            <li class="breadcrumb-item">
+                <a href="{{ route('admin.users.index') }}">{{ __('frontend.menu.users') }}</a>
+            </li>
+        @endif
         <li class="breadcrumb-item active">{{ $title }}</li>
     </ol>
 @endsection
@@ -131,7 +133,7 @@
                             {{ isset($row) ? __('frontend.form.edit') : __('frontend.form.add') }}
                         </button>
 
-                        <a class="btn btn-secondary btn-back" href="{{ route('admin.users.index') }}">
+                        <a class="btn btn-secondary btn-back" href="{{ $backUrl ?? route('admin.users.index') }}">
                             {{ __('frontend.form.back') }}
                         </a>
                     </div>

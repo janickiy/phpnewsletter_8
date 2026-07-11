@@ -115,6 +115,11 @@
 
             <!-- Sidebar Menu -->
             <nav class="mt-2">
+                @php
+                    $isModerator = Auth::user()?->role === \App\Enums\UserRole::Moderator->value;
+                    $isModeratorProjectPage = $isModerator && Request::is('organizations/*/projects*');
+                @endphp
+
                 <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="menu"
                     data-accordion="false">
                     <!-- Add icons to the links using the .nav-icon class
@@ -130,10 +135,20 @@
 
                     @if(PermissionsHelper::has_permission('admin|organization_admin|project_admin|moderator'))
                         <li class="nav-item">
-                            <a href="{{ route('admin.organizations.index') }}" class="nav-link{{ Request::is('organizations*') ? ' active' : '' }}"
+                            <a href="{{ route('admin.organizations.index') }}" class="nav-link{{ Request::is('organizations*') && !$isModeratorProjectPage ? ' active' : '' }}"
                                title="{{ __('frontend.menu.organizations') }}">
                                 <i class="nav-icon fas fa-building"></i>
                                 <p>{{ __('frontend.menu.organizations') }}</p>
+                            </a>
+                        </li>
+                    @endif
+
+                    @if($isModerator)
+                        <li class="nav-item">
+                            <a href="{{ route('admin.projects.index') }}" class="nav-link{{ Request::is('projects*') || $isModeratorProjectPage ? ' active' : '' }}"
+                               title="{{ __('frontend.menu.projects') }}">
+                                <i class="nav-icon fas fa-folder-open"></i>
+                                <p>{{ __('frontend.menu.projects') }}</p>
                             </a>
                         </li>
                     @endif
@@ -180,7 +195,7 @@
                         </li>
                     @endif
 
-                    @if(PermissionsHelper::has_permission('admin|moderator'))
+                    @if(PermissionsHelper::has_permission('admin'))
 
                         <li class="nav-item">
                             <a href="{{ route('admin.category.index') }}" class="nav-link{{ Request::is('category*') ? ' active' : '' }}"
@@ -203,7 +218,7 @@
 
                     @endif
 
-                    @if(PermissionsHelper::has_permission('admin|organization_admin|project_admin'))
+                    @if(PermissionsHelper::has_permission('admin|organization_admin|project_admin|moderator'))
                         <li class="nav-item{{ Request::is('log*') || Request::is('redirect*') ? ' menu-open' : '' }}">
                             <a href="#" class="nav-link{{ Request::is('log*') || Request::is('redirect*') ? ' active' : '' }}" title="{{ __('frontend.menu.logs') }}">
                                 <i class="nav-icon fas fa-chart-area"></i>

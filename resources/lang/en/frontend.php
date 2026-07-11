@@ -307,6 +307,7 @@ return [
     ],
     'title' => [
         'organizations_index' => 'Organizations',
+        'projects_index' => 'Projects',
         'organizations_create' => 'Add organization',
         'organizations_edit' => 'Edit organization',
         'projects_create' => 'Add project',
@@ -351,6 +352,7 @@ return [
     ],
     'menu' => [
         'organizations' => 'Organizations',
+        'projects' => 'Projects',
         'dashboard' => 'Dashboard',
         'templates' => 'Templates',
         'subscribers' => 'Subscribers',
@@ -418,6 +420,7 @@ return [
         'organizations_create' => 'Create an organization to group projects and manage them from one section.',
         'organizations_edit' => 'Change the organization name and description.',
         'organizations_show' => 'This page shows organization details and related projects.',
+        'projects_index' => 'This section shows projects available to your account.',
         'projects_create' => 'Create a project inside the selected organization and set default sender settings.',
         'projects_edit' => 'Change project parameters and default sender settings.',
     ],

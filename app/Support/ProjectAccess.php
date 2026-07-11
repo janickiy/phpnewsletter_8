@@ -61,7 +61,7 @@ class ProjectAccess
             return $query;
         }
 
-        if (!in_array($user->role, [UserRole::OrganizationAdmin->value, UserRole::ProjectAdmin->value], true)) {
+        if (!in_array($user->role, [UserRole::OrganizationAdmin->value, UserRole::ProjectAdmin->value, UserRole::Moderator->value], true)) {
             return $query->whereRaw('1 = 0');
         }
 
@@ -92,7 +92,7 @@ class ProjectAccess
             return $query;
         }
 
-        if (!in_array($user->role, [UserRole::OrganizationAdmin->value, UserRole::ProjectAdmin->value], true)) {
+        if (!in_array($user->role, [UserRole::OrganizationAdmin->value, UserRole::ProjectAdmin->value, UserRole::Moderator->value], true)) {
             return $query->whereRaw('1 = 0');
         }
 
