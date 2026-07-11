@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\PermissionsHelper;
 use App\Models\ReadySent;
 use App\Models\Logs;
 use App\Services\DownloadService;
@@ -58,6 +59,7 @@ class LogController extends Controller
      */
     public function download(int $id): Response|StreamedResponse
     {
+        abort_unless(PermissionsHelper::has_permission('admin'), 403);
         abort_unless($this->canViewScheduleLog($id), 404);
 
         return $this->downloadService->log($id);
@@ -70,6 +72,8 @@ class LogController extends Controller
      */
     public function clear(): JsonResponse
     {
+        abort_unless(PermissionsHelper::has_permission('admin'), 403);
+
         try {
             DB::transaction(function (): void {
                 ReadySent::query()->delete();

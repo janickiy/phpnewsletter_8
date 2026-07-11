@@ -102,7 +102,7 @@ Route::group(['middleware' => ['install']], function () {
     Route::middleware(['permission:admin|organization_admin|project_admin'])->prefix('log')->group(function () {
         Route::get('', [LogController::class, 'index'])->name('admin.log.index');
         Route::get('clear', [LogController::class, 'clear'])->name('admin.log.clear')->middleware(['permission:admin']);
-        Route::get('download/{id}', [LogController::class, 'download'])->name('admin.log.report')->where('id', '[0-9]+');
+        Route::get('download/{id}', [LogController::class, 'download'])->name('admin.log.report')->where('id', '[0-9]+')->middleware(['permission:admin']);
         Route::get('info/{id}', [LogController::class, 'info'])->name('admin.log.info')->where('id', '[0-9]+');
     });
 
