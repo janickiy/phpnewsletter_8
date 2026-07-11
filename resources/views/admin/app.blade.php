@@ -138,13 +138,15 @@
                         </li>
                     @endif
 
-                    <li class="nav-item">
-                        <a href="{{ route('admin.templates.index') }}" class="nav-link{{ Request::is('templates*') || Request::is('template*') ? ' active' : '' }}"
-                           title="{{ __('frontend.menu.templates') }}">
-                            <i class="nav-icon fas fa-envelope"></i>
-                            <p>{{ __('frontend.menu.templates') }}</p>
-                        </a>
-                    </li>
+                    @if(PermissionsHelper::has_permission('admin'))
+                        <li class="nav-item">
+                            <a href="{{ route('admin.templates.index') }}" class="nav-link{{ Request::is('templates*') || Request::is('template*') ? ' active' : '' }}"
+                               title="{{ __('frontend.menu.templates') }}">
+                                <i class="nav-icon fas fa-envelope"></i>
+                                <p>{{ __('frontend.menu.templates') }}</p>
+                            </a>
+                        </li>
+                    @endif
 
                     @if(PermissionsHelper::has_permission('admin|organization_admin|project_admin|moderator'))
 
