@@ -9,6 +9,7 @@ use App\Models\Schedule;
 use App\Repositories\CategoryRepository;
 use App\Repositories\ScheduleRepository;
 use App\Repositories\TemplateRepository;
+use App\Support\ProjectAccess;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -25,6 +26,7 @@ class ScheduleController extends Controller
         private readonly TemplateRepository $templateRepository,
     ) {
         parent::__construct();
+        $this->middleware('permission:admin|organization_admin|project_admin');
     }
 
     /**
@@ -35,7 +37,7 @@ class ScheduleController extends Controller
     public function index(): View
     {
         return view('admin.schedule.index', [
-            'schedule' => Schedule::query()->get(),
+            'schedule' => ProjectAccess::scopeScheduleQuery(Schedule::query())->get(),
             'infoAlert' => __('frontend.hint.schedule_index'),
             'title' => __('frontend.title.schedule_index'),
         ]);
@@ -62,7 +64,7 @@ class ScheduleController extends Controller
      */
     public function calendarEvents(Request $request): JsonResponse
     {
-        $event = Schedule::query()->find($request->id);
+        $event = ProjectAccess::scopeScheduleQuery(Schedule::query())->find($request->id);
 
         if (!$event) {
             return response()->json(false, 404);
@@ -76,7 +78,7 @@ class ScheduleController extends Controller
                     'event_end' => $request->event_end,
                 ])
             ),
-            'delete' => response()->json($event->delete()),
+            'delete' => response()->json($this->scheduleRepository->remove($event->id)),
             default => response()->json(false, 400),
         };
     }
@@ -89,7 +91,7 @@ class ScheduleController extends Controller
     public function create(): View
     {
         return view('admin.schedule.create_edit', [
-            'options' => $this->templateRepository->getOption(),
+            'options' => $this->templateRepository->getAccessibleOption(),
             'category_options' => $this->categoryRepository->getOption(),
             'infoAlert' => __('frontend.hint.schedule_create'),
             'title' => __('frontend.title.schedule_create'),
@@ -127,13 +129,15 @@ class ScheduleController extends Controller
      */
     public function edit(int $id): View
     {
-        $row = $this->scheduleRepository->find($id);
+        $row = ProjectAccess::scopeScheduleQuery(
+            Schedule::query()->with(['categories', 'template'])
+        )->find($id);
 
         abort_if(!$row, 404);
 
         return view('admin.schedule.create_edit', [
             'categoryId' => $row->categories?->pluck('id')->toArray() ?? [],
-            'options' => $this->templateRepository->getOption(),
+            'options' => $this->templateRepository->getAccessibleOption(),
             'category_options' => $this->categoryRepository->getOption(),
             'row' => $row,
             'infoAlert' => __('frontend.hint.schedule_edit'),
@@ -174,6 +178,10 @@ class ScheduleController extends Controller
      */
     public function destroy(int $id): void
     {
-        $this->scheduleRepository->delete($id);
+        $row = ProjectAccess::scopeScheduleQuery(Schedule::query())->find($id);
+
+        abort_if(!$row, 404);
+
+        $this->scheduleRepository->remove($id);
     }
 }

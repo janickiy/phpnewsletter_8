@@ -88,7 +88,7 @@ Route::group(['middleware' => ['install']], function () {
 
     });
 
-    Route::group(['prefix' => 'schedule'], function () {
+    Route::middleware(['permission:admin|organization_admin|project_admin'])->prefix('schedule')->group(function () {
         Route::get('', [ScheduleController::class, 'index'])->name('admin.schedule.index');
         Route::post('calendar-crud-ajax', [ScheduleController::class, 'calendarEvents'])->name('admin.schedule.calendarEvents');
         Route::get('calendar-event', [ScheduleController::class, 'list'])->name('admin.schedule.list');

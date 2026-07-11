@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Templates;
+use App\Support\ProjectAccess;
 
 class TemplateRepository extends BaseRepository
 {
@@ -27,6 +28,18 @@ class TemplateRepository extends BaseRepository
     public function getOption(): array
     {
         return $this->model->orderBy('name')->get()->pluck('name', 'id')->toArray();
+    }
+
+    /**
+     * @return array
+     */
+    public function getAccessibleOption(): array
+    {
+        return ProjectAccess::scopeTemplateQuery($this->model->newQuery())
+            ->orderBy('name')
+            ->get()
+            ->pluck('name', 'id')
+            ->toArray();
     }
 
     /**

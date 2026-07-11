@@ -170,13 +170,15 @@
                         </li>
                     @endif
 
-                    <li class="nav-item">
-                        <a href="{{ route('admin.schedule.index') }}" class="nav-link{{ Request::is('schedule*') ? ' active' : '' }}"
-                           title="{{ __('frontend.menu.schedule') }}">
-                            <i class="nav-icon fas fa-calendar-alt"></i>
-                            <p>{{ __('frontend.menu.schedule') }}</p>
-                        </a>
-                    </li>
+                    @if(PermissionsHelper::has_permission('admin|organization_admin|project_admin'))
+                        <li class="nav-item">
+                            <a href="{{ route('admin.schedule.index') }}" class="nav-link{{ Request::is('schedule*') ? ' active' : '' }}"
+                               title="{{ __('frontend.menu.schedule') }}">
+                                <i class="nav-icon fas fa-calendar-alt"></i>
+                                <p>{{ __('frontend.menu.schedule') }}</p>
+                            </a>
+                        </li>
+                    @endif
 
                     @if(PermissionsHelper::has_permission('admin|moderator'))
 

@@ -109,7 +109,54 @@ class ProjectAccess
                 ->join('project_subscriber', 'project_subscriber.subscriber_id', '=', 'subscribers.id')
                 ->whereColumn('subscribers.email', $redirectTable . '.email')
                 ->whereIn('project_subscriber.project_id', $projectIds);
-        });
+            });
+    }
+
+    public static function scopeTemplateQuery(Builder $query, ?User $user = null): Builder
+    {
+        $user ??= Auth::user();
+
+        if (!$user) {
+            return $query->whereRaw('1 = 0');
+        }
+
+        if ($user->role === UserRole::Admin->value) {
+            return $query;
+        }
+
+        if (!in_array($user->role, [UserRole::OrganizationAdmin->value, UserRole::ProjectAdmin->value], true)) {
+            return $query->whereRaw('1 = 0');
+        }
+
+        $projectIds = self::availableProjectIds($user);
+
+        if ($projectIds === []) {
+            return $query->whereRaw('1 = 0');
+        }
+
+        return $query->whereIn('project_id', $projectIds);
+    }
+
+    public static function scopeScheduleQuery(Builder $query, ?User $user = null): Builder
+    {
+        $user ??= Auth::user();
+
+        if (!$user) {
+            return $query->whereRaw('1 = 0');
+        }
+
+        if ($user->role === UserRole::Admin->value) {
+            return $query;
+        }
+
+        if (!in_array($user->role, [UserRole::OrganizationAdmin->value, UserRole::ProjectAdmin->value], true)) {
+            return $query->whereRaw('1 = 0');
+        }
+
+        return $query->whereHas(
+            'template',
+            fn (Builder $templateQuery): Builder => self::scopeTemplateQuery($templateQuery, $user)
+        );
     }
 
     public static function optionGroups(?User $user = null): array

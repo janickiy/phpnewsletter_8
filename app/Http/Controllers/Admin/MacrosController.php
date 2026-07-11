@@ -19,6 +19,7 @@ class MacrosController extends Controller
         private readonly MacrosRepository $macrosRepository
     ) {
         parent::__construct();
+        $this->middleware('permission:admin');
     }
 
     /**

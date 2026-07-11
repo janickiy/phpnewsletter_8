@@ -6,6 +6,7 @@ namespace App\Http\Requests\Admin\Schedule;
 use App\Models\Category;
 use App\Models\Schedule;
 use App\Models\Templates;
+use App\Support\ProjectAccess;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -49,6 +50,11 @@ class EditRequest extends FormRequest
                 'required',
                 'integer',
                 Rule::exists(Schedule::getTableName(), 'id'),
+                function (string $attribute, mixed $value, \Closure $fail): void {
+                    if (!ProjectAccess::scopeScheduleQuery(Schedule::query())->whereKey($value)->exists()) {
+                        $fail(__('validation.exists', ['attribute' => $attribute]));
+                    }
+                },
             ],
             'event_name' => [
                 'required',
@@ -60,6 +66,11 @@ class EditRequest extends FormRequest
                 'required',
                 'integer',
                 Rule::exists(Templates::getTableName(), 'id'),
+                function (string $attribute, mixed $value, \Closure $fail): void {
+                    if (!ProjectAccess::scopeTemplateQuery(Templates::query())->whereKey($value)->exists()) {
+                        $fail(__('validation.exists', ['attribute' => $attribute]));
+                    }
+                },
             ],
 
             'categoryId' => [

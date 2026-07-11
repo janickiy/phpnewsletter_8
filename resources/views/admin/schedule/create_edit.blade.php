@@ -60,7 +60,12 @@
                             <div class="col-md-6">
                                 <div class="form-group mb-0">
                                     {!! form_label('template_id', __('frontend.form.template'), ['class' => 'form-label']) !!}
-                                    {!! form_select('template_id', $options, old('template_id', $row->template_id ?? null), ['placeholder' => __('frontend.form.select'), 'class' => 'form-select' . ($errors->has('template_id') ? ' is-invalid' : '')]) !!}
+                                    {!! form_select('template_id', $options, old('template_id', $row->template_id ?? null), [
+                                        'placeholder' => __('frontend.form.select'),
+                                        'class' => 'form-select js-live-search-select' . ($errors->has('template_id') ? ' is-invalid' : ''),
+                                        'data-search-placeholder' => __('frontend.form.search'),
+                                        'data-no-results' => __('pagination.s_zero_records'),
+                                    ]) !!}
 
                                     @if ($errors->has('template_id'))
                                         <div class="invalid-feedback">{{ $errors->first('template_id') }}</div>

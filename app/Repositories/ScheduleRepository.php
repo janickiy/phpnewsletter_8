@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\Schedule;
 use App\Models\ScheduleCategory;
+use App\Support\ProjectAccess;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -98,7 +99,7 @@ class ScheduleRepository extends BaseRepository
      */
     public function getScheduleByDateInterval(Request $request): array
     {
-        $rows = $this->model
+        $rows = ProjectAccess::scopeScheduleQuery($this->model->newQuery())
             ->whereDate('event_start', '>=', $request->start)
             ->whereDate('event_end', '<=', $request->end)
             ->get(['id', 'event_name', 'event_start', 'event_end']);

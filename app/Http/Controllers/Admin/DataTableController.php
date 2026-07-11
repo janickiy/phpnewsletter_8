@@ -425,6 +425,8 @@ class DataTableController extends Controller
      */
     public function getMacros(): JsonResponse
     {
+        abort_unless(PermissionsHelper::has_permission('admin'), 403);
+
         $rows = Macros::query();
 
         return DataTables::of($rows)
