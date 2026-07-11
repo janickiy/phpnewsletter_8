@@ -132,6 +132,17 @@
                 'visibleForModerator' => true,
             ],
             [
+                'theme' => 'secondary',
+                'linkClass' => 'link-light',
+                'url' => route('admin.projects.index'),
+                'icon' => 'fas fa-folder-open',
+                'value' => number_format($stats['projects']),
+                'label' => __('frontend.menu.projects'),
+                'note' => __('frontend.str.projects_number'),
+                'visibleForModerator' => true,
+                'onlyForModerator' => true,
+            ],
+            [
                 'theme' => 'warning',
                 'linkClass' => 'link-dark',
                 'url' => route('admin.schedule.index'),
@@ -195,6 +206,8 @@
 
         if ($isModerator) {
             $summaryBoxes = array_values(array_filter($summaryBoxes, static fn (array $box): bool => $box['visibleForModerator']));
+        } else {
+            $summaryBoxes = array_values(array_filter($summaryBoxes, static fn (array $box): bool => empty($box['onlyForModerator'])));
         }
     @endphp
 

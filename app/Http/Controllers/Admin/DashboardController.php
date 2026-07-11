@@ -11,6 +11,7 @@ use App\Models\Schedule;
 use App\Models\Subscribers;
 use App\Models\Templates;
 use App\Models\User;
+use App\Support\ProjectAccess;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
@@ -33,6 +34,7 @@ class DashboardController extends Controller
             'categories' => Category::query()->count(),
             'schedule' => Schedule::query()->count(),
             'upcomingSchedule' => Schedule::query()->where('event_start', '>=', now())->count(),
+            'projects' => ProjectAccess::availableProjectsQuery()->count(),
             'organizations' => Organization::query()->count(),
             'macros' => Macros::query()->count(),
             'users' => User::query()->count(),
